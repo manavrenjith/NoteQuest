@@ -1,7 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 
-const GEMINI_MODEL = 'gemini-1.5-flash'
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY
+const GEMINI_MODEL = 'gemini-2.0-flash'
 
 const EXTRACTION_PROMPT = `You are an expert educator. Analyze the following student notes and extract a structured syllabus.
 
@@ -47,10 +46,9 @@ Return ONLY valid JSON, no markdown, no backticks:
 }`
 }
 
-function cleanJsonResponse(rawText) {
+function cleanJsonResponse(rawText = '') {
   const withoutFences = rawText
-    .replace(/```json\s*/gi, '')
-    .replace(/```/g, '')
+    .replace(/```json|```/gi, '')
     .trim()
 
   const firstBrace = withoutFences.indexOf('{')
@@ -63,42 +61,57 @@ function cleanJsonResponse(rawText) {
   return withoutFences.slice(firstBrace, lastBrace + 1)
 }
 
-export async function extractTopics(notes) {
-  if (!API_KEY) {
+function getModelClient() {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY
+
+  if (!apiKey) {
     throw new Error('Missing VITE_GEMINI_API_KEY. Add it to your .env file.')
   }
 
-  const genAI = new GoogleGenerativeAI(API_KEY)
-  const model = genAI.getGenerativeModel({ model: GEMINI_MODEL })
-  const prompt = EXTRACTION_PROMPT.replace('[NOTES]', notes)
+  return new GoogleGenAI({ apiKey })
+}
 
-  const result = await model.generateContent(prompt)
-  const rawText = result.response.text()
-  const cleaned = cleanJsonResponse(rawText)
+export async function extractTopics(notes) {
+  try {
+    const ai = getModelClient()
+    const prompt = EXTRACTION_PROMPT.replace('[NOTES]', notes)
+    const response = await ai.models.generateContent({
+      model: GEMINI_MODEL,
+      contents: prompt,
+    })
+    const raw = response.text || ''
+    const clean = cleanJsonResponse(raw)
+    const parsed = JSON.parse(clean)
 
-  return JSON.parse(cleaned)
+    return parsed
+  } catch (error) {
+    console.error('Gemini API error:', error)
+    throw new Error('Failed to extract topics. Check your API key and try again.')
+  }
 }
 
 export async function generateQuiz(topics = []) {
-  if (!API_KEY) {
-    throw new Error('Missing VITE_GEMINI_API_KEY. Add it to your .env file.')
-  }
+  try {
+    const ai = getModelClient()
+    const prompt = buildQuizPrompt(topics)
+    const response = await ai.models.generateContent({
+      model: GEMINI_MODEL,
+      contents: prompt,
+    })
+    const raw = response.text || ''
+    const clean = cleanJsonResponse(raw)
+    const parsed = JSON.parse(clean)
 
-  const genAI = new GoogleGenerativeAI(API_KEY)
-  const model = genAI.getGenerativeModel({ model: GEMINI_MODEL })
-  const prompt = buildQuizPrompt(topics)
-
-  const result = await model.generateContent(prompt)
-  const rawText = result.response.text()
-  const cleaned = cleanJsonResponse(rawText)
-  const parsed = JSON.parse(cleaned)
-
-  const questions = Array.isArray(parsed.questions) ? parsed.questions : []
-  return {
-    questions: questions.slice(0, 3).map((question) => ({
-      question: question.question || 'Untitled question',
-      options: Array.isArray(question.options) ? question.options.slice(0, 4) : [],
-      correct: Number.isInteger(question.correct) ? question.correct : 0,
-    })),
+    const questions = Array.isArray(parsed.questions) ? parsed.questions : []
+    return {
+      questions: questions.slice(0, 3).map((question) => ({
+        question: question.question || 'Untitled question',
+        options: Array.isArray(question.options) ? question.options.slice(0, 4) : [],
+        correct: Number.isInteger(question.correct) ? question.correct : 0,
+      })),
+    }
+  } catch (error) {
+    console.error('Gemini API error:', error)
+    throw new Error('Failed to generate quiz. Check your API key and try again.')
   }
 }
