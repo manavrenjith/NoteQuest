@@ -1,8 +1,18 @@
-import { GoogleGenAI } from '@google/genai'
+import Groq from "groq-sdk";
 
-const GEMINI_MODEL = 'gemini-2.0-flash'
+const client = new Groq({
+  apiKey: import.meta.env.VITE_GROQ_API_KEY,
+  dangerouslyAllowBrowser: true
+});
 
-const EXTRACTION_PROMPT = `You are an expert educator. Analyze the following student notes and extract a structured syllabus.
+export async function extractTopics(notes) {
+  try {
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        {
+          role: "user",
+          content: `You are an expert educator. Analyze the following student notes and extract a structured syllabus.
 
 Return ONLY a valid JSON object with no extra text, no markdown, no backticks. Use this exact format:
 {
@@ -24,94 +34,101 @@ Return ONLY a valid JSON object with no extra text, no markdown, no backticks. U
 }
 
 Student Notes:
-[NOTES]`
+${notes}`
+        }
+      ],
+      temperature: 0.3,
+      max_tokens: 4000,
+    });
 
-function buildQuizPrompt(topics) {
-  const topicList = topics
-    .map((topic, index) => `${index + 1}. ${topic.title}: ${topic.description || 'No description provided'}`)
+    const raw = response.choices[0]?.message?.content || "";
+    const clean = raw.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(clean);
+    return parsed;
+
+  } catch (error) {
+    if (error.message?.includes("429")) {
+      throw new Error("Too many requests. Please wait a moment and try again.");
+    }
+    if (error.message?.includes("401")) {
+      throw new Error("Invalid API key. Please check your .env file.");
+    }
+    console.error("Groq API error:", error);
+    throw new Error("Failed to extract topics. Please try again.");
+  }
+}
+
+export async function generateQuiz(topics) {
+  const topicLines = (Array.isArray(topics) ? topics : [])
+    .map((topic, index) => `${index + 1}. ${topic?.title || 'Untitled topic'}: ${topic?.description || ''}`)
     .join('\n')
 
-  return `Based on these topics: ${topicList}
-Generate exactly 3 multiple choice questions to test understanding.
+  try {
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        {
+          role: "user",
+          content: `Create a short multiple choice quiz from these study topics.
 
-Return ONLY valid JSON, no markdown, no backticks:
+Return ONLY a valid JSON object with no markdown, no comments, no extra text.
+Use this exact schema:
 {
   "questions": [
     {
-      "question": "Question text here?",
-      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "question": "Question text",
+      "options": ["A", "B", "C", "D"],
       "correct": 0
     }
   ]
-}`
 }
 
-function cleanJsonResponse(rawText = '') {
-  const withoutFences = rawText
-    .replace(/```json|```/gi, '')
-    .trim()
+Rules:
+- Generate exactly 5 questions.
+- Each question must have exactly 4 options.
+- "correct" must be a zero-based option index from 0 to 3.
+- Keep language clear and concise.
 
-  const firstBrace = withoutFences.indexOf('{')
-  const lastBrace = withoutFences.lastIndexOf('}')
-
-  if (firstBrace === -1 || lastBrace === -1) {
-    throw new Error('Gemini did not return valid JSON text.')
-  }
-
-  return withoutFences.slice(firstBrace, lastBrace + 1)
-}
-
-function getModelClient() {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY
-
-  if (!apiKey) {
-    throw new Error('Missing VITE_GEMINI_API_KEY. Add it to your .env file.')
-  }
-
-  return new GoogleGenAI({ apiKey })
-}
-
-export async function extractTopics(notes) {
-  try {
-    const ai = getModelClient()
-    const prompt = EXTRACTION_PROMPT.replace('[NOTES]', notes)
-    const response = await ai.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: prompt,
+Topics:
+${topicLines}`
+        }
+      ],
+      temperature: 0.4,
+      max_tokens: 4000,
     })
-    const raw = response.text || ''
-    const clean = cleanJsonResponse(raw)
+
+    const raw = response.choices[0]?.message?.content || ""
+    const clean = raw.replace(/```json|```/g, "").trim()
     const parsed = JSON.parse(clean)
 
-    return parsed
+    const safeQuestions = Array.isArray(parsed?.questions)
+      ? parsed.questions
+          .map((item) => ({
+            question: String(item?.question || '').trim(),
+            options: Array.isArray(item?.options)
+              ? item.options.slice(0, 4).map((option) => String(option || '').trim())
+              : [],
+            correct: Number.isInteger(item?.correct) ? item.correct : -1,
+          }))
+          .filter(
+            (item) =>
+              item.question.length > 0 &&
+              item.options.length === 4 &&
+              item.options.every((option) => option.length > 0) &&
+              item.correct >= 0 &&
+              item.correct <= 3,
+          )
+      : []
+
+    return { questions: safeQuestions }
   } catch (error) {
-    console.error('Gemini API error:', error)
-    throw new Error('Failed to extract topics. Check your API key and try again.')
-  }
-}
-
-export async function generateQuiz(topics = []) {
-  try {
-    const ai = getModelClient()
-    const prompt = buildQuizPrompt(topics)
-    const response = await ai.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: prompt,
-    })
-    const raw = response.text || ''
-    const clean = cleanJsonResponse(raw)
-    const parsed = JSON.parse(clean)
-
-    const questions = Array.isArray(parsed.questions) ? parsed.questions : []
-    return {
-      questions: questions.slice(0, 3).map((question) => ({
-        question: question.question || 'Untitled question',
-        options: Array.isArray(question.options) ? question.options.slice(0, 4) : [],
-        correct: Number.isInteger(question.correct) ? question.correct : 0,
-      })),
+    if (error.message?.includes("429")) {
+      throw new Error("Too many requests. Please wait a moment and try again.")
     }
-  } catch (error) {
-    console.error('Gemini API error:', error)
-    throw new Error('Failed to generate quiz. Check your API key and try again.')
+    if (error.message?.includes("401")) {
+      throw new Error("Invalid API key. Please check your .env file.")
+    }
+    console.error("Groq API error:", error)
+    throw new Error("Failed to generate quiz. Please try again.")
   }
 }
