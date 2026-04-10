@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { FileText, LoaderCircle, Sparkles } from 'lucide-react'
 import { extractTopics } from '../utils/gemini'
 import { saveSubject } from '../utils/storage'
+import { useToast } from '../hooks/useToast'
 
 function UploadNotes() {
   const navigate = useNavigate()
+  const { success } = useToast()
   const [subjectName, setSubjectName] = useState('')
   const [notes, setNotes] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -58,6 +60,7 @@ function UploadNotes() {
       }
 
       saveSubject(subjectPayload)
+      success('Topics extracted successfully! ✅')
       navigate('/dashboard')
     } catch (extractError) {
       console.error(extractError)
