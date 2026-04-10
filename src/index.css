@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+	html,
+	body,
+	#root {
+		min-height: 100%;
+	}
+
+	html[data-theme='light'] .bg-slate-900 {
+		background-color: rgb(30 41 59 / 0.92) !important;
+	}
+
+	html[data-theme='light'] .bg-slate-800 {
+		background-color: rgb(51 65 85 / 0.92) !important;
+	}
+
+	html[data-theme='light'] .bg-slate-900\/60,
+	html[data-theme='light'] .bg-slate-900\/70,
+	html[data-theme='light'] .bg-slate-900\/80 {
+		background-color: rgb(30 41 59 / 0.78) !important;
+	}
+
+	html[data-theme='light'] .bg-slate-800\/70,
+	html[data-theme='light'] .bg-slate-800\/80,
+	html[data-theme='light'] .bg-slate-800\/85 {
+		background-color: rgb(51 65 85 / 0.78) !important;
+	}
+
+	button,
+	a,
+	input,
+	textarea,
+	select {
+		transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease,
+			box-shadow 160ms ease, transform 160ms ease;
+	}
+}
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;

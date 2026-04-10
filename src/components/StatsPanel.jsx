@@ -26,7 +26,7 @@ function StatsPanel({ totalCompletedTopics, totalSubjects, streak, xp }) {
   ]
 
   return (
-    <section className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
       {stats.map((stat) => (
         <article key={stat.label} className="rounded-xl border border-slate-700 bg-slate-800 p-4">
           <div className="mb-3 inline-flex rounded-lg bg-indigo-500/20 p-2 text-indigo-300">
