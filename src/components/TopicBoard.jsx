@@ -1,15 +1,43 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import { checkAndUpdateStreak, getXP, saveXP, updateTopic } from '../utils/storage'
+import { useToast } from '../hooks/useToast'
 
 function isChapterComplete(chapter) {
   const topics = chapter?.topics || []
   return topics.length > 0 && topics.every((topic) => Boolean(topic.completed))
 }
 
-function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent }) {
-  const chapters = subject?.chapters || []
+function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizRequest }) {
+  const chapters = useMemo(() => subject?.chapters || [], [subject])
+  const { success, info } = useToast()
   const [activeTopicPopup, setActiveTopicPopup] = useState({})
-  const [chapterToast, setChapterToast] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filter, setFilter] = useState('all')
+  const [collapsedChapters, setCollapsedChapters] = useState({})
+
+  const filteredChapters = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase()
+
+    return chapters
+      .map((chapter) => {
+        const topicMatches = (chapter.topics || []).filter((topic) => {
+          const byFilter =
+            filter === 'completed' ? Boolean(topic.completed) : filter === 'remaining' ? !topic.completed : true
+          const bySearch =
+            !normalizedQuery ||
+            String(topic.title || '').toLowerCase().includes(normalizedQuery) ||
+            String(topic.description || '').toLowerCase().includes(normalizedQuery)
+          return byFilter && bySearch
+        })
+
+        return {
+          ...chapter,
+          topics: topicMatches,
+        }
+      })
+      .filter((chapter) => chapter.topics.length > 0)
+  }, [chapters, filter, searchQuery])
 
   const handleToggle = (chapterId, topicId, completed) => {
     if (!subject?.id) {
@@ -35,6 +63,7 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent }) {
       saveXP(10)
       awardedXP += 10
       streak = checkAndUpdateStreak()
+      success('+10 XP earned! ⚡')
 
       setActiveTopicPopup((prev) => ({ ...prev, [topicId]: true }))
       window.setTimeout(() => {
@@ -53,8 +82,7 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent }) {
       saveXP(50)
       awardedXP += 50
       chapterCompleted = true
-      setChapterToast(`Chapter complete: ${updatedChapter?.title || 'Great work'} +50 XP`)
-      window.setTimeout(() => setChapterToast(''), 2200)
+      success('Chapter complete! 🏆')
     }
 
     if (onSubjectUpdate) {
@@ -79,49 +107,129 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent }) {
 
   return (
     <div className="space-y-4">
-      {chapterToast ? (
-        <div className="fixed right-4 top-5 z-40 rounded-xl border border-green-400/30 bg-green-500/20 px-4 py-2 text-sm font-semibold text-green-200 shadow-lg shadow-green-900/30 animate-[fadeIn_200ms_ease-out]">
-          {chapterToast}
+      <div className="space-y-3 rounded-xl border border-slate-700 bg-slate-900/60 p-3">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Search topics..."
+          className="w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+        />
+        <div className="flex flex-wrap gap-2">
+          {[
+            { key: 'all', label: 'All' },
+            { key: 'completed', label: 'Completed' },
+            { key: 'remaining', label: 'Remaining' },
+          ].map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              onClick={() => setFilter(item.key)}
+              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 ${
+                filter === item.key
+                  ? 'bg-indigo-500 text-white'
+                  : 'border border-slate-600 bg-slate-800 text-slate-200 hover:border-indigo-400 hover:text-white'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filteredChapters.length === 0 ? (
+        <div className="rounded-xl border border-slate-700 bg-slate-900/70 p-5 text-center text-slate-300">
+          No topics found 🔍
         </div>
       ) : null}
 
-      {chapters.map((chapter) => (
-        <section key={chapter.id} className="rounded-2xl border border-slate-700 bg-slate-800/70 p-4">
-          <h3 className="mb-3 text-lg font-semibold text-slate-100">{chapter.title}</h3>
-          <div className="space-y-3">
-            {(chapter.topics || []).map((topic) => (
-              <article
-                key={topic.id}
-                className="relative flex items-start gap-3 rounded-xl border border-slate-700/80 bg-slate-900 p-3"
+      {filteredChapters.map((chapter) => {
+        const allTopics = chapter.topics || []
+        const totalInChapter = (subject.chapters || []).find((item) => item.id === chapter.id)?.topics?.length || 0
+        const completedInChapter = (subject.chapters || [])
+          .find((item) => item.id === chapter.id)
+          ?.topics?.filter((topic) => Boolean(topic.completed)).length
+        const chapterIsComplete = totalInChapter > 0 && completedInChapter === totalInChapter
+        const isCollapsed = Boolean(collapsedChapters[chapter.id])
+
+        return (
+          <section key={chapter.id} className="rounded-2xl border border-slate-700 bg-slate-800/70 p-4">
+            <button
+              type="button"
+              onClick={() =>
+                setCollapsedChapters((prev) => ({
+                  ...prev,
+                  [chapter.id]: !prev[chapter.id],
+                }))
+              }
+              className="mb-3 flex w-full items-center justify-between rounded-lg px-1 py-1 text-left"
+            >
+              <div>
+                <h3 className="text-lg font-semibold text-slate-100">{chapter.title}</h3>
+                <p className="text-sm text-slate-300">
+                  {chapter.title} ({completedInChapter || 0}/{totalInChapter} complete)
+                </p>
+              </div>
+              {isCollapsed ? (
+                <ChevronRight className="h-5 w-5 text-slate-300" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-slate-300" />
+              )}
+            </button>
+
+            {chapterIsComplete ? (
+              <button
+                type="button"
+                onClick={() => {
+                  if (onQuizRequest) {
+                    onQuizRequest(chapter, subject)
+                  } else {
+                    info('Quiz mode is not available yet.')
+                  }
+                }}
+                className="mb-3 rounded-xl border border-indigo-400/40 bg-indigo-500/20 px-3 py-2 text-sm font-semibold text-indigo-100 transition hover:bg-indigo-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
               >
-                <input
-                  type="checkbox"
-                  checked={Boolean(topic.completed)}
-                  onChange={(event) => handleToggle(chapter.id, topic.id, event.target.checked)}
-                  className="mt-1 h-5 w-5 cursor-pointer rounded border-slate-500 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
-                />
-                <div>
-                  <h4
-                    className={`font-medium ${
-                      topic.completed ? 'text-green-400 line-through' : 'text-slate-100'
-                    }`}
+                Test Yourself 🧠
+              </button>
+            ) : null}
+
+            {!isCollapsed ? (
+              <div className="space-y-3">
+                {allTopics.map((topic) => (
+                  <article
+                    key={topic.id}
+                    className="relative flex items-start gap-3 rounded-xl border border-slate-700/80 bg-slate-900 p-4"
                   >
-                    {topic.title}
-                  </h4>
-                  <p className={`text-sm ${topic.completed ? 'text-green-500/90' : 'text-slate-300'}`}>
-                    {topic.description}
-                  </p>
-                </div>
-                {activeTopicPopup[topic.id] ? (
-                  <span className="pointer-events-none absolute left-8 top-0 text-xs font-bold text-indigo-300 animate-[xpFloat_900ms_ease-out_forwards]">
-                    +10 XP
-                  </span>
-                ) : null}
-              </article>
-            ))}
-          </div>
-        </section>
-      ))}
+                    <input
+                      type="checkbox"
+                      checked={Boolean(topic.completed)}
+                      onChange={(event) => handleToggle(chapter.id, topic.id, event.target.checked)}
+                      className="mt-1 h-6 w-6 cursor-pointer rounded border-slate-500 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
+                    />
+                    <div className="min-w-0">
+                      <h4
+                        className={`font-medium ${
+                          topic.completed ? 'text-green-400 line-through' : 'text-slate-100'
+                        }`}
+                      >
+                        {topic.title}
+                      </h4>
+                      <p className={`mt-1 text-sm ${topic.completed ? 'text-green-500/90' : 'text-slate-300'}`}>
+                        {topic.description}
+                      </p>
+                    </div>
+                    {activeTopicPopup[topic.id] ? (
+                      <span className="pointer-events-none absolute left-9 top-1 text-xs font-bold text-indigo-300 animate-[xpFloat_900ms_ease-out_forwards]">
+                        +10 XP
+                      </span>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            ) : null}
+          </section>
+        )
+      })}
     </div>
   )
 }

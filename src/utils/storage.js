@@ -55,6 +55,13 @@ export function saveSubject(subjectData) {
   return subjects
 }
 
+export function deleteSubject(subjectId) {
+  const subjects = getSubjects()
+  const nextSubjects = subjects.filter((subject) => subject.id !== subjectId)
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(nextSubjects))
+  return nextSubjects
+}
+
 export function updateTopic(subjectId, chapterId, topicId, completed) {
   const subjects = getSubjects()
 
@@ -194,4 +201,16 @@ export function checkBadges(subjects = getSubjects(), streak = getStreak()) {
 
   setBadgeState(unlocked)
   return unlocked
+}
+
+export function getSubjectStats(subjects = getSubjects()) {
+  return subjects.reduce(
+    (acc, subject) => {
+      const chapterTopics = (subject.chapters || []).flatMap((chapter) => chapter.topics || [])
+      acc.totalTopics += chapterTopics.length
+      acc.completedTopics += chapterTopics.filter((topic) => Boolean(topic.completed)).length
+      return acc
+    },
+    { totalSubjects: subjects.length, totalTopics: 0, completedTopics: 0 },
+  )
 }

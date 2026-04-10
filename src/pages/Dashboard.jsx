@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronDown, ChevronRight, Plus } from 'lucide-react'
+import { ChevronDown, ChevronRight, Plus, Search, Trash2 } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import ProgressBar from '../components/ProgressBar'
 import TopicBoard from '../components/TopicBoard'
@@ -8,7 +8,23 @@ import XPBar from '../components/XPBar'
 import StatsPanel from '../components/StatsPanel'
 import BadgeCard from '../components/BadgeCard'
 import LevelUpModal from '../components/LevelUpModal'
-import { checkBadges, getLevel, getStreak, getSubjects, getXP, saveXP } from '../utils/storage'
+import Navbar from '../components/Navbar'
+import OnboardingModal from '../components/OnboardingModal'
+import { useToast } from '../hooks/useToast'
+import { checkBadges, deleteSubject, getLevel, getStreak, getSubjects, getXP, saveXP } from '../utils/storage'
+
+const ONBOARDED_KEY = 'notequest_onboarded'
+
+function getSubjectEmoji(name = '') {
+  const lower = name.toLowerCase()
+  if (/(math|algebra|geometry|calculus|statistics|trigonometry)/.test(lower)) return '📐'
+  if (/(chemistry|organic|inorganic|biochem)/.test(lower)) return '🧪'
+  if (/(computer|coding|programming|software|cs|data structure|algorithm)/.test(lower)) return '💻'
+  if (/(physics|mechanics|quantum|thermo)/.test(lower)) return '⚛️'
+  if (/(biology|botany|zoology|genetics)/.test(lower)) return '🧬'
+  if (/(history|civics|politics|geography)/.test(lower)) return '🌍'
+  return '📘'
+}
 
 function getProgress(subject) {
   const totalTopics = (subject.chapters || []).reduce(
@@ -27,7 +43,14 @@ function getProgress(subject) {
 
 function Dashboard() {
   const navigate = useNavigate()
+  const { info } = useToast()
   const [subjects, setSubjects] = useState(() => getSubjects())
+  const [query, setQuery] = useState('')
+  const [sortBy, setSortBy] = useState('recent')
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    const hasSeen = localStorage.getItem(ONBOARDED_KEY) === 'true'
+    return !hasSeen && getSubjects().length === 0
+  })
   const [expanded, setExpanded] = useState(() =>
     getSubjects().reduce((acc, subject) => {
       acc[subject.id] = true
@@ -66,10 +89,70 @@ function Dashboard() {
     setXP(nextXP)
   }
 
-  const orderedSubjects = useMemo(
-    () => [...subjects].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)),
-    [subjects],
-  )
+  const orderedSubjects = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+    const filtered = [...subjects].filter((subject) =>
+      String(subject.subject || '').toLowerCase().includes(normalizedQuery),
+    )
+
+    if (sortBy === 'progress_desc') {
+      return filtered.sort((a, b) => {
+        const aProgress = getProgress(a)
+        const bProgress = getProgress(b)
+        const aRatio = aProgress.totalTopics ? aProgress.completedTopics / aProgress.totalTopics : 0
+        const bRatio = bProgress.totalTopics ? bProgress.completedTopics / bProgress.totalTopics : 0
+        return bRatio - aRatio
+      })
+    }
+
+    if (sortBy === 'progress_asc') {
+      return filtered.sort((a, b) => {
+        const aProgress = getProgress(a)
+        const bProgress = getProgress(b)
+        const aRatio = aProgress.totalTopics ? aProgress.completedTopics / aProgress.totalTopics : 0
+        const bRatio = bProgress.totalTopics ? bProgress.completedTopics / bProgress.totalTopics : 0
+        return aRatio - bRatio
+      })
+    }
+
+    if (sortBy === 'az') {
+      return filtered.sort((a, b) => String(a.subject || '').localeCompare(String(b.subject || '')))
+    }
+
+    return filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+  }, [query, sortBy, subjects])
+
+  const handleDeleteSubject = (subjectId, subjectName) => {
+    const confirmed = window.confirm(`Delete ${subjectName}? This cannot be undone.`)
+    if (!confirmed) {
+      return
+    }
+
+    const nextSubjects = deleteSubject(subjectId)
+    setSubjects(nextSubjects)
+    setBadges(checkBadges(nextSubjects, streak))
+    setExpanded((prev) => {
+      const next = { ...prev }
+      delete next[subjectId]
+      return next
+    })
+    setCompletedSubjects((current) => {
+      const next = new Set(current)
+      next.delete(subjectId)
+      return next
+    })
+    info('Subject deleted')
+  }
+
+  const closeOnboarding = () => {
+    localStorage.setItem(ONBOARDED_KEY, 'true')
+    setShowOnboarding(false)
+  }
+
+  const handleOnboardingUpload = () => {
+    closeOnboarding()
+    navigate('/#upload')
+  }
 
   const handleSubjectUpdate = (updatedSubject) => {
     setSubjects((prev) => {
@@ -155,8 +238,12 @@ function Dashboard() {
     },
   ]
 
+  const hasUnlockedBadges = Object.values(badges).some(Boolean)
+
   return (
-    <main className="min-h-screen bg-slate-900 px-4 py-10 text-slate-100">
+    <main className="min-h-screen bg-slate-900 text-slate-100">
+      <Navbar />
+      <OnboardingModal isOpen={showOnboarding} onClose={closeOnboarding} onGoUpload={handleOnboardingUpload} />
       <LevelUpModal levelTitle={newLevelTitle} isOpen={isLevelUpOpen} onClose={() => setIsLevelUpOpen(false)} />
       {subjectCompleteOverlay ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/70 px-4 animate-[fadeIn_200ms_ease-out]">
@@ -167,7 +254,7 @@ function Dashboard() {
         </div>
       ) : null}
 
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
         <XPBar xp={xp} streak={streak} />
         <StatsPanel
           totalCompletedTopics={totalCompletedTopics}
@@ -178,49 +265,114 @@ function Dashboard() {
 
         <section className="mb-8 rounded-2xl border border-slate-700 bg-slate-800/70 p-4">
           <h2 className="mb-4 text-xl font-semibold text-white">Badges</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {badgeItems.map((badge) => (
-              <BadgeCard
-                key={badge.key}
-                title={badge.title}
-                description={badge.description}
-                unlocked={Boolean(badges[badge.key])}
-              />
-            ))}
-          </div>
+          {hasUnlockedBadges ? (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {badgeItems.map((badge) => (
+                <BadgeCard
+                  key={badge.key}
+                  title={badge.title}
+                  description={badge.description}
+                  unlocked={Boolean(badges[badge.key])}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4 text-sm text-slate-300">
+              Complete topics to unlock badges
+            </div>
+          )}
         </section>
 
-        <div className="mb-8 flex items-center justify-between gap-4">
+        <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-3xl font-bold text-white sm:text-4xl">Dashboard</h1>
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400"
-          >
-            <Plus className="h-4 w-4" />
-            Add New Subject
-          </button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => navigate('/settings')}
+              className="inline-flex items-center justify-center rounded-xl border border-slate-600 px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-indigo-400 hover:text-white"
+            >
+              Settings
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/#upload')}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400"
+            >
+              <Plus className="h-4 w-4" />
+              Add New Subject
+            </button>
+          </div>
         </div>
 
-        {orderedSubjects.length === 0 ? (
+        <div className="mb-6 grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px]">
+          <label className="relative block">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search subjects..."
+              className="w-full rounded-xl border border-slate-600 bg-slate-800 px-9 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+            />
+          </label>
+          <select
+            value={sortBy}
+            onChange={(event) => setSortBy(event.target.value)}
+            className="rounded-xl border border-slate-600 bg-slate-800 px-3 py-2.5 text-sm font-medium text-slate-100 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+          >
+            <option value="recent">Sort by: Recently Added</option>
+            <option value="progress_desc">Sort by: Most Progress</option>
+            <option value="progress_asc">Sort by: Least Progress</option>
+            <option value="az">Sort by: A-Z</option>
+          </select>
+        </div>
+
+        {subjects.length === 0 ? (
           <div className="rounded-2xl border border-slate-700 bg-slate-800/80 p-8 text-center text-slate-300">
-            No subjects yet. Upload your notes to get started!
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-500/20 text-3xl">
+              📚
+            </div>
+            <p className="text-lg font-semibold text-slate-100">Upload your first notes to get started</p>
+            <button
+              type="button"
+              onClick={() => navigate('/#upload')}
+              className="mt-5 inline-flex rounded-xl bg-indigo-500 px-6 py-3 font-semibold text-white transition hover:bg-indigo-400"
+            >
+              Upload Notes
+            </button>
+          </div>
+        ) : orderedSubjects.length === 0 ? (
+          <div className="rounded-2xl border border-slate-700 bg-slate-800/80 p-8 text-center text-slate-300">
+            No subjects match your search.
           </div>
         ) : (
           <div className="space-y-4">
             {orderedSubjects.map((subject) => {
               const { totalTopics, completedTopics } = getProgress(subject)
               const isExpanded = Boolean(expanded[subject.id])
+              const createdDate = subject.createdAt
+                ? new Date(subject.createdAt).toLocaleDateString()
+                : 'Unknown date'
+              const emoji = getSubjectEmoji(subject.subject)
 
               return (
-                <section key={subject.id} className="rounded-2xl border border-slate-700 bg-slate-800/70 p-5">
+                <section key={subject.id} className="w-full rounded-2xl border border-slate-700 bg-slate-800/70 p-4 sm:p-5">
                   <button
                     type="button"
                     onClick={() => toggleExpand(subject.id)}
                     className="mb-4 flex w-full items-center justify-between gap-4 text-left"
                   >
                     <div>
-                      <h2 className="text-xl font-semibold text-white sm:text-2xl">{subject.subject}</h2>
+                      <h2 className="text-xl font-semibold text-white sm:text-2xl">
+                        <span className="mr-2" aria-hidden="true">
+                          {emoji}
+                        </span>
+                        {subject.subject}
+                      </h2>
+                      <p className="mt-1 text-xs text-slate-400">Added on {createdDate}</p>
+                      <p className="mt-1 text-sm text-slate-300">
+                        {completedTopics}/{totalTopics} topics
+                      </p>
                       {totalTopics > 0 && completedTopics === totalTopics ? (
                         <span className="mt-1 inline-block rounded-full bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-300">
                           Completed ✅
@@ -238,11 +390,30 @@ function Dashboard() {
                     <ProgressBar totalTopics={totalTopics} completedTopics={completedTopics} />
                   </div>
 
+                  <div className="mb-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSubject(subject.id, subject.subject)}
+                      className="inline-flex items-center gap-2 rounded-lg border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete Subject
+                    </button>
+                  </div>
+
                   {isExpanded ? (
                     <TopicBoard
                       subject={subject}
                       onSubjectUpdate={handleSubjectUpdate}
                       onGamificationEvent={handleGamificationEvent}
+                      onQuizRequest={(chapter, quizSubject) => {
+                        navigate('/quiz', {
+                          state: {
+                            chapter,
+                            subject: quizSubject,
+                          },
+                        })
+                      }}
                     />
                   ) : null}
                 </section>
