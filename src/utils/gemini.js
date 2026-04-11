@@ -1,13 +1,28 @@
 import Groq from "groq-sdk";
 
-const client = new Groq({
-  apiKey: import.meta.env.VITE_GROQ_API_KEY,
-  dangerouslyAllowBrowser: true
-});
+let client = null;
+
+function getClient() {
+  if (client) {
+    return client;
+  }
+
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing API key. Add VITE_GROQ_API_KEY in your .env file.");
+  }
+
+  client = new Groq({
+    apiKey,
+    dangerouslyAllowBrowser: true,
+  });
+
+  return client;
+}
 
 export async function extractTopics(notes) {
   try {
-    const response = await client.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
         {
@@ -64,7 +79,7 @@ export async function generateQuiz(topics) {
     .join('\n')
 
   try {
-    const response = await client.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
         {
@@ -135,7 +150,7 @@ ${topicLines}`
 
 export async function getStudyTip(topicTitle, topicDescription) {
   try {
-    const response = await client.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [
         {

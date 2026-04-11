@@ -5,7 +5,15 @@ import './index.css'
 import App from './App.jsx'
 import { ToastProvider } from './hooks/useToast'
 
-const savedTheme = localStorage.getItem('notequest_theme') || 'dark'
+function getInitialTheme() {
+  try {
+    return localStorage.getItem('notequest_theme') || 'dark'
+  } catch (error) {
+    return 'dark'
+  }
+}
+
+const savedTheme = getInitialTheme()
 document.documentElement.setAttribute('data-theme', savedTheme)
 
 createRoot(document.getElementById('root')).render(

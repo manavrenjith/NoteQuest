@@ -181,8 +181,14 @@ export function getXP() {
 
 export function getLevel(xp = getXP()) {
   const safeXP = Math.max(0, Number(xp || 0))
-  const matched = LEVELS.findLast((entry) => safeXP >= entry.minXP)
-  return matched || LEVELS[0]
+
+  for (let index = LEVELS.length - 1; index >= 0; index -= 1) {
+    if (safeXP >= LEVELS[index].minXP) {
+      return LEVELS[index]
+    }
+  }
+
+  return LEVELS[0]
 }
 
 // Streak System
