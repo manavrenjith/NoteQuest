@@ -132,3 +132,34 @@ ${topicLines}`
     throw new Error("Failed to generate quiz. Please try again.")
   }
 }
+
+export async function getStudyTip(topicTitle, topicDescription) {
+  try {
+    const response = await client.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'user',
+          content: `Give exactly ONE concise study tip (max 15 words) for learning this topic:
+Topic: "${topicTitle}"
+Description: "${topicDescription}"
+
+Return ONLY the tip text. No quotes, no bullet points, no extra text.`,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 50,
+    })
+
+    return response.choices[0]?.message?.content?.trim() || ''
+  } catch (error) {
+    if (error.message?.includes('429')) {
+      throw new Error('Too many requests. Please wait a moment and try again.')
+    }
+    if (error.message?.includes('401')) {
+      throw new Error('Invalid API key. Please check your .env file.')
+    }
+    console.error('Groq API error:', error)
+    throw new Error('Failed to fetch study tip. Please try again.')
+  }
+}

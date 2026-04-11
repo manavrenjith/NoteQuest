@@ -3,6 +3,7 @@ const XP_KEY = 'notequest_xp'
 const STREAK_KEY = 'notequest_streak'
 const LAST_ACTIVE_KEY = 'notequest_last_active'
 const BADGES_KEY = 'notequest_badges'
+const WEAK_TOPICS_KEY = 'studyquest_weak_topics'
 
 const LEVELS = [
   { level: 1, title: 'Novice', minXP: 0, next: 100 },
@@ -97,6 +98,73 @@ export function clearAll() {
   localStorage.removeItem(STREAK_KEY)
   localStorage.removeItem(LAST_ACTIVE_KEY)
   localStorage.removeItem(BADGES_KEY)
+  localStorage.removeItem(WEAK_TOPICS_KEY)
+}
+
+export function getWeakTopics() {
+  try {
+    const weakTopics = JSON.parse(localStorage.getItem(WEAK_TOPICS_KEY) || '{}')
+    return weakTopics && typeof weakTopics === 'object' ? weakTopics : {}
+  } catch (error) {
+    console.error('Failed to read weak topics from storage:', error)
+    return {}
+  }
+}
+
+export function markWeakTopic(subjectId, chapterId, topicId) {
+  const weak = getWeakTopics()
+  const key = `${subjectId}_${chapterId}_${topicId}`
+  weak[key] = true
+  localStorage.setItem(WEAK_TOPICS_KEY, JSON.stringify(weak))
+}
+
+export function unmarkWeakTopic(subjectId, chapterId, topicId) {
+  const weak = getWeakTopics()
+  const key = `${subjectId}_${chapterId}_${topicId}`
+  delete weak[key]
+  localStorage.setItem(WEAK_TOPICS_KEY, JSON.stringify(weak))
+}
+
+export function isWeakTopic(subjectId, chapterId, topicId) {
+  const weak = getWeakTopics()
+  return Boolean(weak[`${subjectId}_${chapterId}_${topicId}`])
+}
+
+function calculateTopicMinutes(topics = []) {
+  const topicCount = topics.length
+  if (topicCount === 0) {
+    return 0
+  }
+
+  const avgDescLength =
+    topics.reduce((sum, topic) => sum + (topic?.description?.length || 0), 0) / topicCount
+
+  const minsPerTopic = avgDescLength > 80 ? 12 : avgDescLength > 40 ? 9 : 7
+  return topicCount * minsPerTopic
+}
+
+function formatMinutesEstimate(totalMinutes) {
+  const rounded = Math.round(totalMinutes)
+  if (rounded < 60) {
+    return `~${rounded} mins`
+  }
+
+  const hours = Math.floor(rounded / 60)
+  const minutes = rounded % 60
+  return minutes > 0 ? `~${hours}h ${minutes}m` : `~${hours}h`
+}
+
+export function estimateChapterTime(chapter) {
+  const topics = chapter?.topics || []
+  return formatMinutesEstimate(calculateTopicMinutes(topics))
+}
+
+export function estimateSubjectTime(subject) {
+  const totalMins = (subject?.chapters || []).reduce((sum, chapter) => {
+    return sum + calculateTopicMinutes(chapter?.topics || [])
+  }, 0)
+
+  return formatMinutesEstimate(totalMins)
 }
 
 // XP & Level System

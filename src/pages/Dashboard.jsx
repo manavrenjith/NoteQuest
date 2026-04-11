@@ -1,8 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import CertificateModal from '../components/CertificateModal'
 import LevelUpModal from '../components/LevelUpModal'
 import Roadmap from '../components/Roadmap'
-import { checkAndUpdateStreak, getLevel, getStreak, getSubjects, getXP, saveXP, updateTopic } from '../utils/storage'
+import {
+  checkAndUpdateStreak,
+  estimateSubjectTime,
+  getLevel,
+  getStreak,
+  getSubjects,
+  getWeakTopics,
+  getXP,
+  saveXP,
+  updateTopic,
+} from '../utils/storage'
 
 function getSubjectEmoji(name = '') {
   const n = String(name).toLowerCase()
@@ -82,6 +93,16 @@ function getStatusBadge(progress) {
   }
 }
 
+function getWeakTopicCount(subject) {
+  const weak = getWeakTopics()
+  return (subject?.chapters || []).reduce((sum, chapter) => {
+    const chapterCount = (chapter?.topics || []).filter((topic) => {
+      return Boolean(weak[`${subject.id}_${chapter.id}_${topic.id}`])
+    }).length
+    return sum + chapterCount
+  }, 0)
+}
+
 function Dashboard() {
   const navigate = useNavigate()
   const [subjects, setSubjects] = useState([])
@@ -92,7 +113,15 @@ function Dashboard() {
   const [streak, setStreak] = useState(() => getStreak())
   const [isLevelUpOpen, setIsLevelUpOpen] = useState(false)
   const [newLevelTitle, setNewLevelTitle] = useState('')
-  const [completedSubjectIds, setCompletedSubjectIds] = useState(new Set())
+  const [certSubject, setCertSubject] = useState(null)
+  const [shownCerts, setShownCerts] = useState(() => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem('nq_shown_certs') || '[]')
+      return Array.isArray(parsed) ? parsed : []
+    } catch (error) {
+      return []
+    }
+  })
   const [cardsVisible, setCardsVisible] = useState(false)
   const [subjectViews, setSubjectViews] = useState({})
 
@@ -116,17 +145,43 @@ function Dashboard() {
       }, {}),
     )
 
-    setCompletedSubjectIds(
-      new Set(
-        nextSubjects
-          .filter((subject) => getProgress(subject).isCompleted)
-          .map((subject) => subject.id),
-      ),
-    )
-
     const frame = window.requestAnimationFrame(() => setCardsVisible(true))
     return () => window.cancelAnimationFrame(frame)
   }, [])
+
+  const checkCompletion = (subject, wasCompleted = false) => {
+    if (!subject || wasCompleted) {
+      return
+    }
+
+    const allTopics = (subject.chapters || []).flatMap((chapter) => chapter.topics || [])
+    const allDone = allTopics.length > 0 && allTopics.every((topic) => Boolean(topic.completed))
+
+    if (!allDone) {
+      return
+    }
+
+    setShownCerts((prev) => {
+      if (prev.includes(subject.id)) {
+        return prev
+      }
+
+      const updated = [...prev, subject.id]
+      localStorage.setItem('nq_shown_certs', JSON.stringify(updated))
+      setCertSubject(subject)
+      saveXP(200)
+
+      import('canvas-confetti').then((module) =>
+        module.default({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 },
+        }),
+      )
+
+      return updated
+    })
+  }
 
   const level = useMemo(() => getLevel(xp), [xp])
   const nextLevel = useMemo(() => {
@@ -203,19 +258,13 @@ function Dashboard() {
   const handleRoadmapUpdate = (updatedSubject) => {
     if (!updatedSubject?.id) return
 
+    const before = subjects.find((subject) => subject.id === updatedSubject.id)
+    const wasCompleted = before ? getProgress(before).isCompleted : false
     const updatedProgress = getProgress(updatedSubject)
 
     setSubjects((prev) => prev.map((subject) => (subject.id === updatedSubject.id ? updatedSubject : subject)))
 
-    setCompletedSubjectIds((current) => {
-      const next = new Set(current)
-      if (updatedProgress.isCompleted) {
-        next.add(updatedSubject.id)
-      } else {
-        next.delete(updatedSubject.id)
-      }
-      return next
-    })
+    checkCompletion(updatedSubject, wasCompleted)
 
     const nextXP = getXP()
     const previousLevel = getLevel(xp)
@@ -260,10 +309,7 @@ function Dashboard() {
     }
 
     const updatedProgress = getProgress(updatedSubject)
-    if (!previousSubjectProgress.isCompleted && updatedProgress.isCompleted && !completedSubjectIds.has(subjectId)) {
-      saveXP(200)
-      setCompletedSubjectIds((current) => new Set([...current, subjectId]))
-    }
+    checkCompletion(updatedSubject, previousSubjectProgress.isCompleted)
 
     const nextXP = getXP()
     const previousLevel = getLevel(xp)
@@ -360,6 +406,14 @@ function Dashboard() {
   return (
     <main className="min-h-screen bg-slate-900 text-white">
       <LevelUpModal levelTitle={newLevelTitle} isOpen={isLevelUpOpen} onClose={() => setIsLevelUpOpen(false)} />
+      {certSubject ? (
+        <CertificateModal
+          subject={certSubject}
+          xp={getXP()}
+          level={getLevel(getXP())}
+          onClose={() => setCertSubject(null)}
+        />
+      ) : null}
 
       <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
         <header className="flex items-center justify-between py-1">
@@ -479,6 +533,7 @@ function Dashboard() {
               const isExpanded = Boolean(expandedMap[subject.id])
               const status = getStatusBadge(progress)
               const addedDate = formatAddedDate(subject.createdAt)
+              const weakCount = getWeakTopicCount(subject)
 
               return (
                 <article
@@ -502,7 +557,8 @@ function Dashboard() {
                         <div className="min-w-0">
                           <h3 className="truncate text-base font-medium text-white">{subject.subject || 'Untitled Subject'}</h3>
                           <p className="mt-1 text-xs text-slate-400">
-                            {progress.completedTopics} / {progress.totalTopics} topics · Added {addedDate}
+                            {progress.completedTopics} / {progress.totalTopics} topics · {estimateSubjectTime(subject)} total
+                            · Added {addedDate}
                           </p>
                         </div>
                       </div>
@@ -539,6 +595,12 @@ function Dashboard() {
                       </div>
                       <span className="text-xs text-slate-400">{progress.percent}%</span>
                     </div>
+
+                    {weakCount > 0 ? (
+                      <p className="mt-2 text-xs text-amber-700">
+                        ⚠ {weakCount} topic{weakCount > 1 ? 's' : ''} need review
+                      </p>
+                    ) : null}
                   </button>
 
                   {isExpanded ? renderExpandedContent(subject) : null}
@@ -561,6 +623,7 @@ function Dashboard() {
               const isExpanded = Boolean(expandedMap[subject.id])
               const status = getStatusBadge(progress)
               const addedDate = formatAddedDate(subject.createdAt)
+              const weakCount = getWeakTopicCount(subject)
 
               return (
                 <article
@@ -584,7 +647,8 @@ function Dashboard() {
                         <div className="min-w-0">
                           <h3 className="truncate text-base font-medium text-white">{subject.subject || 'Untitled Subject'}</h3>
                           <p className="mt-1 text-xs text-slate-400">
-                            {progress.completedTopics} / {progress.totalTopics} topics · Added {addedDate}
+                            {progress.completedTopics} / {progress.totalTopics} topics · {estimateSubjectTime(subject)} total
+                            · Added {addedDate}
                           </p>
                         </div>
                       </div>
@@ -621,6 +685,12 @@ function Dashboard() {
                       </div>
                       <span className="text-xs text-slate-400">{progress.percent}%</span>
                     </div>
+
+                    {weakCount > 0 ? (
+                      <p className="mt-2 text-xs text-amber-700">
+                        ⚠ {weakCount} topic{weakCount > 1 ? 's' : ''} need review
+                      </p>
+                    ) : null}
                   </button>
 
                   {isExpanded ? renderExpandedContent(subject) : null}

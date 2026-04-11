@@ -1,6 +1,16 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { checkAndUpdateStreak, getXP, saveXP, updateTopic } from '../utils/storage'
+import { getStudyTip } from '../utils/gemini'
+import {
+  checkAndUpdateStreak,
+  estimateChapterTime,
+  getXP,
+  isWeakTopic,
+  markWeakTopic,
+  saveXP,
+  unmarkWeakTopic,
+  updateTopic,
+} from '../utils/storage'
 import { useToast } from '../hooks/useToast'
 
 function isChapterComplete(chapter) {
@@ -15,6 +25,7 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState('all')
   const [collapsedChapters, setCollapsedChapters] = useState({})
+  const [tips, setTips] = useState({})
 
   const filteredChapters = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase()
@@ -48,6 +59,14 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
     const previousTopic = (previousChapter?.topics || []).find((topic) => topic.id === topicId)
     const wasTopicCompleted = Boolean(previousTopic?.completed)
     const wasChapterComplete = isChapterComplete(previousChapter)
+
+    if (!completed && wasTopicCompleted) {
+      markWeakTopic(subject.id, chapterId, topicId)
+    }
+
+    if (completed) {
+      unmarkWeakTopic(subject.id, chapterId, topicId)
+    }
 
     const updatedSubject = updateTopic(subject.id, chapterId, topicId, completed)
 
@@ -98,6 +117,41 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
         chapterCompleted,
         currentXP: getXP(),
       })
+    }
+  }
+
+  const fetchTip = async (topic) => {
+    if (!topic?.id) {
+      return
+    }
+
+    if (tips[topic.id]?.text) {
+      setTips((prev) => ({
+        ...prev,
+        [topic.id]: {
+          ...prev[topic.id],
+          visible: !prev[topic.id]?.visible,
+        },
+      }))
+      return
+    }
+
+    setTips((prev) => ({
+      ...prev,
+      [topic.id]: { loading: true, text: '', visible: false },
+    }))
+
+    try {
+      const tip = await getStudyTip(topic.title, topic.description)
+      setTips((prev) => ({
+        ...prev,
+        [topic.id]: { loading: false, text: tip || 'Click to retry.', visible: true },
+      }))
+    } catch (error) {
+      setTips((prev) => ({
+        ...prev,
+        [topic.id]: { loading: false, text: 'Click to retry.', visible: true },
+      }))
     }
   }
 
@@ -170,11 +224,16 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
                   {chapter.title} ({completedInChapter || 0}/{totalInChapter} complete)
                 </p>
               </div>
-              {isCollapsed ? (
-                <ChevronRight className="h-5 w-5 text-slate-300" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-slate-300" />
-              )}
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-slate-700 px-2.5 py-1 text-xs text-slate-200">
+                  ⏱ {estimateChapterTime((subject.chapters || []).find((item) => item.id === chapter.id) || chapter)}
+                </span>
+                {isCollapsed ? (
+                  <ChevronRight className="h-5 w-5 text-slate-300" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-slate-300" />
+                )}
+              </div>
             </button>
 
             {chapterIsComplete ? (
@@ -196,28 +255,50 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
             {!isCollapsed ? (
               <div className="space-y-3">
                 {allTopics.map((topic) => (
-                  <article
-                    key={topic.id}
-                    className="relative flex items-start gap-3 rounded-xl border border-slate-700/80 bg-slate-900 p-4"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={Boolean(topic.completed)}
-                      onChange={(event) => handleToggle(chapter.id, topic.id, event.target.checked)}
-                      className="mt-1 h-6 w-6 cursor-pointer rounded border-slate-500 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
-                    />
-                    <div className="min-w-0">
-                      <h4
-                        className={`font-medium ${
-                          topic.completed ? 'text-green-400 line-through' : 'text-slate-100'
-                        }`}
-                      >
-                        {topic.title}
-                      </h4>
-                      <p className={`mt-1 text-sm ${topic.completed ? 'text-green-500/90' : 'text-slate-300'}`}>
-                        {topic.description}
-                      </p>
+                  <article key={topic.id} className="relative rounded-xl border border-slate-700/80 bg-slate-900 p-4">
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(topic.completed)}
+                        onChange={(event) => handleToggle(chapter.id, topic.id, event.target.checked)}
+                        className="mt-1 h-6 w-6 cursor-pointer rounded border-slate-500 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
+                      />
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => fetchTip(topic)}
+                            className={`text-left font-medium transition hover:opacity-90 ${
+                              topic.completed ? 'text-green-400 line-through' : 'text-slate-100'
+                            }`}
+                          >
+                            {topic.title}
+                          </button>
+
+                          {isWeakTopic(subject.id, chapter.id, topic.id) && !topic.completed ? (
+                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                              needs review
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <p className={`mt-1 text-sm ${topic.completed ? 'text-green-500/90' : 'text-slate-300'}`}>
+                          {topic.description}
+                        </p>
+
+                        {tips[topic.id]?.loading ? (
+                          <div className="pt-1 text-xs italic text-slate-400">Thinking...</div>
+                        ) : null}
+
+                        {tips[topic.id]?.visible && tips[topic.id]?.text ? (
+                          <div className="mt-2 rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs leading-relaxed text-indigo-900">
+                            💡 {tips[topic.id].text}
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
+
                     {activeTopicPopup[topic.id] ? (
                       <span className="pointer-events-none absolute left-9 top-1 text-xs font-bold text-indigo-300 animate-[xpFloat_900ms_ease-out_forwards]">
                         +10 XP

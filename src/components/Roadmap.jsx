@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
-import confetti from 'canvas-confetti'
-import { useToast } from '../hooks/useToast'
-import { checkAndUpdateStreak, saveXP, updateTopic } from '../utils/storage'
+import { getStudyTip } from '../utils/gemini'
+import {
+  checkAndUpdateStreak,
+  isWeakTopic,
+  markWeakTopic,
+  saveXP,
+  unmarkWeakTopic,
+  updateTopic,
+} from '../utils/storage'
 
 function toChapterStats(chapter) {
   const topics = chapter?.topics || []
@@ -19,11 +25,11 @@ function toChapterStats(chapter) {
 }
 
 function Roadmap({ subject, onUpdate }) {
-  const { success } = useToast()
   const [selectedChapterId, setSelectedChapterId] = useState(null)
   const [localSubject, setLocalSubject] = useState(subject)
   const [xpPopups, setXpPopups] = useState([])
   const [panelVisible, setPanelVisible] = useState(true)
+  const [tips, setTips] = useState({})
 
   useEffect(() => {
     setLocalSubject(subject)
@@ -67,13 +73,23 @@ function Roadmap({ subject, onUpdate }) {
   }
 
   const toggleTopic = (chapterId, topicId, completed, event) => {
-    const beforeAllCompleted = allCompleted
+    const previousChapter = (localSubject?.chapters || []).find((chapter) => chapter.id === chapterId)
+    const previousTopic = (previousChapter?.topics || []).find((topic) => topic.id === topicId)
+    const wasCompleted = Boolean(previousTopic?.completed)
+
+    if (!completed && wasCompleted) {
+      markWeakTopic(localSubject.id, chapterId, topicId)
+    }
+
+    if (completed) {
+      unmarkWeakTopic(localSubject.id, chapterId, topicId)
+    }
     const updatedSubject = updateTopic(localSubject.id, chapterId, topicId, completed)
     if (!updatedSubject) {
       return
     }
 
-    if (completed) {
+    if (completed && !wasCompleted) {
       saveXP(10)
       checkAndUpdateStreak()
       pushXpPopup(event)
@@ -81,18 +97,43 @@ function Roadmap({ subject, onUpdate }) {
 
     setLocalSubject(updatedSubject)
 
-    const updatedStats = (updatedSubject.chapters || []).map((chapter) => toChapterStats(chapter))
-    const nowAllCompleted =
-      updatedStats.length > 0 && updatedStats.every((item) => item.total > 0 && item.done === item.total)
-
-    if (!beforeAllCompleted && nowAllCompleted) {
-      saveXP(200)
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.62 } })
-      success('Subject complete! 🎓 +200 XP')
-    }
-
     if (onUpdate) {
       onUpdate(updatedSubject)
+    }
+  }
+
+  const fetchTip = async (topic) => {
+    if (!topic?.id) {
+      return
+    }
+
+    if (tips[topic.id]?.text) {
+      setTips((prev) => ({
+        ...prev,
+        [topic.id]: {
+          ...prev[topic.id],
+          visible: !prev[topic.id]?.visible,
+        },
+      }))
+      return
+    }
+
+    setTips((prev) => ({
+      ...prev,
+      [topic.id]: { loading: true, text: '', visible: false },
+    }))
+
+    try {
+      const tip = await getStudyTip(topic.title, topic.description)
+      setTips((prev) => ({
+        ...prev,
+        [topic.id]: { loading: false, text: tip || 'Click to retry.', visible: true },
+      }))
+    } catch (error) {
+      setTips((prev) => ({
+        ...prev,
+        [topic.id]: { loading: false, text: 'Click to retry.', visible: true },
+      }))
     }
   }
 
@@ -248,23 +289,41 @@ function Roadmap({ subject, onUpdate }) {
 
               <div className="mt-3 space-y-2">
                 {(selectedChapter.topics || []).map((topic) => (
-                  <label
-                    key={topic.id}
-                    className="flex items-center gap-2 rounded-md border border-slate-700 bg-slate-900 px-2.5 py-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={Boolean(topic.completed)}
-                      onChange={(event) =>
-                        toggleTopic(selectedChapter.id, topic.id, event.target.checked, event.nativeEvent)
-                      }
-                      className="h-3.5 w-3.5 rounded-sm border-slate-500"
-                      style={{ accentColor: '#7F77DD' }}
-                    />
-                    <span className={`text-xs ${topic.completed ? 'text-slate-400 line-through' : 'text-white'}`}>
-                      {topic.title || 'Untitled topic'}
-                    </span>
-                  </label>
+                  <div key={topic.id} className="rounded-md border border-slate-700 bg-slate-900 px-2.5 py-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(topic.completed)}
+                        onChange={(event) =>
+                          toggleTopic(selectedChapter.id, topic.id, event.target.checked, event.nativeEvent)
+                        }
+                        className="h-3.5 w-3.5 rounded-sm border-slate-500"
+                        style={{ accentColor: '#7F77DD' }}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => fetchTip(topic)}
+                        className={`text-left text-xs ${topic.completed ? 'text-slate-400 line-through' : 'text-white'}`}
+                      >
+                        {topic.title || 'Untitled topic'}
+                      </button>
+
+                      {isWeakTopic(localSubject.id, selectedChapter.id, topic.id) && !topic.completed ? (
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                          needs review
+                        </span>
+                      ) : null}
+                    </div>
+
+                    {tips[topic.id]?.loading ? <p className="mt-1 pl-5 text-[11px] italic text-slate-400">Thinking...</p> : null}
+
+                    {tips[topic.id]?.visible && tips[topic.id]?.text ? (
+                      <div className="mt-1 ml-5 rounded-md bg-indigo-100 px-2.5 py-1.5 text-[11px] leading-relaxed text-indigo-900">
+                        💡 {tips[topic.id].text}
+                      </div>
+                    ) : null}
+                  </div>
                 ))}
               </div>
             </div>
