@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import LevelUpModal from '../components/LevelUpModal'
+import Roadmap from '../components/Roadmap'
 import { checkAndUpdateStreak, getLevel, getStreak, getSubjects, getXP, saveXP, updateTopic } from '../utils/storage'
 
 function getSubjectEmoji(name = '') {
@@ -93,6 +94,7 @@ function Dashboard() {
   const [newLevelTitle, setNewLevelTitle] = useState('')
   const [completedSubjectIds, setCompletedSubjectIds] = useState(new Set())
   const [cardsVisible, setCardsVisible] = useState(false)
+  const [subjectViews, setSubjectViews] = useState({})
 
   useEffect(() => {
     const nextSubjects = getSubjects()
@@ -103,6 +105,13 @@ function Dashboard() {
     setExpandedMap(
       nextSubjects.reduce((acc, subject) => {
         acc[subject.id] = false
+        return acc
+      }, {}),
+    )
+
+    setSubjectViews(
+      nextSubjects.reduce((acc, subject) => {
+        acc[subject.id] = 'list'
         return acc
       }, {}),
     )
@@ -187,6 +196,40 @@ function Dashboard() {
     setExpandedMap((prev) => ({ ...prev, [subjectId]: !prev[subjectId] }))
   }
 
+  const handleSetSubjectView = (subjectId, view) => {
+    setSubjectViews((prev) => ({ ...prev, [subjectId]: view }))
+  }
+
+  const handleRoadmapUpdate = (updatedSubject) => {
+    if (!updatedSubject?.id) return
+
+    const updatedProgress = getProgress(updatedSubject)
+
+    setSubjects((prev) => prev.map((subject) => (subject.id === updatedSubject.id ? updatedSubject : subject)))
+
+    setCompletedSubjectIds((current) => {
+      const next = new Set(current)
+      if (updatedProgress.isCompleted) {
+        next.add(updatedSubject.id)
+      } else {
+        next.delete(updatedSubject.id)
+      }
+      return next
+    })
+
+    const nextXP = getXP()
+    const previousLevel = getLevel(xp)
+    const latestLevel = getLevel(nextXP)
+
+    if (latestLevel.level > previousLevel.level) {
+      setNewLevelTitle(latestLevel.title)
+      setIsLevelUpOpen(true)
+    }
+
+    setXP(nextXP)
+    setStreak(getStreak())
+  }
+
   const handleToggleTopic = (subjectId, chapterId, topicId, nextChecked) => {
     const before = subjects.find((item) => item.id === subjectId)
     if (!before) return
@@ -237,6 +280,79 @@ function Dashboard() {
 
   const goToUpload = () => {
     navigate('/#upload')
+  }
+
+  const renderListView = (subject) => (
+    <div>
+      {(subject.chapters || []).map((chapter) => (
+        <section key={chapter.id} className="mb-4 last:mb-0">
+          <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+            {chapter.title || 'Untitled chapter'}
+          </h4>
+          <div className="space-y-2">
+            {(chapter.topics || []).map((topic) => (
+              <label
+                key={topic.id}
+                className="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2"
+              >
+                <input
+                  type="checkbox"
+                  checked={Boolean(topic.completed)}
+                  onChange={(event) => handleToggleTopic(subject.id, chapter.id, topic.id, event.target.checked)}
+                  style={{ accentColor: '#7F77DD' }}
+                  className="h-4 w-4 shrink-0"
+                />
+                <span
+                  className={`min-w-0 flex-1 text-sm ${
+                    topic.completed ? 'text-slate-400 line-through' : 'text-white'
+                  }`}
+                >
+                  {topic.title || 'Untitled topic'}
+                </span>
+                <span className="max-w-48 truncate text-right text-xs text-slate-500">{topic.description || ''}</span>
+              </label>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  )
+
+  const renderExpandedContent = (subject) => {
+    const view = subjectViews[subject.id] || 'list'
+
+    return (
+      <div className="border-t border-slate-700 bg-slate-800 px-4 py-4">
+        <div className="mb-3 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => handleSetSubjectView(subject.id, 'list')}
+            className={`rounded-full border border-slate-700 px-3 py-1 text-xs transition ${
+              view === 'list' ? 'text-white' : 'text-slate-400 hover:text-white'
+            }`}
+            style={{ backgroundColor: view === 'list' ? '#7F77DD' : 'transparent' }}
+          >
+            List view
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSetSubjectView(subject.id, 'roadmap')}
+            className={`rounded-full border border-slate-700 px-3 py-1 text-xs transition ${
+              view === 'roadmap' ? 'text-white' : 'text-slate-400 hover:text-white'
+            }`}
+            style={{ backgroundColor: view === 'roadmap' ? '#7F77DD' : 'transparent' }}
+          >
+            Roadmap view
+          </button>
+        </div>
+
+        {view === 'roadmap' ? (
+          <Roadmap subject={subject} onUpdate={handleRoadmapUpdate} />
+        ) : (
+          renderListView(subject)
+        )}
+      </div>
+    )
   }
 
   const hasAnySubjects = subjects.length > 0
@@ -425,45 +541,7 @@ function Dashboard() {
                     </div>
                   </button>
 
-                  {isExpanded ? (
-                    <div className="border-t border-slate-700 bg-slate-800 px-4 py-4">
-                      {(subject.chapters || []).map((chapter) => (
-                        <section key={chapter.id} className="mb-4 last:mb-0">
-                          <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
-                            {chapter.title || 'Untitled chapter'}
-                          </h4>
-                          <div className="space-y-2">
-                            {(chapter.topics || []).map((topic) => (
-                              <label
-                                key={topic.id}
-                                className="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={Boolean(topic.completed)}
-                                  onChange={(event) =>
-                                    handleToggleTopic(subject.id, chapter.id, topic.id, event.target.checked)
-                                  }
-                                  style={{ accentColor: '#7F77DD' }}
-                                  className="h-4 w-4 shrink-0"
-                                />
-                                <span
-                                  className={`min-w-0 flex-1 text-sm ${
-                                    topic.completed ? 'text-slate-400 line-through' : 'text-white'
-                                  }`}
-                                >
-                                  {topic.title || 'Untitled topic'}
-                                </span>
-                                <span className="max-w-48 truncate text-right text-xs text-slate-500">
-                                  {topic.description || ''}
-                                </span>
-                              </label>
-                            ))}
-                          </div>
-                        </section>
-                      ))}
-                    </div>
-                  ) : null}
+                  {isExpanded ? renderExpandedContent(subject) : null}
                 </article>
               )
             })}
@@ -545,45 +623,7 @@ function Dashboard() {
                     </div>
                   </button>
 
-                  {isExpanded ? (
-                    <div className="border-t border-slate-700 bg-slate-800 px-4 py-4">
-                      {(subject.chapters || []).map((chapter) => (
-                        <section key={chapter.id} className="mb-4 last:mb-0">
-                          <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
-                            {chapter.title || 'Untitled chapter'}
-                          </h4>
-                          <div className="space-y-2">
-                            {(chapter.topics || []).map((topic) => (
-                              <label
-                                key={topic.id}
-                                className="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={Boolean(topic.completed)}
-                                  onChange={(event) =>
-                                    handleToggleTopic(subject.id, chapter.id, topic.id, event.target.checked)
-                                  }
-                                  style={{ accentColor: '#7F77DD' }}
-                                  className="h-4 w-4 shrink-0"
-                                />
-                                <span
-                                  className={`min-w-0 flex-1 text-sm ${
-                                    topic.completed ? 'text-slate-400 line-through' : 'text-white'
-                                  }`}
-                                >
-                                  {topic.title || 'Untitled topic'}
-                                </span>
-                                <span className="max-w-48 truncate text-right text-xs text-slate-500">
-                                  {topic.description || ''}
-                                </span>
-                              </label>
-                            ))}
-                          </div>
-                        </section>
-                      ))}
-                    </div>
-                  ) : null}
+                  {isExpanded ? renderExpandedContent(subject) : null}
                 </article>
               )
             })}
