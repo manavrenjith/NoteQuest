@@ -4,6 +4,7 @@ import CertificateModal from '../components/CertificateModal'
 import LevelUpModal from '../components/LevelUpModal'
 import Roadmap from '../components/Roadmap'
 import StudyHeatmap from '../components/StudyHeatmap'
+import VelocityChart from '../components/VelocityChart'
 import {
   checkAndUpdateStreak,
   estimateSubjectTime,
@@ -478,6 +479,7 @@ function Dashboard() {
 
         <section className="mt-5">
           <StudyHeatmap />
+          <VelocityChart />
         </section>
 
         <section className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
