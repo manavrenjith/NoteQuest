@@ -1,13 +1,17 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronRight } from 'lucide-react'
+import RatingPrompt from './RatingPrompt'
 import { getStudyTip } from '../utils/gemini'
 import {
   checkAndUpdateStreak,
   estimateChapterTime,
+  getSubjects,
+  getTopicRating,
   getXP,
   isWeakTopic,
   markWeakTopic,
   recordStudyActivity,
+  saveTopicRating,
   saveXP,
   unmarkWeakTopic,
   updateTopic,
@@ -27,6 +31,16 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
   const [filter, setFilter] = useState('all')
   const [collapsedChapters, setCollapsedChapters] = useState({})
   const [tips, setTips] = useState({})
+  const [pendingRating, setPendingRating] = useState(null)
+
+  const getChapterAvgDifficulty = (chapter) => {
+    const ratings = (chapter?.topics || [])
+      .map((topic) => getTopicRating(subject.id, chapter.id, topic.id))
+      .filter((rating) => rating > 0)
+
+    if (ratings.length === 0) return 0
+    return Math.round(ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length)
+  }
 
   const filteredChapters = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase()
@@ -85,6 +99,7 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
       awardedXP += 10
       streak = checkAndUpdateStreak()
       success('+10 XP earned! ⚡')
+      setPendingRating({ topicId, chapterId })
 
       setActiveTopicPopup((prev) => ({ ...prev, [topicId]: true }))
       window.setTimeout(() => {
@@ -98,6 +113,10 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
 
     const updatedChapter = (updatedSubject.chapters || []).find((chapter) => chapter.id === chapterId)
     const isNowChapterComplete = isChapterComplete(updatedChapter)
+
+    if (!completed) {
+      setPendingRating(null)
+    }
 
     if (!wasChapterComplete && isNowChapterComplete) {
       saveXP(50)
@@ -207,6 +226,7 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
           ?.topics?.filter((topic) => Boolean(topic.completed)).length
         const chapterIsComplete = totalInChapter > 0 && completedInChapter === totalInChapter
         const isCollapsed = Boolean(collapsedChapters[chapter.id])
+        const avgDifficulty = getChapterAvgDifficulty((subject.chapters || []).find((item) => item.id === chapter.id) || chapter)
 
         return (
           <section key={chapter.id} className="rounded-2xl border border-slate-700 bg-slate-800/70 p-4">
@@ -221,7 +241,10 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
               className="mb-3 flex w-full items-center justify-between rounded-lg px-1 py-1 text-left"
             >
               <div>
-                <h3 className="text-lg font-semibold text-slate-100">{chapter.title}</h3>
+                <h3 className="text-lg font-semibold text-slate-100">
+                  {chapter.title}
+                  {avgDifficulty > 0 ? <span style={{ fontSize: 10, marginLeft: 8 }}>{'⭐'.repeat(avgDifficulty)}</span> : null}
+                </h3>
                 <p className="text-sm text-slate-300">
                   {chapter.title} ({completedInChapter || 0}/{totalInChapter} complete)
                 </p>
@@ -256,7 +279,10 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
 
             {!isCollapsed ? (
               <div className="space-y-3">
-                {allTopics.map((topic) => (
+                {allTopics.map((topic) => {
+                  const rating = getTopicRating(subject.id, chapter.id, topic.id)
+
+                  return (
                   <article key={topic.id} className="relative rounded-xl border border-slate-700/80 bg-slate-900 p-4">
                     <div className="flex items-start gap-3">
                       <input
@@ -283,6 +309,22 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
                               needs review
                             </span>
                           ) : null}
+
+                          {topic.completed && rating > 0 ? (
+                            <div style={{ display: 'flex', gap: 1, marginLeft: 'auto' }}>
+                              {[1, 2, 3].map((star) => (
+                                <span
+                                  key={star}
+                                  style={{
+                                    fontSize: 11,
+                                    opacity: star <= rating ? 1 : 0.2,
+                                  }}
+                                >
+                                  ⭐
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
                         </div>
 
                         <p className={`mt-1 text-sm ${topic.completed ? 'text-green-500/90' : 'text-slate-300'}`}>
@@ -298,6 +340,39 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
                             💡 {tips[topic.id].text}
                           </div>
                         ) : null}
+
+                        {pendingRating?.topicId === topic.id && pendingRating?.chapterId === chapter.id ? (
+                          <RatingPrompt
+                            onRate={(rating) => {
+                              saveTopicRating(subject.id, chapter.id, topic.id, rating)
+                              const bonusXP = [0, 0, 5, 15][rating]
+                              const refreshedSubject = getSubjects().find((item) => item.id === subject.id) || subject
+
+                              if (bonusXP > 0) {
+                                saveXP(bonusXP)
+                                success(`+${bonusXP} bonus XP for difficulty rating!`)
+                              }
+
+                              setPendingRating(null)
+
+                              if (onSubjectUpdate) {
+                                onSubjectUpdate(refreshedSubject)
+                              }
+
+                              if (onGamificationEvent) {
+                                onGamificationEvent({
+                                  subjectId: subject.id,
+                                  updatedSubject: refreshedSubject,
+                                  awardedXP: bonusXP,
+                                  streak: null,
+                                  chapterCompleted: false,
+                                  currentXP: getXP(),
+                                })
+                              }
+                            }}
+                            onSkip={() => setPendingRating(null)}
+                          />
+                        ) : null}
                       </div>
                     </div>
 
@@ -307,7 +382,8 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
                       </span>
                     ) : null}
                   </article>
-                ))}
+                  )
+                })}
               </div>
             ) : null}
           </section>

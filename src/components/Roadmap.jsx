@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
+import RatingPrompt from './RatingPrompt'
 import { getStudyTip } from '../utils/gemini'
 import {
   checkAndUpdateStreak,
   getCompletionEstimate,
+  getSubjects,
+  getTopicRating,
   isWeakTopic,
   markWeakTopic,
   recordStudyActivity,
+  saveTopicRating,
   saveXP,
   unmarkWeakTopic,
   updateTopic,
@@ -32,6 +36,7 @@ function Roadmap({ subject, onUpdate }) {
   const [xpPopups, setXpPopups] = useState([])
   const [panelVisible, setPanelVisible] = useState(true)
   const [tips, setTips] = useState({})
+  const [pendingRating, setPendingRating] = useState(null)
 
   useEffect(() => {
     setLocalSubject(subject)
@@ -78,6 +83,15 @@ function Roadmap({ subject, onUpdate }) {
     }, 1000)
   }
 
+  const getChapterAvgDifficulty = (chapter) => {
+    const ratings = (chapter?.topics || [])
+      .map((topic) => getTopicRating(localSubject.id, chapter.id, topic.id))
+      .filter((rating) => rating > 0)
+
+    if (ratings.length === 0) return 0
+    return Math.round(ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length)
+  }
+
   const toggleTopic = (chapterId, topicId, completed, event) => {
     const previousChapter = (localSubject?.chapters || []).find((chapter) => chapter.id === chapterId)
     const previousTopic = (previousChapter?.topics || []).find((topic) => topic.id === topicId)
@@ -90,6 +104,7 @@ function Roadmap({ subject, onUpdate }) {
     if (completed) {
       unmarkWeakTopic(localSubject.id, chapterId, topicId)
     }
+
     const updatedSubject = updateTopic(localSubject.id, chapterId, topicId, completed)
     if (!updatedSubject) {
       return
@@ -100,6 +115,11 @@ function Roadmap({ subject, onUpdate }) {
       recordStudyActivity(1)
       checkAndUpdateStreak()
       pushXpPopup(event)
+      setPendingRating({ topicId, chapterId })
+    }
+
+    if (!completed) {
+      setPendingRating(null)
     }
 
     setLocalSubject(updatedSubject)
@@ -183,7 +203,7 @@ function Roadmap({ subject, onUpdate }) {
                 gap: 8,
               }}
             >
-              📅 {estimate.message}
+              ?? {estimate.message}
               <span style={{ marginLeft: 'auto', fontSize: 11 }}>{remainingTopics} topics remaining</span>
             </div>
           ) : null}
@@ -198,6 +218,7 @@ function Roadmap({ subject, onUpdate }) {
             {chapterStats.map((item, index) => {
               const isActive = item.chapter.id === selectedChapterId
               const chapterNumber = String(index + 1).padStart(2, '0')
+              const avgDifficulty = getChapterAvgDifficulty(item.chapter)
 
               let nodeClass = 'bg-slate-700'
               if (item.state === 'completed') nodeClass = ''
@@ -250,11 +271,14 @@ function Roadmap({ subject, onUpdate }) {
                       {chapterNumber}
                     </span>
 
-                    <p className="text-xs font-medium">{item.chapter.title || 'Untitled chapter'}</p>
+                    <p className="text-xs font-medium">
+                      {item.chapter.title || 'Untitled chapter'}
+                      {avgDifficulty > 0 ? <span style={{ fontSize: 10, marginLeft: 8 }}>{'?'.repeat(avgDifficulty)}</span> : null}
+                    </p>
                     <p className={`mt-1 text-xs ${progressTextClass}`}>
                       {item.done}/{item.total}{' '}
                       {item.state === 'completed'
-                        ? 'complete ✓'
+                        ? 'complete ?'
                         : item.state === 'in-progress'
                           ? 'in progress'
                           : 'not started'}
@@ -280,7 +304,7 @@ function Roadmap({ subject, onUpdate }) {
           {!selectedChapter ? (
             <div className="flex min-h-44 items-center justify-center rounded-lg border border-slate-700 bg-slate-800 p-4 text-center text-sm text-slate-400">
               <p>
-                ← Click a stop
+                ? Click a stop
                 <br />
                 to see its topics
                 <br />
@@ -296,7 +320,12 @@ function Roadmap({ subject, onUpdate }) {
                 transition: 'opacity 0.2s ease, transform 0.2s ease',
               }}
             >
-              <h4 className="text-sm font-medium text-white">{selectedChapter.title || 'Untitled chapter'}</h4>
+              <h4 className="text-sm font-medium text-white">
+                {selectedChapter.title || 'Untitled chapter'}
+                {getChapterAvgDifficulty(selectedChapter) > 0 ? (
+                  <span style={{ fontSize: 10, marginLeft: 8 }}>{'?'.repeat(getChapterAvgDifficulty(selectedChapter))}</span>
+                ) : null}
+              </h4>
               <p className="mt-1 text-xs text-slate-400">
                 {selected.done} / {selected.total} topics completed
               </p>
@@ -314,43 +343,87 @@ function Roadmap({ subject, onUpdate }) {
               <p className="mt-1 text-xs text-slate-400">{selectedPercent}% complete</p>
 
               <div className="mt-3 space-y-2">
-                {(selectedChapter.topics || []).map((topic) => (
-                  <div key={topic.id} className="rounded-md border border-slate-700 bg-slate-900 px-2.5 py-2">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(topic.completed)}
-                        onChange={(event) =>
-                          toggleTopic(selectedChapter.id, topic.id, event.target.checked, event.nativeEvent)
-                        }
-                        className="h-3.5 w-3.5 rounded-sm border-slate-500"
-                        style={{ accentColor: '#7F77DD' }}
-                      />
+                {(selectedChapter.topics || []).map((topic) => {
+                  const rating = getTopicRating(localSubject.id, selectedChapter.id, topic.id)
 
-                      <button
-                        type="button"
-                        onClick={() => fetchTip(topic)}
-                        className={`text-left text-xs ${topic.completed ? 'text-slate-400 line-through' : 'text-white'}`}
-                      >
-                        {topic.title || 'Untitled topic'}
-                      </button>
+                  return (
+                    <div key={topic.id} className="rounded-md border border-slate-700 bg-slate-900 px-2.5 py-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(topic.completed)}
+                          onChange={(event) =>
+                            toggleTopic(selectedChapter.id, topic.id, event.target.checked, event.nativeEvent)
+                          }
+                          className="h-3.5 w-3.5 rounded-sm border-slate-500"
+                          style={{ accentColor: '#7F77DD' }}
+                        />
 
-                      {isWeakTopic(localSubject.id, selectedChapter.id, topic.id) && !topic.completed ? (
-                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-800">
-                          needs review
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() => fetchTip(topic)}
+                          className={`text-left text-xs ${topic.completed ? 'text-slate-400 line-through' : 'text-white'}`}
+                        >
+                          {topic.title || 'Untitled topic'}
+                        </button>
+
+                        {isWeakTopic(localSubject.id, selectedChapter.id, topic.id) && !topic.completed ? (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                            needs review
+                          </span>
+                        ) : null}
+
+                        {topic.completed && rating > 0 ? (
+                          <div style={{ display: 'flex', gap: 1, marginLeft: 'auto' }}>
+                            {[1, 2, 3].map((star) => (
+                              <span
+                                key={star}
+                                style={{
+                                  fontSize: 11,
+                                  opacity: star <= rating ? 1 : 0.2,
+                                }}
+                              >
+                                ?
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+
+                      {tips[topic.id]?.loading ? <p className="mt-1 pl-5 text-[11px] italic text-slate-400">Thinking...</p> : null}
+
+                      {tips[topic.id]?.visible && tips[topic.id]?.text ? (
+                        <div className="mt-1 ml-5 rounded-md bg-indigo-100 px-2.5 py-1.5 text-[11px] leading-relaxed text-indigo-900">
+                          ?? {tips[topic.id].text}
+                        </div>
+                      ) : null}
+
+                      {pendingRating?.topicId === topic.id && pendingRating?.chapterId === selectedChapter.id ? (
+                        <RatingPrompt
+                          onRate={(value) => {
+                            saveTopicRating(localSubject.id, selectedChapter.id, topic.id, value)
+                            const bonusXP = [0, 0, 5, 15][value]
+
+                            if (bonusXP > 0) {
+                              saveXP(bonusXP)
+                            }
+
+                            setPendingRating(null)
+
+                            if (onUpdate) {
+                              const refreshedSubject = getSubjects().find((item) => item.id === localSubject.id)
+                              if (refreshedSubject) {
+                                setLocalSubject(refreshedSubject)
+                                onUpdate(refreshedSubject)
+                              }
+                            }
+                          }}
+                          onSkip={() => setPendingRating(null)}
+                        />
                       ) : null}
                     </div>
-
-                    {tips[topic.id]?.loading ? <p className="mt-1 pl-5 text-[11px] italic text-slate-400">Thinking...</p> : null}
-
-                    {tips[topic.id]?.visible && tips[topic.id]?.text ? (
-                      <div className="mt-1 ml-5 rounded-md bg-indigo-100 px-2.5 py-1.5 text-[11px] leading-relaxed text-indigo-900">
-                        💡 {tips[topic.id].text}
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}

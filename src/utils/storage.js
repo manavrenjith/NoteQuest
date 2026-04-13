@@ -7,6 +7,7 @@ const WEAK_TOPICS_KEY = 'studyquest_weak_topics'
 const STUDY_ACTIVITY_KEY = 'nq_study_activity'
 const DAILY_CHALLENGE_KEY = 'nq_daily_challenge'
 const CHALLENGE_COMPLETED_KEY = 'nq_challenge_completed'
+const TOPIC_RATINGS_KEY = 'nq_topic_ratings'
 
 const LEVELS = [
   { level: 1, title: 'Novice', minXP: 0, next: 100 },
@@ -105,6 +106,26 @@ export function clearAll() {
   localStorage.removeItem(STUDY_ACTIVITY_KEY)
   localStorage.removeItem(DAILY_CHALLENGE_KEY)
   localStorage.removeItem(CHALLENGE_COMPLETED_KEY)
+  localStorage.removeItem(TOPIC_RATINGS_KEY)
+}
+
+export function saveTopicRating(subjectId, chapterId, topicId, rating) {
+  const ratings = getTopicRatings()
+  ratings[`${subjectId}_${chapterId}_${topicId}`] = rating
+  localStorage.setItem(TOPIC_RATINGS_KEY, JSON.stringify(ratings))
+}
+
+export function getTopicRatings() {
+  try {
+    return JSON.parse(localStorage.getItem(TOPIC_RATINGS_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+export function getTopicRating(subjectId, chapterId, topicId) {
+  const ratings = getTopicRatings()
+  return ratings[`${subjectId}_${chapterId}_${topicId}`] || 0
 }
 
 export function getDailyChallenge() {
