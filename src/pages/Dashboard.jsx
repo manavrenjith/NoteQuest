@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CertificateModal from '../components/CertificateModal'
 import DailyChallenge from '../components/DailyChallenge'
+import Leaderboard from '../components/Leaderboard'
 import LevelUpModal from '../components/LevelUpModal'
 import Roadmap from '../components/Roadmap'
 import StudyHeatmap from '../components/StudyHeatmap'
@@ -524,6 +525,8 @@ function Dashboard() {
           <StudyHeatmap />
           <VelocityChart />
         </section>
+
+        <Leaderboard />
 
         <section className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-sm font-medium text-white">Your subjects</h2>
