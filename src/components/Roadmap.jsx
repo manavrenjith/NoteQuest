@@ -4,6 +4,7 @@ import {
   checkAndUpdateStreak,
   isWeakTopic,
   markWeakTopic,
+  recordStudyActivity,
   saveXP,
   unmarkWeakTopic,
   updateTopic,
@@ -91,6 +92,7 @@ function Roadmap({ subject, onUpdate }) {
 
     if (completed && !wasCompleted) {
       saveXP(10)
+      recordStudyActivity(1)
       checkAndUpdateStreak()
       pushXpPopup(event)
     }

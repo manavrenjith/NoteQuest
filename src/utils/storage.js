@@ -4,6 +4,7 @@ const STREAK_KEY = 'notequest_streak'
 const LAST_ACTIVE_KEY = 'notequest_last_active'
 const BADGES_KEY = 'notequest_badges'
 const WEAK_TOPICS_KEY = 'studyquest_weak_topics'
+const STUDY_ACTIVITY_KEY = 'nq_study_activity'
 
 const LEVELS = [
   { level: 1, title: 'Novice', minXP: 0, next: 100 },
@@ -99,6 +100,24 @@ export function clearAll() {
   localStorage.removeItem(LAST_ACTIVE_KEY)
   localStorage.removeItem(BADGES_KEY)
   localStorage.removeItem(WEAK_TOPICS_KEY)
+  localStorage.removeItem(STUDY_ACTIVITY_KEY)
+}
+
+export function recordStudyActivity(topicsCompletedCount) {
+  const today = new Date().toISOString().split('T')[0]
+  const activity = getStudyActivity()
+  const increment = Math.max(0, Number(topicsCompletedCount || 0))
+
+  activity[today] = (activity[today] || 0) + increment
+  localStorage.setItem(STUDY_ACTIVITY_KEY, JSON.stringify(activity))
+}
+
+export function getStudyActivity() {
+  try {
+    return JSON.parse(localStorage.getItem(STUDY_ACTIVITY_KEY) || '{}')
+  } catch {
+    return {}
+  }
 }
 
 export function getWeakTopics() {

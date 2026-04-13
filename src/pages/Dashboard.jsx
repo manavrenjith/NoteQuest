@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import CertificateModal from '../components/CertificateModal'
 import LevelUpModal from '../components/LevelUpModal'
 import Roadmap from '../components/Roadmap'
+import StudyHeatmap from '../components/StudyHeatmap'
 import {
   checkAndUpdateStreak,
   estimateSubjectTime,
@@ -473,6 +474,10 @@ function Dashboard() {
               <p className="mt-1 text-xl font-medium text-white">{item.value}</p>
             </article>
           ))}
+        </section>
+
+        <section className="mt-5">
+          <StudyHeatmap />
         </section>
 
         <section className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

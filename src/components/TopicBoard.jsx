@@ -7,6 +7,7 @@ import {
   getXP,
   isWeakTopic,
   markWeakTopic,
+  recordStudyActivity,
   saveXP,
   unmarkWeakTopic,
   updateTopic,
@@ -80,6 +81,7 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
 
     if (completed && !wasTopicCompleted) {
       saveXP(10)
+      recordStudyActivity(1)
       awardedXP += 10
       streak = checkAndUpdateStreak()
       success('+10 XP earned! ⚡')
