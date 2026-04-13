@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { getStudyTip } from '../utils/gemini'
 import {
   checkAndUpdateStreak,
+  getCompletionEstimate,
   isWeakTopic,
   markWeakTopic,
   recordStudyActivity,
@@ -61,6 +62,10 @@ function Roadmap({ subject, onUpdate }) {
   const selected = chapterStats.find((item) => item.chapter.id === selectedChapterId)
   const selectedChapter = selected?.chapter || null
   const selectedPercent = selected?.total ? Math.round((selected.done / selected.total) * 100) : 0
+  const estimate = getCompletionEstimate(localSubject)
+  const remainingTopics = (localSubject?.chapters || [])
+    .flatMap((chapter) => chapter?.topics || [])
+    .filter((topic) => !topic?.completed).length
 
   const pushXpPopup = (event) => {
     const id = Date.now() + Math.floor(Math.random() * 1000)
@@ -164,6 +169,25 @@ function Roadmap({ subject, onUpdate }) {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-start">
         <div className="relative flex-1 rounded-lg border border-slate-700 bg-slate-900 p-4">
+          {estimate && !estimate.done ? (
+            <div
+              style={{
+                background: 'var(--color-background-secondary)',
+                borderRadius: 8,
+                padding: '8px 12px',
+                fontSize: 12,
+                color: 'var(--color-text-secondary)',
+                marginBottom: 12,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
+              📅 {estimate.message}
+              <span style={{ marginLeft: 'auto', fontSize: 11 }}>{remainingTopics} topics remaining</span>
+            </div>
+          ) : null}
+
           <div className="pointer-events-none absolute bottom-8 left-5 top-8 border-l-2 border-dashed border-slate-700" />
 
           <div className="relative mb-5 pl-10">

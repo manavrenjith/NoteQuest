@@ -120,6 +120,46 @@ export function getStudyActivity() {
   }
 }
 
+export function getCompletionEstimate(subject) {
+  const activity = getStudyActivity()
+
+  const last7Days = []
+  for (let i = 6; i >= 0; i -= 1) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().split('T')[0]
+    last7Days.push(activity[key] || 0)
+  }
+
+  const totalLast7 = last7Days.reduce((sum, dayCount) => sum + dayCount, 0)
+  const activeDays = last7Days.filter((dayCount) => dayCount > 0).length
+
+  if (totalLast7 === 0) {
+    return null
+  }
+
+  const allTopics = (subject?.chapters || []).flatMap((chapter) => chapter?.topics || [])
+  const remaining = allTopics.filter((topic) => !topic?.completed).length
+
+  if (remaining === 0) {
+    return { done: true }
+  }
+
+  const dailyAvg = activeDays > 0 ? totalLast7 / activeDays : 0
+  if (dailyAvg === 0) {
+    return null
+  }
+
+  const daysToFinish = Math.ceil(remaining / dailyAvg)
+
+  if (daysToFinish === 0) return { message: 'Almost done!', days: 0 }
+  if (daysToFinish === 1) return { message: 'At your pace, done by tomorrow', days: 1 }
+  if (daysToFinish <= 7) return { message: `At your pace, done in ~${daysToFinish} days`, days: daysToFinish }
+  if (daysToFinish <= 30) return { message: `At your pace, done in ~${daysToFinish} days`, days: daysToFinish }
+
+  return { message: `${remaining} topics left - keep going!`, days: daysToFinish }
+}
+
 export function getWeakTopics() {
   try {
     const weakTopics = JSON.parse(localStorage.getItem(WEAK_TOPICS_KEY) || '{}')

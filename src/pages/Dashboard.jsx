@@ -8,6 +8,7 @@ import VelocityChart from '../components/VelocityChart'
 import {
   checkAndUpdateStreak,
   estimateSubjectTime,
+  getCompletionEstimate,
   getLevel,
   getStreak,
   getSubjects,
@@ -103,6 +104,18 @@ function getWeakTopicCount(subject) {
     }).length
     return sum + chapterCount
   }, 0)
+}
+
+function getEstimateColor(days) {
+  if (days <= 3) return '#3B6D11'
+  if (days <= 7) return '#534AB7'
+  return 'var(--color-text-secondary)'
+}
+
+function getEstimateEmoji(days) {
+  if (days <= 3) return '🔥'
+  if (days <= 7) return '⚡'
+  return '📅'
 }
 
 function Dashboard() {
@@ -368,9 +381,30 @@ function Dashboard() {
 
   const renderExpandedContent = (subject) => {
     const view = subjectViews[subject.id] || 'list'
+    const estimate = getCompletionEstimate(subject)
+    const remainingTopics = (subject.chapters || []).flatMap((chapter) => chapter.topics || []).filter((topic) => !topic.completed).length
 
     return (
       <div className="border-t border-slate-700 bg-slate-800 px-4 py-4">
+        {estimate && !estimate.done ? (
+          <div
+            style={{
+              background: 'var(--color-background-secondary)',
+              borderRadius: 8,
+              padding: '8px 12px',
+              fontSize: 12,
+              color: 'var(--color-text-secondary)',
+              marginBottom: 12,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            📅 {estimate.message}
+            <span style={{ marginLeft: 'auto', fontSize: 11 }}>{remainingTopics} topics remaining</span>
+          </div>
+        ) : null}
+
         <div className="mb-3 flex items-center gap-2">
           <button
             type="button"
@@ -541,6 +575,8 @@ function Dashboard() {
               const status = getStatusBadge(progress)
               const addedDate = formatAddedDate(subject.createdAt)
               const weakCount = getWeakTopicCount(subject)
+              const estimate = getCompletionEstimate(subject)
+              const allDone = progress.isCompleted
 
               return (
                 <article
@@ -603,6 +639,28 @@ function Dashboard() {
                       <span className="text-xs text-slate-400">{progress.percent}%</span>
                     </div>
 
+                    {!allDone && estimate && !estimate.done ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          fontSize: 11,
+                          marginTop: 6,
+                          color: getEstimateColor(estimate.days),
+                        }}
+                      >
+                        <span>{getEstimateEmoji(estimate.days)}</span>
+                        <span>{estimate.message}</span>
+                      </div>
+                    ) : null}
+
+                    {!allDone && !estimate ? (
+                      <div style={{ fontSize: 11, marginTop: 6, color: 'var(--color-text-secondary)' }}>
+                        Start studying to see your completion estimate
+                      </div>
+                    ) : null}
+
                     {weakCount > 0 ? (
                       <p className="mt-2 text-xs text-amber-700">
                         ⚠ {weakCount} topic{weakCount > 1 ? 's' : ''} need review
@@ -631,6 +689,8 @@ function Dashboard() {
               const status = getStatusBadge(progress)
               const addedDate = formatAddedDate(subject.createdAt)
               const weakCount = getWeakTopicCount(subject)
+              const estimate = getCompletionEstimate(subject)
+              const allDone = progress.isCompleted
 
               return (
                 <article
@@ -692,6 +752,28 @@ function Dashboard() {
                       </div>
                       <span className="text-xs text-slate-400">{progress.percent}%</span>
                     </div>
+
+                    {!allDone && estimate && !estimate.done ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          fontSize: 11,
+                          marginTop: 6,
+                          color: getEstimateColor(estimate.days),
+                        }}
+                      >
+                        <span>{getEstimateEmoji(estimate.days)}</span>
+                        <span>{estimate.message}</span>
+                      </div>
+                    ) : null}
+
+                    {!allDone && !estimate ? (
+                      <div style={{ fontSize: 11, marginTop: 6, color: 'var(--color-text-secondary)' }}>
+                        Start studying to see your completion estimate
+                      </div>
+                    ) : null}
 
                     {weakCount > 0 ? (
                       <p className="mt-2 text-xs text-amber-700">
