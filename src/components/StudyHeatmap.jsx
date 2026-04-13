@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { getStudyActivity } from '../utils/storage'
 
 function getColor(count) {
@@ -8,7 +8,13 @@ function getColor(count) {
   return '#534AB7'
 }
 
+function isTouchDevice() {
+  return typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
+}
+
 export default function StudyHeatmap() {
+  const [tooltip, setTooltip] = useState(null)
+
   const { weeks, totalDaysStudied, totalTopics, currentStreak } = useMemo(() => {
     const activity = getStudyActivity()
 
@@ -46,6 +52,12 @@ export default function StudyHeatmap() {
     }
   }, [])
 
+  const TOOLTIP_WIDTH = 146
+  const tooltipLeft = tooltip
+    ? Math.max(8, Math.min(tooltip.x - 58, tooltip.containerWidth - TOOLTIP_WIDTH - 8))
+    : 0
+  const tooltipTop = tooltip ? Math.max(8, tooltip.y - 72) : 0
+
   return (
     <div
       style={{
@@ -72,64 +84,159 @@ export default function StudyHeatmap() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 3, marginBottom: 4, paddingLeft: 24 }}>
-        {weeks.map((week, weekIndex) => (
-          <div
-            key={week[0]?.date || weekIndex}
-            style={{ width: 12, fontSize: 9, color: 'var(--color-text-secondary)', textAlign: 'center' }}
-          >
-            {weekIndex % 4 === 0 && week[0]?.date
-              ? new Date(week[0].date).toLocaleDateString('en', { month: 'short' })
-              : ''}
-          </div>
-        ))}
-      </div>
-
-      <div style={{ display: 'flex', gap: 3 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginRight: 4 }}>
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((label, index) => (
+      <div className="heatmap-wrap" style={{ position: 'relative' }}>
+        <div style={{ display: 'flex', gap: 3, marginBottom: 4, paddingLeft: 24 }}>
+          {weeks.map((week, weekIndex) => (
             <div
-              key={label + index}
-              style={{
-                width: 12,
-                height: 12,
-                fontSize: 9,
-                color: 'var(--color-text-secondary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              key={week[0]?.date || weekIndex}
+              style={{ width: 12, fontSize: 9, color: 'var(--color-text-secondary)', textAlign: 'center' }}
             >
-              {index % 2 === 1 ? label : ''}
+              {weekIndex % 4 === 0 && week[0]?.date
+                ? new Date(week[0].date).toLocaleDateString('en', { month: 'short' })
+                : ''}
             </div>
           ))}
         </div>
 
-        {weeks.map((week, weekIndex) => (
-          <div key={week[0]?.date || weekIndex} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {week.map((day) => (
+        <div style={{ display: 'flex', gap: 3 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginRight: 4 }}>
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((label, index) => (
               <div
-                key={day.date}
-                title={`${day.date}: ${day.count} topic${day.count !== 1 ? 's' : ''}`}
+                key={label + index}
                 style={{
                   width: 12,
                   height: 12,
-                  borderRadius: 2,
-                  background: getColor(day.count),
-                  border: '0.5px solid var(--color-border-tertiary)',
-                  cursor: day.count > 0 ? 'pointer' : 'default',
-                  transition: 'transform 0.1s',
+                  fontSize: 9,
+                  color: 'var(--color-text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
-                onMouseEnter={(event) => {
-                  event.currentTarget.style.transform = 'scale(1.3)'
-                }}
-                onMouseLeave={(event) => {
-                  event.currentTarget.style.transform = 'scale(1)'
-                }}
-              />
+              >
+                {index % 2 === 1 ? label : ''}
+              </div>
             ))}
           </div>
-        ))}
+
+          {weeks.map((week, weekIndex) => (
+            <div key={week[0]?.date || weekIndex} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              {week.map((day) => (
+                <div
+                  key={day.date}
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: 2,
+                    background: getColor(day.count),
+                    border: '0.5px solid var(--color-border-tertiary)',
+                    cursor: day.count > 0 ? 'pointer' : 'default',
+                    transition: 'transform 0.1s',
+                    position: 'relative',
+                  }}
+                  onMouseEnter={(event) => {
+                    event.currentTarget.style.transform = 'scale(1.3)'
+                    if (isTouchDevice()) {
+                      return
+                    }
+
+                    const rect = event.currentTarget.getBoundingClientRect()
+                    const parent = event.currentTarget.closest('.heatmap-wrap')
+                    if (!parent) {
+                      return
+                    }
+
+                    const parentRect = parent.getBoundingClientRect()
+                    setTooltip({
+                      date: day.date,
+                      count: day.count,
+                      x: rect.left - parentRect.left + 6,
+                      y: rect.top - parentRect.top - 8,
+                      containerWidth: parentRect.width,
+                    })
+                  }}
+                  onMouseLeave={(event) => {
+                    event.currentTarget.style.transform = 'scale(1)'
+                    setTooltip(null)
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {tooltip ? (
+          <div
+            style={{
+              position: 'absolute',
+              left: tooltipLeft,
+              top: tooltipTop,
+              width: TOOLTIP_WIDTH,
+              background: 'var(--color-background-primary)',
+              border: '0.5px solid var(--color-border-secondary)',
+              borderRadius: 8,
+              padding: '8px 10px',
+              fontSize: 12,
+              pointerEvents: 'none',
+              zIndex: 50,
+              boxShadow: '0 10px 24px rgba(0,0,0,0.22)',
+            }}
+          >
+            <div
+              style={{
+                fontWeight: 500,
+                color: 'var(--color-text-primary)',
+                marginBottom: 3,
+              }}
+            >
+              {new Date(tooltip.date).toLocaleDateString('en', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </div>
+
+            <div
+              style={{
+                color: tooltip.count > 0 ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                marginBottom: 6,
+              }}
+            >
+              {tooltip.count > 0 ? `${tooltip.count} topic${tooltip.count !== 1 ? 's' : ''} done` : 'No activity'}
+            </div>
+
+            {tooltip.count > 0 ? (
+              <>
+                <div
+                  style={{
+                    height: 3,
+                    borderRadius: 99,
+                    background: 'var(--color-border-tertiary)',
+                    marginBottom: 4,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${Math.min((tooltip.count / 10) * 100, 100)}%`,
+                      background: '#7F77DD',
+                      borderRadius: 99,
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: '#7F77DD',
+                    fontWeight: 500,
+                  }}
+                >
+                  +{tooltip.count * 10} XP earned
+                </div>
+              </>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10, justifyContent: 'flex-end' }}>
