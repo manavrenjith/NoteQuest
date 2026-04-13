@@ -5,6 +5,8 @@ const LAST_ACTIVE_KEY = 'notequest_last_active'
 const BADGES_KEY = 'notequest_badges'
 const WEAK_TOPICS_KEY = 'studyquest_weak_topics'
 const STUDY_ACTIVITY_KEY = 'nq_study_activity'
+const DAILY_CHALLENGE_KEY = 'nq_daily_challenge'
+const CHALLENGE_COMPLETED_KEY = 'nq_challenge_completed'
 
 const LEVELS = [
   { level: 1, title: 'Novice', minXP: 0, next: 100 },
@@ -101,6 +103,37 @@ export function clearAll() {
   localStorage.removeItem(BADGES_KEY)
   localStorage.removeItem(WEAK_TOPICS_KEY)
   localStorage.removeItem(STUDY_ACTIVITY_KEY)
+  localStorage.removeItem(DAILY_CHALLENGE_KEY)
+  localStorage.removeItem(CHALLENGE_COMPLETED_KEY)
+}
+
+export function getDailyChallenge() {
+  try {
+    return JSON.parse(localStorage.getItem(DAILY_CHALLENGE_KEY) || 'null')
+  } catch {
+    return null
+  }
+}
+
+export function saveDailyChallenge(challenge) {
+  localStorage.setItem(DAILY_CHALLENGE_KEY, JSON.stringify(challenge))
+}
+
+export function isChallengeCompleted() {
+  try {
+    return JSON.parse(localStorage.getItem(CHALLENGE_COMPLETED_KEY) || 'false')
+  } catch {
+    return false
+  }
+}
+
+export function markChallengeCompleted() {
+  localStorage.setItem(CHALLENGE_COMPLETED_KEY, 'true')
+}
+
+export function clearDailyChallenge() {
+  localStorage.removeItem(DAILY_CHALLENGE_KEY)
+  localStorage.removeItem(CHALLENGE_COMPLETED_KEY)
 }
 
 export function recordStudyActivity(topicsCompletedCount) {

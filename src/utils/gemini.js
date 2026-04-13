@@ -178,3 +178,53 @@ Return ONLY the tip text. No quotes, no bullet points, no extra text.`,
     throw new Error('Failed to fetch study tip. Please try again.')
   }
 }
+
+export async function pickDailyChallenge(topics) {
+  const safeTopics = Array.isArray(topics) ? topics : []
+  const topicList = safeTopics
+    .map((topic, index) => `${index + 1}. "${topic?.title || 'Untitled topic'}" (${topic?.subjectName || 'Unknown subject'})`)
+    .join('\n')
+
+  try {
+    const response = await getClient().chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'user',
+          content: `You are a study coach. From this list of topics a student needs to study, pick the ONE most important topic for today's challenge. Consider variety and foundational importance.
+
+Topics:
+${topicList}
+
+Return ONLY a JSON object, no markdown, no backticks:
+{
+  "index": 0,
+  "reason": "One sentence why this topic is today's challenge (max 12 words)"
+}
+
+index must be the 0-based index from the list above.`,
+        },
+      ],
+      temperature: 0.8,
+      max_tokens: 100,
+    })
+
+    const raw = response.choices[0]?.message?.content || ''
+    const clean = raw.replace(/```json|```/g, '').trim()
+    const parsed = JSON.parse(clean)
+
+    return {
+      index: Number.isInteger(parsed?.index) ? parsed.index : 0,
+      reason: String(parsed?.reason || '').trim(),
+    }
+  } catch (error) {
+    if (error.message?.includes('429')) {
+      throw new Error('Too many requests. Please wait a moment and try again.')
+    }
+    if (error.message?.includes('401')) {
+      throw new Error('Invalid API key. Please check your .env file.')
+    }
+    console.error('Groq API error:', error)
+    throw new Error('Failed to pick daily challenge. Please try again.')
+  }
+}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CertificateModal from '../components/CertificateModal'
+import DailyChallenge from '../components/DailyChallenge'
 import LevelUpModal from '../components/LevelUpModal'
 import Roadmap from '../components/Roadmap'
 import StudyHeatmap from '../components/StudyHeatmap'
@@ -473,6 +474,14 @@ function Dashboard() {
             </button>
           </nav>
         </header>
+
+        <DailyChallenge
+          onTopicComplete={() => {
+            setSubjects(getSubjects())
+            setXP(getXP())
+            setStreak(getStreak())
+          }}
+        />
 
         <section className="mt-5 rounded-xl border border-slate-700 bg-slate-800 px-4 py-4 sm:px-5">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
