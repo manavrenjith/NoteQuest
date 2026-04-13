@@ -21,8 +21,8 @@ export default function Leaderboard() {
     try {
       const data = await getLeaderboard()
       setScores(Array.isArray(data) ? data : [])
-    } catch {
-      setError('Could not load leaderboard.')
+    } catch (err) {
+      setError(err?.message || 'Could not load leaderboard.')
     }
 
     setLoading(false)
@@ -60,8 +60,8 @@ export default function Leaderboard() {
       setUsername(selectedName)
       setInputName(selectedName)
       await fetchScores()
-    } catch {
-      setError('Failed to submit. Try again.')
+    } catch (err) {
+      setError(err?.message || 'Failed to submit. Try again.')
     }
 
     setSubmitting(false)
