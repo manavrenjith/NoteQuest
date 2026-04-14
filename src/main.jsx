@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { ToastProvider } from './hooks/useToast'
+import { seedDemoData } from './utils/storage'
 
 function getInitialTheme() {
   try {
@@ -15,6 +16,7 @@ function getInitialTheme() {
 
 const savedTheme = getInitialTheme()
 document.documentElement.setAttribute('data-theme', savedTheme)
+seedDemoData()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

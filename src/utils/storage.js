@@ -8,6 +8,7 @@ const STUDY_ACTIVITY_KEY = 'nq_study_activity'
 const DAILY_CHALLENGE_KEY = 'nq_daily_challenge'
 const CHALLENGE_COMPLETED_KEY = 'nq_challenge_completed'
 const TOPIC_RATINGS_KEY = 'nq_topic_ratings'
+const DEMO_SEEDED_KEY = 'nq_demo_seeded'
 
 const LEVELS = [
   { level: 1, title: 'Novice', minXP: 0, next: 100 },
@@ -40,6 +41,48 @@ function getBadgeState() {
 
 function setBadgeState(state) {
   localStorage.setItem(BADGES_KEY, JSON.stringify(state))
+}
+
+export function seedDemoData() {
+  if (localStorage.getItem(DEMO_SEEDED_KEY)) return
+
+  // Heatmap activity: 9 weeks of realistic demo activity.
+  const activity = {}
+  const today = new Date()
+  const pattern = [
+    0, 3, 2, 0, 4, 1, 0,
+    2, 0, 5, 3, 0, 2, 0,
+    0, 4, 3, 2, 5, 0, 1,
+    3, 2, 0, 4, 3, 2, 0,
+    0, 5, 4, 3, 6, 2, 0,
+    4, 3, 5, 4, 7, 1, 0,
+    0, 6, 5, 8, 5, 4, 2,
+    3, 7, 6, 8, 9, 5, 0,
+    0, 8, 6, 0, 0, 0, 0,
+  ]
+
+  pattern.forEach((count, index) => {
+    if (count === 0) return
+    const date = new Date(today)
+    date.setDate(today.getDate() - (pattern.length - 1 - index))
+    const key = date.toISOString().split('T')[0]
+    activity[key] = count
+  })
+
+  localStorage.setItem(STUDY_ACTIVITY_KEY, JSON.stringify(activity))
+
+  // XP: default to Scholar-level progress.
+  if (!localStorage.getItem(XP_KEY)) {
+    localStorage.setItem(XP_KEY, '350')
+  }
+
+  // Streak: default to a 5-day streak and mark today active.
+  if (!localStorage.getItem(STREAK_KEY)) {
+    localStorage.setItem(STREAK_KEY, '5')
+    localStorage.setItem(LAST_ACTIVE_KEY, new Date().toISOString().split('T')[0])
+  }
+
+  localStorage.setItem(DEMO_SEEDED_KEY, 'true')
 }
 
 export function getSubjects() {
