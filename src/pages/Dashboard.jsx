@@ -94,7 +94,8 @@ function getStatusBadge(progress) {
 
   return {
     label: 'Not started',
-    className: 'bg-slate-800 text-slate-400',
+    className: 'text-[#888] border border-[#2a2a2a]',
+    style: { backgroundColor: '#0d0d0d' },
   }
 }
 
@@ -349,14 +350,14 @@ function Dashboard() {
     <div>
       {(subject.chapters || []).map((chapter) => (
         <section key={chapter.id} className="mb-4 last:mb-0">
-          <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+          <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-[#666]">
             {chapter.title || 'Untitled chapter'}
           </h4>
           <div className="space-y-2">
             {(chapter.topics || []).map((topic) => (
               <label
                 key={topic.id}
-                className="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2"
+                className="flex items-center gap-3 rounded-lg border border-[#1a1a1a] bg-[#0d0d0d] px-3 py-2"
               >
                 <input
                   type="checkbox"
@@ -367,12 +368,12 @@ function Dashboard() {
                 />
                 <span
                   className={`min-w-0 flex-1 text-sm ${
-                    topic.completed ? 'text-slate-400 line-through' : 'text-white'
+                    topic.completed ? 'text-[#555] line-through' : 'text-white'
                   }`}
                 >
                   {topic.title || 'Untitled topic'}
                 </span>
-                <span className="max-w-48 truncate text-right text-xs text-slate-500">{topic.description || ''}</span>
+                <span className="max-w-48 truncate text-right text-xs text-[#666]">{topic.description || ''}</span>
               </label>
             ))}
           </div>
@@ -387,15 +388,16 @@ function Dashboard() {
     const remainingTopics = (subject.chapters || []).flatMap((chapter) => chapter.topics || []).filter((topic) => !topic.completed).length
 
     return (
-      <div className="border-t border-slate-700 bg-slate-800 px-4 py-4">
+      <div className="border-t border-[#1a1a1a] bg-[#0a0a0a] px-4 py-4">
         {estimate && !estimate.done ? (
           <div
             style={{
-              background: 'var(--color-background-secondary)',
+              background: '#0d0d0d',
+              border: '0.5px solid #1a1a1a',
               borderRadius: 8,
               padding: '8px 12px',
               fontSize: 12,
-              color: 'var(--color-text-secondary)',
+              color: '#888',
               marginBottom: 12,
               display: 'flex',
               alignItems: 'center',
@@ -411,8 +413,8 @@ function Dashboard() {
           <button
             type="button"
             onClick={() => handleSetSubjectView(subject.id, 'list')}
-            className={`rounded-full border border-slate-700 px-3 py-1 text-xs transition ${
-              view === 'list' ? 'text-white' : 'text-slate-400 hover:text-white'
+            className={`rounded-full border border-[#2a2a2a] px-3 py-1 text-xs transition ${
+              view === 'list' ? 'text-white' : 'text-[#888] hover:text-white'
             }`}
             style={{ backgroundColor: view === 'list' ? '#7F77DD' : 'transparent' }}
           >
@@ -421,8 +423,8 @@ function Dashboard() {
           <button
             type="button"
             onClick={() => handleSetSubjectView(subject.id, 'roadmap')}
-            className={`rounded-full border border-slate-700 px-3 py-1 text-xs transition ${
-              view === 'roadmap' ? 'text-white' : 'text-slate-400 hover:text-white'
+            className={`rounded-full border border-[#2a2a2a] px-3 py-1 text-xs transition ${
+              view === 'roadmap' ? 'text-white' : 'text-[#888] hover:text-white'
             }`}
             style={{ backgroundColor: view === 'roadmap' ? '#7F77DD' : 'transparent' }}
           >
@@ -442,7 +444,7 @@ function Dashboard() {
   const hasAnySubjects = subjects.length > 0
 
   return (
-    <main className="min-h-screen bg-slate-900 text-white">
+    <main className="min-h-screen bg-black text-white">
       <LevelUpModal levelTitle={newLevelTitle} isOpen={isLevelUpOpen} onClose={() => setIsLevelUpOpen(false)} />
       {certSubject ? (
         <CertificateModal
@@ -453,8 +455,8 @@ function Dashboard() {
         />
       ) : null}
 
-      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
-        <header className="flex items-center justify-between py-1">
+      <header className="sticky top-0 z-30 border-b border-[#1a1a1a] bg-[rgba(0,0,0,0.96)] backdrop-blur-[8px]">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: '#7F77DD' }} aria-hidden="true" />
             <span style={{ fontSize: '15px', fontWeight: 500 }}>NoteQuest</span>
@@ -463,18 +465,21 @@ function Dashboard() {
             <button type="button" className="font-semibold text-white" onClick={() => navigate('/dashboard')}>
               Dashboard
             </button>
-            <button type="button" className="text-slate-400 transition hover:text-white" onClick={goToUpload}>
+            <button type="button" className="text-[#888] transition hover:text-white" onClick={goToUpload}>
               Upload notes
             </button>
             <button
               type="button"
-              className="text-slate-400 transition hover:text-white"
+              className="text-[#888] transition hover:text-white"
               onClick={() => navigate('/settings')}
             >
               Settings
             </button>
           </nav>
-        </header>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
 
         <DailyChallenge
           onTopicComplete={() => {
@@ -484,23 +489,23 @@ function Dashboard() {
           }}
         />
 
-        <section className="mt-5 rounded-xl border border-slate-700 bg-slate-800 px-4 py-4 sm:px-5">
+        <section className="mt-5 rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] px-4 py-4 sm:px-5">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="text-sm font-medium text-white">
               {level.title} Lv. {level.level}
             </div>
 
             <div className="w-full md:max-w-lg">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-700">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#1a1a1a]">
                 <div
                   className="h-full rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${xpProgress.percent}%`, backgroundColor: '#7F77DD' }}
                 />
               </div>
-              <p className="mt-2 text-xs text-slate-400">{xpProgress.text}</p>
+              <p className="mt-2 text-xs text-[#888]">{xpProgress.text}</p>
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-slate-300">
+            <div className="flex items-center gap-2 text-sm text-[#b0b0b0]">
               <span className="h-2.5 w-2.5 rounded-full bg-orange-400" aria-hidden="true" />
               <span>{streak} day streak</span>
             </div>
@@ -514,8 +519,8 @@ function Dashboard() {
             { label: 'Topics done', value: stats.topicsDone },
             { label: 'Streak', value: `${stats.streakDays} days` },
           ].map((item) => (
-            <article key={item.label} className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-4">
-              <p className="text-xs text-slate-400">{item.label}</p>
+            <article key={item.label} className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] px-4 py-4">
+              <p className="text-xs text-[#888]">{item.label}</p>
               <p className="mt-1 text-xl font-medium text-white">{item.value}</p>
             </article>
           ))}
@@ -538,16 +543,16 @@ function Dashboard() {
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search subjects"
-                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-slate-600 focus:outline-none"
+                className="w-full rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white placeholder-[#666] focus:border-[#444] focus:outline-none"
               />
             </label>
 
             <div className="flex items-center gap-2">
-              <span className="hidden text-xs text-slate-400 sm:block">Sort</span>
+              <span className="hidden text-xs text-[#888] sm:block">Sort</span>
               <select
                 value={sortBy}
                 onChange={(event) => setSortBy(event.target.value)}
-                className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white focus:border-slate-600 focus:outline-none"
+                className="rounded-lg border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2 text-sm text-white focus:border-[#444] focus:outline-none"
               >
                 <option value="most_progress">Most progress</option>
                 <option value="least_progress">Least progress</option>
@@ -559,24 +564,24 @@ function Dashboard() {
         </section>
 
         {!hasAnySubjects ? (
-          <section className="mt-10 rounded-2xl border border-slate-700 bg-slate-800 px-6 py-12 text-center">
+          <section className="mt-10 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] px-6 py-12 text-center">
             <div className="text-5xl" aria-hidden="true">
               📭
             </div>
             <h3 className="mt-4 text-xl font-medium text-white">No subjects yet</h3>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[#888]">
               Upload your notes and AI will build your syllabus automatically
             </p>
             <button
               type="button"
               onClick={goToUpload}
-              className="mt-6 rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-white transition hover:bg-slate-800"
+              className="mt-6 rounded-lg border border-[#2a2a2a] bg-transparent px-4 py-2 text-sm text-white transition hover:border-[#444]"
             >
               Upload your first notes {'->'}
             </button>
           </section>
         ) : filteredSubjects.length === 0 ? (
-          <section className="mt-6 rounded-xl border border-slate-700 bg-slate-800 px-5 py-8 text-center text-sm text-slate-400">
+          <section className="mt-6 rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] px-5 py-8 text-center text-sm text-[#888]">
             No subjects match your search.
           </section>
         ) : (
@@ -593,7 +598,7 @@ function Dashboard() {
               return (
                 <article
                   key={subject.id}
-                  className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800 transition-opacity duration-300"
+                  className="overflow-hidden rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] transition-opacity duration-300"
                   style={{
                     opacity: cardsVisible ? 1 : 0,
                     transitionDelay: `${index * 50}ms`,
@@ -606,12 +611,12 @@ function Dashboard() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-start gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-700 text-base">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#111] text-base">
                           {getSubjectEmoji(subject.subject)}
                         </div>
                         <div className="min-w-0">
                           <h3 className="truncate text-base font-medium text-white">{subject.subject || 'Untitled Subject'}</h3>
-                          <p className="mt-1 text-xs text-slate-400">
+                          <p className="mt-1 text-xs text-[#888]">
                             {progress.completedTopics} / {progress.totalTopics} topics · {estimateSubjectTime(subject)} total
                             · Added {addedDate}
                           </p>
@@ -626,7 +631,7 @@ function Dashboard() {
                           {status.label}
                         </span>
                         <span
-                          className="text-slate-400 transition-transform duration-200"
+                          className="text-[#888] transition-transform duration-200"
                           style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
                           aria-hidden="true"
                         >
@@ -636,7 +641,7 @@ function Dashboard() {
                     </div>
 
                     <div className="mt-3 flex items-center gap-3">
-                      <div className="h-1 w-full overflow-hidden rounded-full bg-slate-700">
+                      <div className="h-1 w-full overflow-hidden rounded-full bg-[#1a1a1a]">
                         <div
                           className="h-full transition-all duration-500"
                           style={{
@@ -648,7 +653,7 @@ function Dashboard() {
                           }}
                         />
                       </div>
-                      <span className="text-xs text-slate-400">{progress.percent}%</span>
+                      <span className="text-xs text-[#888]">{progress.percent}%</span>
                     </div>
 
                     {!allDone && estimate && !estimate.done ? (
@@ -668,7 +673,7 @@ function Dashboard() {
                     ) : null}
 
                     {!allDone && !estimate ? (
-                      <div style={{ fontSize: 11, marginTop: 6, color: 'var(--color-text-secondary)' }}>
+                      <div style={{ fontSize: 11, marginTop: 6, color: '#666' }}>
                         Start studying to see your completion estimate
                       </div>
                     ) : null}
@@ -688,9 +693,9 @@ function Dashboard() {
             {groupedSubjects.completed.length > 0 ? (
               <div className="py-2">
                 <div className="flex items-center gap-3">
-                  <div className="h-px flex-1 bg-slate-700" />
-                  <span className="text-xs uppercase tracking-wide text-slate-500">completed</span>
-                  <div className="h-px flex-1 bg-slate-700" />
+                  <div className="h-px flex-1 bg-[#1a1a1a]" />
+                  <span className="text-xs uppercase tracking-wide text-[#666]">completed</span>
+                  <div className="h-px flex-1 bg-[#1a1a1a]" />
                 </div>
               </div>
             ) : null}
@@ -707,7 +712,7 @@ function Dashboard() {
               return (
                 <article
                   key={subject.id}
-                  className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800 transition-opacity duration-300"
+                  className="overflow-hidden rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] transition-opacity duration-300"
                   style={{
                     opacity: cardsVisible ? 1 : 0,
                     transitionDelay: `${(groupedSubjects.inProgress.length + index) * 50}ms`,
@@ -720,12 +725,12 @@ function Dashboard() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-start gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-700 text-base">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#111] text-base">
                           {getSubjectEmoji(subject.subject)}
                         </div>
                         <div className="min-w-0">
                           <h3 className="truncate text-base font-medium text-white">{subject.subject || 'Untitled Subject'}</h3>
-                          <p className="mt-1 text-xs text-slate-400">
+                          <p className="mt-1 text-xs text-[#888]">
                             {progress.completedTopics} / {progress.totalTopics} topics · {estimateSubjectTime(subject)} total
                             · Added {addedDate}
                           </p>
@@ -740,7 +745,7 @@ function Dashboard() {
                           {status.label}
                         </span>
                         <span
-                          className="text-slate-400 transition-transform duration-200"
+                          className="text-[#888] transition-transform duration-200"
                           style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
                           aria-hidden="true"
                         >
@@ -750,7 +755,7 @@ function Dashboard() {
                     </div>
 
                     <div className="mt-3 flex items-center gap-3">
-                      <div className="h-1 w-full overflow-hidden rounded-full bg-slate-700">
+                      <div className="h-1 w-full overflow-hidden rounded-full bg-[#1a1a1a]">
                         <div
                           className="h-full transition-all duration-500"
                           style={{
@@ -762,7 +767,7 @@ function Dashboard() {
                           }}
                         />
                       </div>
-                      <span className="text-xs text-slate-400">{progress.percent}%</span>
+                      <span className="text-xs text-[#888]">{progress.percent}%</span>
                     </div>
 
                     {!allDone && estimate && !estimate.done ? (
@@ -782,7 +787,7 @@ function Dashboard() {
                     ) : null}
 
                     {!allDone && !estimate ? (
-                      <div style={{ fontSize: 11, marginTop: 6, color: 'var(--color-text-secondary)' }}>
+                      <div style={{ fontSize: 11, marginTop: 6, color: '#666' }}>
                         Start studying to see your completion estimate
                       </div>
                     ) : null}
@@ -802,7 +807,7 @@ function Dashboard() {
             <button
               type="button"
               onClick={goToUpload}
-              className="mt-2 w-full rounded-xl border-2 border-dashed border-slate-700 px-4 py-4 text-center text-sm font-medium text-slate-300 transition hover:bg-slate-800"
+              className="mt-2 w-full rounded-xl border-2 border-dashed border-[#2a2a2a] bg-transparent px-4 py-4 text-center text-sm font-medium text-[#bbb] transition hover:border-[#444]"
             >
               + Add new subject
             </button>
