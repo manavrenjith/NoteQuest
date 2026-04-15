@@ -129,13 +129,6 @@ function Home() {
     },
   ], [])
 
-  const stats = useMemo(() => [
-    { num: '500+', label: 'Topics tracked' },
-    { num: '10+', label: 'Subjects supported' },
-    { num: '1000+', label: 'XP earnable' },
-    { num: 'Free', label: 'Always' },
-  ], [])
-
   return (
     <main style={{ background: '#000', color: '#fff', minHeight: '100vh', fontFamily: 'inherit' }}>
 
@@ -252,15 +245,6 @@ function Home() {
           </article>
         </div>
       </section>
-
-      <div style={{ ...statsReveal, display: 'flex', borderBottom: '0.5px solid #111', maxWidth: 900, margin: '0 auto' }}>
-        {stats.map((s, i) => (
-          <div key={s.label} style={{ flex: 1, padding: '1.5rem 1rem', textAlign: 'center', borderRight: i < stats.length - 1 ? '0.5px solid #111' : 'none' }}>
-            <div style={{ fontSize: 22, fontWeight: 500, color: '#7F77DD' }}>{s.num}</div>
-            <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
 
       <section id="features" style={{ borderTop: '0.5px solid #111' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
