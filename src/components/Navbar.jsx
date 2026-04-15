@@ -19,7 +19,7 @@ function Navbar() {
     }`
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-700/70 bg-slate-900/85 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-[#888] bg-black/95 backdrop-blur">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <Link
           to="/"

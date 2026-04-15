@@ -63,33 +63,33 @@ function Settings() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-900 text-slate-100">
+    <main className="min-h-screen bg-black text-slate-100">
       <Navbar />
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="text-3xl font-black text-white">Settings</h1>
         <p className="mt-2 text-slate-300">Manage your NoteQuest data and visual preferences.</p>
 
-        <section className="mt-6 rounded-2xl border border-slate-700 bg-slate-800/70 p-5">
+        <section className="mt-6 rounded-2xl border border-[#888] bg-[#0a0a0a] p-5">
           <h2 className="text-xl font-semibold text-white">Current Stats</h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
+            <div className="rounded-xl border border-[#888] bg-[#0a0a0a] p-4">
               <p className="text-sm text-slate-300">Total Subjects</p>
               <p className="mt-1 text-2xl font-bold text-indigo-300">{stats.totalSubjects}</p>
             </div>
-            <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
+            <div className="rounded-xl border border-[#888] bg-[#0a0a0a] p-4">
               <p className="text-sm text-slate-300">Total Topics</p>
               <p className="mt-1 text-2xl font-bold text-indigo-300">{stats.totalTopics}</p>
             </div>
-            <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
+            <div className="rounded-xl border border-[#888] bg-[#0a0a0a] p-4">
               <p className="text-sm text-slate-300">Total XP</p>
               <p className="mt-1 text-2xl font-bold text-indigo-300">{xp}</p>
             </div>
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-700 bg-slate-800/70 p-5">
+        <section className="mt-6 rounded-2xl border border-[#888] bg-[#0a0a0a] p-5">
           <h2 className="text-xl font-semibold text-white">Theme</h2>
-          <div className="mt-3 inline-flex rounded-xl border border-slate-600 bg-slate-900 p-1">
+          <div className="mt-3 inline-flex rounded-xl border border-[#888] bg-[#0d0d0d] p-1">
             <button
               type="button"
               onClick={() => setTheme('dark')}
@@ -111,27 +111,27 @@ function Settings() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-700 bg-slate-800/70 p-5">
+        <section className="mt-6 rounded-2xl border border-[#888] bg-[#0a0a0a] p-5">
           <h2 className="text-xl font-semibold text-white">Data Controls</h2>
           <div className="mt-4 flex flex-col gap-3">
             <button
               type="button"
               onClick={handleExportData}
-              className="rounded-xl border border-slate-600 px-4 py-2.5 text-left font-semibold text-slate-100 transition hover:border-indigo-400"
+              className="rounded-xl border border-[#888] bg-[#0a0a0a] px-4 py-2.5 text-left font-semibold text-slate-100 transition hover:border-indigo-400"
             >
               Export My Data
             </button>
             <button
               type="button"
               onClick={handleResetXPOnly}
-              className="rounded-xl border border-amber-400/50 bg-amber-500/10 px-4 py-2.5 text-left font-semibold text-amber-100 transition hover:bg-amber-500/20"
+              className="rounded-xl border border-[#888] bg-amber-500/10 px-4 py-2.5 text-left font-semibold text-amber-100 transition hover:bg-amber-500/20"
             >
               Reset XP Only
             </button>
             <button
               type="button"
               onClick={handleResetAll}
-              className="rounded-xl border border-rose-400/50 bg-rose-500/10 px-4 py-2.5 text-left font-semibold text-rose-100 transition hover:bg-rose-500/20"
+              className="rounded-xl border border-[#888] bg-rose-500/10 px-4 py-2.5 text-left font-semibold text-rose-100 transition hover:bg-rose-500/20"
             >
               Reset All Progress
             </button>
