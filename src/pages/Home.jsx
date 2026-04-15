@@ -130,33 +130,33 @@ function Home() {
   ], [])
 
   return (
-    <main style={{ background: '#000', color: '#fff', minHeight: '100vh', fontFamily: 'inherit' }}>
+    <main style={{ background: 'var(--surface-0)', color: 'var(--text-primary)', minHeight: '100vh', fontFamily: 'inherit' }}>
 
       <header
         style={{
           position: 'sticky',
           top: 0,
           zIndex: 30,
-          background: 'rgba(0,0,0,0.96)',
+          background: 'color-mix(in srgb, var(--surface-0) 96%, transparent)',
           backdropFilter: 'blur(8px)',
-          borderBottom: isScrolled ? '0.5px solid #1a1a1a' : '0.5px solid transparent',
+          borderBottom: isScrolled ? '0.5px solid var(--border-soft)' : '0.5px solid transparent',
           transition: 'border-color 0.2s',
         }}
       >
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 56 }}>
           <button type="button" onClick={() => goToSection('top')} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer' }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#7F77DD', display: 'inline-block' }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: '#fff' }}>NoteQuest</span>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+            <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>NoteQuest</span>
           </button>
 
           <nav style={{ display: 'flex', alignItems: 'center', gap: 16 }} className="hidden md:flex">
-            <button type="button" onClick={() => goToSection('how-it-works')} style={{ fontSize: 13, color: '#666', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#666'}>How it works</button>
-            <button type="button" onClick={() => goToSection('features')} style={{ fontSize: 13, color: '#666', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#666'}>Features</button>
-            <button type="button" onClick={() => navigate('/dashboard')} style={{ fontSize: 13, color: '#fff', background: '#7F77DD', border: 'none', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = '0.9'} onMouseLeave={e => e.target.style.opacity = '1'}>Get started</button>
+            <button type="button" onClick={() => goToSection('how-it-works')} style={{ fontSize: 13, color: 'var(--text-subtle)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = 'var(--text-primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-subtle)'}>How it works</button>
+            <button type="button" onClick={() => goToSection('features')} style={{ fontSize: 13, color: 'var(--text-subtle)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = 'var(--text-primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-subtle)'}>Features</button>
+            <button type="button" onClick={() => navigate('/dashboard')} style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = '0.9'} onMouseLeave={e => e.target.style.opacity = '1'}>Get started</button>
           </nav>
 
           <button type="button" onClick={() => setMenuOpen(p => !p)} aria-label="Toggle menu" aria-expanded={menuOpen}
-            style={{ display: 'none', width: 36, height: 36, alignItems: 'center', justifyContent: 'center', border: '0.5px solid #2a2a2a', borderRadius: 8, background: 'none', color: '#888', cursor: 'pointer', fontSize: 16 }}
+            style={{ display: 'none', width: 36, height: 36, alignItems: 'center', justifyContent: 'center', border: '0.5px solid #2a2a2a', borderRadius: 8, background: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16 }}
             className="flex md:hidden">
             ☰
           </button>
@@ -167,12 +167,12 @@ function Home() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {[['How it works', 'how-it-works'], ['Features', 'features']].map(([label, id]) => (
                 <button key={id} type="button" onClick={() => goToSection(id)}
-                  style={{ fontSize: 13, color: '#888', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: '8px 0' }}>
+                  style={{ fontSize: 13, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: '8px 0' }}>
                   {label}
                 </button>
               ))}
               <button type="button" onClick={() => { setMenuOpen(false); navigate('/dashboard') }}
-                style={{ fontSize: 13, color: '#fff', background: '#7F77DD', border: 'none', borderRadius: 8, padding: '8px 14px', cursor: 'pointer', textAlign: 'left' }}>
+                style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '8px 14px', cursor: 'pointer', textAlign: 'left' }}>
                 Get started
               </button>
             </div>
@@ -182,38 +182,38 @@ function Home() {
 
       <section id="top" style={{ maxWidth: 900, margin: '0 auto', padding: '4rem 1.5rem 3rem', textAlign: 'center', borderBottom: '0.5px solid #111' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <div style={{ ...tagReveal, display: 'inline-flex', alignItems: 'center', gap: 6, background: '#0d0d0d', border: '0.5px solid #2a2a2a', borderRadius: 99, padding: '4px 12px', marginBottom: '1.5rem' }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7F77DD', display: 'inline-block' }} />
-            <span style={{ fontSize: 11, color: '#888' }}>AI-powered learning tracker</span>
+          <div style={{ ...tagReveal, display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--surface-2)', border: '0.5px solid #2a2a2a', borderRadius: 99, padding: '4px 12px', marginBottom: '1.5rem' }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>AI-powered learning tracker</span>
           </div>
 
-          <h1 style={{ ...headingReveal, fontSize: 36, fontWeight: 500, lineHeight: 1.2, color: '#fff', marginBottom: '1rem' }}>
+          <h1 style={{ ...headingReveal, fontSize: 36, fontWeight: 500, lineHeight: 1.2, color: 'var(--text-primary)', marginBottom: '1rem' }}>
             Turn your notes into<br />
-            a <span style={{ color: '#7F77DD' }}>learning adventure</span>
+            a <span style={{ color: 'var(--accent)' }}>learning adventure</span>
           </h1>
 
-          <p style={{ ...subtextReveal, fontSize: 14, color: '#555', maxWidth: 380, margin: '0 auto 1.75rem', lineHeight: 1.6 }}>
+          <p style={{ ...subtextReveal, fontSize: 14, color: 'var(--text-faint)', maxWidth: 380, margin: '0 auto 1.75rem', lineHeight: 1.6 }}>
             Upload notes, let AI map your syllabus, earn XP, and level up as you study.
           </p>
 
           <div style={{ ...ctaReveal, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: '2.5rem', flexWrap: 'wrap' }}>
             <button type="button" onClick={() => goToSection('upload')}
-              style={{ fontSize: 13, fontWeight: 500, padding: '9px 20px', borderRadius: 8, background: '#7F77DD', color: '#fff', border: 'none', cursor: 'pointer' }}>
+              style={{ fontSize: 13, fontWeight: 500, padding: '9px 20px', borderRadius: 8, background: 'var(--accent)', color: 'var(--text-primary)', border: 'none', cursor: 'pointer' }}>
               Upload your notes →
             </button>
             <button type="button" onClick={() => goToSection('how-it-works')}
-              style={{ fontSize: 13, padding: '9px 20px', borderRadius: 8, background: 'transparent', color: '#888', border: '0.5px solid #2a2a2a', cursor: 'pointer' }}>
+              style={{ fontSize: 13, padding: '9px 20px', borderRadius: 8, background: 'transparent', color: 'var(--text-muted)', border: '0.5px solid #2a2a2a', cursor: 'pointer' }}>
               See how it works ↓
             </button>
           </div>
 
-          <article style={{ ...cardReveal, background: '#0a0a0a', border: '0.5px solid #1e1e1e', borderRadius: 12, padding: '1.25rem', maxWidth: 420, margin: '0 auto', textAlign: 'left' }}>
+          <article style={{ ...cardReveal, background: 'var(--surface-1)', border: '0.5px solid #1e1e1e', borderRadius: 12, padding: '1.25rem', maxWidth: 420, margin: '0 auto', textAlign: 'left' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#fff' }}>💻 Data Structures and Algorithms</span>
-              <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 99, background: '#1a1a2e', color: '#7F77DD', fontWeight: 500 }}>65% done</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>💻 Data Structures and Algorithms</span>
+              <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 99, background: '#1a1a2e', color: 'var(--accent)', fontWeight: 500 }}>65% done</span>
             </div>
-            <div style={{ height: 4, background: '#1a1a1a', borderRadius: 99, overflow: 'hidden', marginBottom: 12 }}>
-              <div style={{ height: '100%', width: '65%', background: '#7F77DD', borderRadius: 99 }} />
+            <div style={{ height: 4, background: 'var(--border-soft)', borderRadius: 99, overflow: 'hidden', marginBottom: 12 }}>
+              <div style={{ height: '100%', width: '65%', background: 'var(--accent)', borderRadius: 99 }} />
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {[
@@ -226,14 +226,14 @@ function Home() {
                 <li key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', fontSize: 12 }}>
                   <span style={{
                     width: 14, height: 14, borderRadius: 3, flexShrink: 0,
-                    background: t.done ? '#7F77DD' : 'transparent',
+                    background: t.done ? 'var(--accent)' : 'transparent',
                     border: t.done ? 'none' : '0.5px solid #333',
                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                   }}>
                     {t.done && <span style={{ width: 6, height: 4, borderLeft: '1.5px solid #fff', borderBottom: '1.5px solid #fff', transform: 'rotate(-45deg) translateY(-1px)', display: 'block' }} />}
                   </span>
-                  <span style={{ color: t.done ? '#444' : '#888', textDecoration: t.done ? 'line-through' : 'none' }}>{t.label}</span>
-                  {t.done && <span style={{ fontSize: 10, color: '#7F77DD', marginLeft: 'auto', background: '#0d0d0d', padding: '2px 6px', borderRadius: 4 }}>+10 XP</span>}
+                  <span style={{ color: t.done ? 'var(--text-dim)' : 'var(--text-muted)', textDecoration: t.done ? 'line-through' : 'none' }}>{t.label}</span>
+                  {t.done && <span style={{ fontSize: 10, color: 'var(--accent)', marginLeft: 'auto', background: 'var(--surface-2)', padding: '2px 6px', borderRadius: 4 }}>+10 XP</span>}
                 </li>
               ))}
             </ul>
@@ -244,20 +244,20 @@ function Home() {
       <section id="features" style={{ borderTop: '0.5px solid #111' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <p style={{ fontSize: 10, fontWeight: 500, color: '#7F77DD', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Features</p>
-            <h2 style={{ fontSize: 20, fontWeight: 500, color: '#fff', marginBottom: 8 }}>Everything you need to study smarter</h2>
-            <p style={{ fontSize: 13, color: '#444' }}>Not just another notes app — it's a full learning system.</p>
+            <p style={{ fontSize: 10, fontWeight: 500, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Features</p>
+            <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Everything you need to study smarter</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>Not just another notes app — it's a full learning system.</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#111', border: '0.5px solid #111', borderRadius: 12, overflow: 'hidden' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--surface-3)', border: '0.5px solid #111', borderRadius: 12, overflow: 'hidden' }}>
             {featureCards.map((item) => (
-              <article key={item.title} style={{ background: '#000', padding: '1.5rem', transition: 'background 0.2s', cursor: 'default' }}
-                onMouseEnter={e => e.currentTarget.style.background = '#0a0a0a'}
-                onMouseLeave={e => e.currentTarget.style.background = '#000'}>
+              <article key={item.title} style={{ background: 'var(--surface-0)', padding: '1.5rem', transition: 'background 0.2s', cursor: 'default' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-1)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'var(--surface-0)'}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: item.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, marginBottom: 12 }}>
                   {item.emoji}
                 </div>
-                <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>{item.title}</h3>
-                <p style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>{item.description}</p>
+                <h3 style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 6 }}>{item.title}</h3>
+                <p style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5 }}>{item.description}</p>
               </article>
             ))}
           </div>
@@ -267,21 +267,21 @@ function Home() {
       <section style={{ borderTop: '0.5px solid #111' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <p style={{ fontSize: 10, fontWeight: 500, color: '#7F77DD', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>New</p>
-            <h2 style={{ fontSize: 20, fontWeight: 500, color: '#fff', marginBottom: 8 }}>Built for serious students</h2>
-            <p style={{ fontSize: 13, color: '#444' }}>Features that go beyond basic tracking.</p>
+            <p style={{ fontSize: 10, fontWeight: 500, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>New</p>
+            <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Built for serious students</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>Features that go beyond basic tracking.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
             {newFeatures.map((item) => (
-              <div key={item.title} style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem', display: 'flex', gap: 12, alignItems: 'flex-start', transition: 'border-color 0.2s' }}
+              <div key={item.title} style={{ background: 'var(--surface-1)', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem', display: 'flex', gap: 12, alignItems: 'flex-start', transition: 'border-color 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = '#333'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = '#1a1a1a'}>
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-soft)'}>
                 <div style={{ width: 36, height: 36, borderRadius: 8, background: item.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
                   {item.emoji}
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 4 }}>{item.title}</div>
-                  <div style={{ fontSize: 11, color: '#444', lineHeight: 1.5 }}>{item.description}</div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 4 }}>{item.title}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-dim)', lineHeight: 1.5 }}>{item.description}</div>
                 </div>
               </div>
             ))}
@@ -292,18 +292,18 @@ function Home() {
       <section id="how-it-works" style={{ borderTop: '0.5px solid #111' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <p style={{ fontSize: 10, fontWeight: 500, color: '#7F77DD', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>How it works</p>
-            <h2 style={{ fontSize: 20, fontWeight: 500, color: '#fff', marginBottom: 8 }}>Three steps to a smarter study session</h2>
-            <p style={{ fontSize: 13, color: '#444' }}>From raw notes to a game in under 30 seconds.</p>
+            <p style={{ fontSize: 10, fontWeight: 500, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>How it works</p>
+            <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Three steps to a smarter study session</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>From raw notes to a game in under 30 seconds.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
             {howItWorks.map((item, index) => (
-              <div key={item.step} style={{ position: 'relative', background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
-                <div style={{ width: 26, height: 26, borderRadius: '50%', background: '#111', border: '0.5px solid #2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 500, color: '#7F77DD', marginBottom: 12 }}>
+              <div key={item.step} style={{ position: 'relative', background: 'var(--surface-1)', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
+                <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--surface-3)', border: '0.5px solid #2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 500, color: 'var(--accent)', marginBottom: 12 }}>
                   {item.step}
                 </div>
-                <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>{item.title}</h3>
-                <p style={{ fontSize: 11, color: '#444', lineHeight: 1.5 }}>{item.description}</p>
+                <h3 style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 6 }}>{item.title}</h3>
+                <p style={{ fontSize: 11, color: 'var(--text-dim)', lineHeight: 1.5 }}>{item.description}</p>
                 {index < howItWorks.length - 1 && (
                   <span style={{ position: 'absolute', right: -8, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: '#333', zIndex: 1 }} aria-hidden="true">→</span>
                 )}
@@ -315,11 +315,11 @@ function Home() {
 
       <section style={{ borderTop: '0.5px solid #111' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
-          <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '2.5rem', textAlign: 'center' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 500, color: '#fff', marginBottom: 8 }}>Ready to level up your studying?</h2>
-            <p style={{ fontSize: 13, color: '#444', marginBottom: '1.5rem' }}>Free forever. No account needed. Just paste your notes and go.</p>
+          <div style={{ background: 'var(--surface-1)', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '2.5rem', textAlign: 'center' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Ready to level up your studying?</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: '1.5rem' }}>Free forever. No account needed. Just paste your notes and go.</p>
             <button type="button" onClick={() => goToSection('upload')}
-              style={{ fontSize: 13, fontWeight: 500, padding: '9px 20px', borderRadius: 8, background: '#7F77DD', color: '#fff', border: 'none', cursor: 'pointer' }}>
+              style={{ fontSize: 13, fontWeight: 500, padding: '9px 20px', borderRadius: 8, background: 'var(--accent)', color: 'var(--text-primary)', border: 'none', cursor: 'pointer' }}>
               Get started for free →
             </button>
           </div>
@@ -329,7 +329,7 @@ function Home() {
       <footer style={{ borderTop: '0.5px solid #111' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
           <p style={{ fontSize: 11, color: '#333', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7F77DD', display: 'inline-block' }} aria-hidden="true" />
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} aria-hidden="true" />
             NoteQuest — Built for Nira Hackathon 2026
           </p>
           <p style={{ fontSize: 11, color: '#333' }}>Made with React + Groq AI</p>
