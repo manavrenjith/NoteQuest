@@ -457,10 +457,15 @@ function Dashboard() {
 
       <header className="sticky top-0 z-30 border-b border-[#1a1a1a] bg-[rgba(0,0,0,0.96)] backdrop-blur-[8px]">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+          >
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: '#7F77DD' }} aria-hidden="true" />
             <span style={{ fontSize: '15px', fontWeight: 500 }}>NoteQuest</span>
-          </div>
+          </button>
           <nav className="flex items-center gap-4 text-sm sm:gap-6">
             <button type="button" className="font-semibold text-white" onClick={() => navigate('/dashboard')}>
               Dashboard

@@ -77,24 +77,53 @@ function Upload() {
         </div>
 
         {/* Info Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12, marginBottom: '2rem' }}>
-          <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
-            <div style={{ fontSize: 28, marginBottom: 12 }}>📄</div>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 1,
+            background: '#111',
+            border: '0.5px solid #111',
+            borderRadius: 12,
+            overflow: 'hidden',
+            marginBottom: '2rem',
+          }}
+        >
+          <article
+            style={{ background: '#000', padding: '1.5rem', transition: 'background 0.2s', cursor: 'default' }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#0a0a0a')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = '#000')}
+          >
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: '#0d0d1f', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, marginBottom: 12 }}>
+              📄
+            </div>
             <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>Paste Text</h3>
             <p style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>Paste your notes directly or upload .txt files</p>
-          </div>
+          </article>
 
-          <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
-            <div style={{ fontSize: 28, marginBottom: 12 }}>📕</div>
+          <article
+            style={{ background: '#000', padding: '1.5rem', transition: 'background 0.2s', cursor: 'default' }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#0a0a0a')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = '#000')}
+          >
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: '#1a1000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, marginBottom: 12 }}>
+              📕
+            </div>
             <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>PDF Support</h3>
             <p style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>Upload PDF files (up to 30 pages)</p>
-          </div>
+          </article>
 
-          <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
-            <div style={{ fontSize: 28, marginBottom: 12 }}>✨</div>
+          <article
+            style={{ background: '#000', padding: '1.5rem', transition: 'background 0.2s', cursor: 'default' }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#0a0a0a')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = '#000')}
+          >
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: '#0d1a0d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, marginBottom: 12 }}>
+              ✨
+            </div>
             <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>AI Processing</h3>
             <p style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>AI extracts topics and chapters automatically</p>
-          </div>
+          </article>
         </div>
       </section>
 
