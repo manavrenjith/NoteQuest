@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 
 const navItems = [
   { label: 'Dashboard', to: '/dashboard' },
-  { label: 'Upload Notes', to: '/#upload' },
+  { label: 'Upload Notes', to: '/upload' },
   { label: 'Settings', to: '/settings' },
 ]
 
