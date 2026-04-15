@@ -152,7 +152,6 @@ function Home() {
           <nav style={{ display: 'flex', alignItems: 'center', gap: 16 }} className="hidden md:flex">
             <button type="button" onClick={() => goToSection('how-it-works')} style={{ fontSize: 13, color: '#666', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#666'}>How it works</button>
             <button type="button" onClick={() => goToSection('features')} style={{ fontSize: 13, color: '#666', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#fff'} onMouseLeave={e => e.target.style.color = '#666'}>Features</button>
-            <button type="button" onClick={() => navigate('/dashboard')} style={{ fontSize: 13, color: '#fff', background: 'transparent', border: '0.5px solid #2a2a2a', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'border-color 0.2s' }} onMouseEnter={e => e.target.style.borderColor = '#444'} onMouseLeave={e => e.target.style.borderColor = '#2a2a2a'}>Dashboard</button>
             <button type="button" onClick={() => goToSection('upload')} style={{ fontSize: 13, color: '#fff', background: '#7F77DD', border: 'none', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = '0.9'} onMouseLeave={e => e.target.style.opacity = '1'}>Get started</button>
           </nav>
 
@@ -172,10 +171,6 @@ function Home() {
                   {label}
                 </button>
               ))}
-              <button type="button" onClick={() => { setMenuOpen(false); navigate('/dashboard') }}
-                style={{ fontSize: 13, color: '#fff', background: 'transparent', border: '0.5px solid #2a2a2a', borderRadius: 8, padding: '8px 14px', cursor: 'pointer', textAlign: 'left' }}>
-                Dashboard
-              </button>
               <button type="button" onClick={() => goToSection('upload')}
                 style={{ fontSize: 13, color: '#fff', background: '#7F77DD', border: 'none', borderRadius: 8, padding: '8px 14px', cursor: 'pointer', textAlign: 'left' }}>
                 Get started
