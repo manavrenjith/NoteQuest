@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import UploadNotes from '../components/UploadNotes'
 
 function useReveal(delay) {
   const [visible, setVisible] = useState(false)
@@ -331,18 +330,6 @@ function Home() {
                 )}
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="upload" style={{ borderTop: '0.5px solid #111' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 500, color: '#fff', marginBottom: 8 }}>Upload your notes</h2>
-            <p style={{ fontSize: 13, color: '#444' }}>Paste your notes below and AI will extract all topics automatically.</p>
-          </div>
-          <div style={{ maxWidth: 600, margin: '0 auto' }}>
-            <UploadNotes />
           </div>
         </div>
       </section>
