@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react'
 import { getStudyActivity } from '../utils/storage'
 
 function getColor(count) {
-  if (count === 0) return 'var(--color-background-secondary)'
-  if (count <= 2) return '#AFA9EC'
-  if (count <= 5) return '#7F77DD'
-  return '#534AB7'
+  if (count === 0) return '#111111'  // subtle dark gray — visible on black
+  if (count <= 2) return '#2D2B5E'  // very dark purple
+  if (count <= 5) return '#534AB7'  // medium purple
+  return '#7F77DD'                   // bright purple for most active days
 }
 
 function isTouchDevice() {
@@ -128,7 +128,7 @@ export default function StudyHeatmap() {
                     height: 12,
                     borderRadius: 2,
                     background: getColor(day.count),
-                    border: '0.5px solid var(--color-border-tertiary)',
+                    border: `0.5px solid ${day.count === 0 ? '#1a1a1a' : 'transparent'}`,
                     cursor: day.count > 0 ? 'pointer' : 'default',
                     transition: 'transform 0.1s',
                     position: 'relative',
@@ -241,15 +241,15 @@ export default function StudyHeatmap() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10, justifyContent: 'flex-end' }}>
         <span style={{ fontSize: 10, color: 'var(--color-text-secondary)' }}>Less</span>
-        {['var(--color-background-secondary)', '#AFA9EC', '#7F77DD', '#534AB7'].map((color) => (
+        {['#111111', '#2D2B5E', '#534AB7', '#7F77DD'].map((c) => (
           <div
-            key={color}
+            key={c}
             style={{
               width: 12,
               height: 12,
               borderRadius: 2,
-              background: color,
-              border: '0.5px solid var(--color-border-tertiary)',
+              background: c,
+              border: c === '#111111' ? '0.5px solid #2a2a2a' : 'none',
             }}
           />
         ))}
