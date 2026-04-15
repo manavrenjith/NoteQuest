@@ -1,4 +1,3 @@
-import { ArrowLeft, Upload as UploadIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import UploadNotes from '../components/UploadNotes'
@@ -7,85 +6,104 @@ function Upload() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <main style={{ background: '#000', color: '#fff', minHeight: '100vh', fontFamily: 'inherit' }}>
       <Navbar />
-      
-      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
+
+      <section style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem', borderBottom: '0.5px solid #111' }}>
+        <div style={{ marginBottom: '2rem' }}>
           <button
+            type="button"
             onClick={() => navigate('/dashboard')}
-            className="mb-6 flex items-center gap-2 text-slate-400 transition hover:text-white"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              fontSize: 13,
+              color: '#888',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'color 0.2s',
+              marginBottom: '2rem',
+            }}
+            onMouseEnter={(e) => (e.target.style.color = '#fff')}
+            onMouseLeave={(e) => (e.target.style.color = '#888')}
           >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Dashboard
+            ← Back to Dashboard
           </button>
 
-          <div className="mb-6 flex items-center gap-3">
-            <div className="rounded-xl bg-indigo-500/20 p-3">
-              <UploadIcon className="h-6 w-6 text-indigo-400" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">Upload Notes</h1>
-              <p className="text-slate-400">Convert your notes into a structured learning path</p>
-            </div>
+          <div style={{ marginBottom: '2rem' }}>
+            <h1 style={{ fontSize: 32, fontWeight: 500, color: '#fff', marginBottom: 8 }}>Upload Notes</h1>
+            <p style={{ fontSize: 14, color: '#555', marginBottom: 0 }}>Convert your notes into a structured learning path</p>
           </div>
         </div>
 
         {/* Info Cards */}
-        <div className="mb-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-slate-700 bg-slate-800/50 p-4">
-            <div className="mb-2 text-2xl">📄</div>
-            <h3 className="mb-1 font-semibold text-white">Paste Text</h3>
-            <p className="text-sm text-slate-400">Paste your notes directly or upload .txt files</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12, marginBottom: '2rem' }}>
+          <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
+            <div style={{ fontSize: 28, marginBottom: 12 }}>📄</div>
+            <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>Paste Text</h3>
+            <p style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>Paste your notes directly or upload .txt files</p>
           </div>
 
-          <div className="rounded-xl border border-slate-700 bg-slate-800/50 p-4">
-            <div className="mb-2 text-2xl">📕</div>
-            <h3 className="mb-1 font-semibold text-white">PDF Support</h3>
-            <p className="text-sm text-slate-400">Upload PDF files (up to 30 pages)</p>
+          <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
+            <div style={{ fontSize: 28, marginBottom: 12 }}>📕</div>
+            <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>PDF Support</h3>
+            <p style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>Upload PDF files (up to 30 pages)</p>
           </div>
 
-          <div className="rounded-xl border border-slate-700 bg-slate-800/50 p-4">
-            <div className="mb-2 text-2xl">✨</div>
-            <h3 className="mb-1 font-semibold text-white">AI Processing</h3>
-            <p className="text-sm text-slate-400">AI extracts topics and chapters automatically</p>
+          <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem' }}>
+            <div style={{ fontSize: 28, marginBottom: 12 }}>✨</div>
+            <h3 style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 6 }}>AI Processing</h3>
+            <p style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>AI extracts topics and chapters automatically</p>
           </div>
         </div>
+      </section>
 
-        {/* Upload Component */}
-        <div className="mb-8">
-          <UploadNotes />
-        </div>
+      {/* Upload Component */}
+      <section style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem', borderBottom: '0.5px solid #111' }}>
+        <UploadNotes />
+      </section>
 
-        {/* Tips Section */}
-        <div className="rounded-xl border border-slate-700 bg-slate-800/50 p-6">
-          <h2 className="mb-4 text-lg font-semibold text-white">Tips for Best Results</h2>
-          <ul className="space-y-2 text-slate-300">
-            <li className="flex gap-3">
-              <span className="text-indigo-400">•</span>
+      {/* Tips Section */}
+      <section style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem', borderBottom: '0.5px solid #111' }}>
+        <div style={{ background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.5rem' }}>
+          <h2 style={{ fontSize: 16, fontWeight: 500, color: '#fff', marginBottom: 16 }}>Tips for Best Results</h2>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <li style={{ display: 'flex', gap: 10, fontSize: 13, color: '#888' }}>
+              <span style={{ color: '#7F77DD', flexShrink: 0 }}>•</span>
               <span>Use clear, well-formatted notes for better topic extraction</span>
             </li>
-            <li className="flex gap-3">
-              <span className="text-indigo-400">•</span>
+            <li style={{ display: 'flex', gap: 10, fontSize: 13, color: '#888' }}>
+              <span style={{ color: '#7F77DD', flexShrink: 0 }}>•</span>
               <span>PDFs should be text-based (not scanned images)</span>
             </li>
-            <li className="flex gap-3">
-              <span className="text-indigo-400">•</span>
+            <li style={{ display: 'flex', gap: 10, fontSize: 13, color: '#888' }}>
+              <span style={{ color: '#7F77DD', flexShrink: 0 }}>•</span>
               <span>Include chapter or section headings for better organization</span>
             </li>
-            <li className="flex gap-3">
-              <span className="text-indigo-400">•</span>
+            <li style={{ display: 'flex', gap: 10, fontSize: 13, color: '#888' }}>
+              <span style={{ color: '#7F77DD', flexShrink: 0 }}>•</span>
               <span>Longer notes with more content lead to more accurate topic extraction</span>
             </li>
-            <li className="flex gap-3">
-              <span className="text-indigo-400">•</span>
+            <li style={{ display: 'flex', gap: 10, fontSize: 13, color: '#888' }}>
+              <span style={{ color: '#7F77DD', flexShrink: 0 }}>•</span>
               <span>Give your subject a meaningful name for easy identification</span>
             </li>
           </ul>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <footer style={{ borderTop: '0.5px solid #111' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+          <p style={{ fontSize: 11, color: '#333', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7F77DD', display: 'inline-block' }} aria-hidden="true" />
+            NoteQuest — Built for Nira Hackathon 2026
+          </p>
+          <p style={{ fontSize: 11, color: '#333' }}>Made with React + Groq AI</p>
+        </div>
+      </footer>
+    </main>
   )
 }
 

@@ -343,7 +343,7 @@ function Dashboard() {
   }
 
   const goToUpload = () => {
-    navigate('/#upload')
+    navigate('/upload')
   }
 
   const renderListView = (subject) => (
