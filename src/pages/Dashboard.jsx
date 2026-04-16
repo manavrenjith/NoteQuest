@@ -6,6 +6,7 @@ import Leaderboard from '../components/Leaderboard'
 import LevelUpModal from '../components/LevelUpModal'
 import Roadmap from '../components/Roadmap'
 import StudyHeatmap from '../components/StudyHeatmap'
+import ThemeToggle from '../components/ThemeToggle'
 import VelocityChart from '../components/VelocityChart'
 import {
   checkAndUpdateStreak,
@@ -466,21 +467,24 @@ function Dashboard() {
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: '#7F77DD' }} aria-hidden="true" />
             <span style={{ fontSize: '15px', fontWeight: 500 }}>NoteQuest</span>
           </button>
-          <nav className="flex items-center gap-4 text-sm sm:gap-6">
-            <button type="button" className="font-semibold text-white" onClick={() => navigate('/dashboard')}>
-              Dashboard
-            </button>
-            <button type="button" className="text-[#888] transition hover:text-white" onClick={goToUpload}>
-              Upload notes
-            </button>
-            <button
-              type="button"
-              className="text-[#888] transition hover:text-white"
-              onClick={() => navigate('/settings')}
-            >
-              Settings
-            </button>
-          </nav>
+          <div className="flex items-center gap-3">
+            <nav className="flex items-center gap-4 text-sm sm:gap-6">
+              <button type="button" className="font-semibold text-white" onClick={() => navigate('/dashboard')}>
+                Dashboard
+              </button>
+              <button type="button" className="text-[#888] transition hover:text-white" onClick={goToUpload}>
+                Upload notes
+              </button>
+              <button
+                type="button"
+                className="text-[#888] transition hover:text-white"
+                onClick={() => navigate('/settings')}
+              >
+                Settings
+              </button>
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

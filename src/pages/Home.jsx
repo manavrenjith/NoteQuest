@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ThemeToggle from '../components/ThemeToggle'
 
 function useReveal(delay) {
   const [visible, setVisible] = useState(false)
@@ -155,11 +156,15 @@ function Home() {
             <button type="button" onClick={() => navigate('/dashboard')} style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = '0.9'} onMouseLeave={e => e.target.style.opacity = '1'}>Get started</button>
           </nav>
 
-          <button type="button" onClick={() => setMenuOpen(p => !p)} aria-label="Toggle menu" aria-expanded={menuOpen}
-            style={{ display: 'none', width: 36, height: 36, alignItems: 'center', justifyContent: 'center', border: '0.5px solid #2a2a2a', borderRadius: 8, background: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16 }}
-            className="flex md:hidden">
-            ☰
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ThemeToggle />
+
+            <button type="button" onClick={() => setMenuOpen(p => !p)} aria-label="Toggle menu" aria-expanded={menuOpen}
+              style={{ display: 'none', width: 36, height: 36, alignItems: 'center', justifyContent: 'center', border: '0.5px solid #2a2a2a', borderRadius: 8, background: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16 }}
+              className="flex md:hidden">
+              ☰
+            </button>
+          </div>
         </div>
 
         {menuOpen && (

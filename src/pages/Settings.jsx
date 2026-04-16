@@ -3,24 +3,20 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { useToast } from '../hooks/useToast'
 import { clearAll, getSubjectStats, getSubjects, getXP, saveXP } from '../utils/storage'
-
-const THEME_KEY = 'notequest_theme'
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme)
-  localStorage.setItem(THEME_KEY, theme)
-}
+import { applyTheme, getTheme, onThemeChange } from '../utils/theme'
 
 function Settings() {
   const navigate = useNavigate()
   const { success, warning, info } = useToast()
-  const [theme, setTheme] = useState(() => localStorage.getItem(THEME_KEY) || 'dark')
+  const [theme, setTheme] = useState(() => getTheme())
   const [subjects, setSubjects] = useState(() => getSubjects())
   const [xp, setXP] = useState(() => getXP())
 
   useEffect(() => {
     applyTheme(theme)
   }, [theme])
+
+  useEffect(() => onThemeChange(setTheme), [])
 
   const stats = useMemo(() => getSubjectStats(subjects), [subjects])
 

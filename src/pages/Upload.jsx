@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import ThemeToggle from '../components/ThemeToggle'
 import UploadNotes from '../components/UploadNotes'
 
 function Upload() {
@@ -29,21 +30,24 @@ function Upload() {
             <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>NoteQuest</span>
           </button>
 
-          <nav className="flex items-center gap-4 text-sm sm:gap-6">
-            <button type="button" className="text-[#888] transition hover:text-white" onClick={() => navigate('/dashboard')}>
-              Dashboard
-            </button>
-            <button type="button" className="font-semibold text-white" onClick={() => navigate('/upload')}>
-              Upload notes
-            </button>
-            <button
-              type="button"
-              className="text-[#888] transition hover:text-white"
-              onClick={() => navigate('/settings')}
-            >
-              Settings
-            </button>
-          </nav>
+          <div className="flex items-center gap-3">
+            <nav className="flex items-center gap-4 text-sm sm:gap-6">
+              <button type="button" className="text-[#888] transition hover:text-white" onClick={() => navigate('/dashboard')}>
+                Dashboard
+              </button>
+              <button type="button" className="font-semibold text-white" onClick={() => navigate('/upload')}>
+                Upload notes
+              </button>
+              <button
+                type="button"
+                className="text-[#888] transition hover:text-white"
+                onClick={() => navigate('/settings')}
+              >
+                Settings
+              </button>
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

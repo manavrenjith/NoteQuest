@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { GraduationCap, Menu, X } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle'
 
 const navItems = [
   { label: 'Dashboard', to: '/dashboard' },
@@ -30,22 +31,26 @@ function Navbar() {
           <span className="text-lg font-black tracking-tight">NoteQuest</span>
         </Link>
 
-        <button
-          type="button"
-          className="inline-flex rounded-lg border border-slate-600 p-2 text-slate-200 transition hover:bg-slate-800 md:hidden"
-          aria-label="Toggle navigation menu"
-          aria-expanded={isOpen}
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
-          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-1 md:flex">
+            {navItems.map((item) => (
+              <NavLink key={item.to} to={item.to} className={getLinkClass}>
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
 
-        <div className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className={getLinkClass}>
-              {item.label}
-            </NavLink>
-          ))}
+          <ThemeToggle />
+
+          <button
+            type="button"
+            className="inline-flex rounded-lg border border-slate-600 p-2 text-slate-200 transition hover:bg-slate-800 md:hidden"
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
+            onClick={() => setIsOpen((prev) => !prev)}
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </nav>
 
