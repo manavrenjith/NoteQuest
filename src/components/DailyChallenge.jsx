@@ -104,12 +104,13 @@ export default function DailyChallenge({ onTopicComplete }) {
     return (
       <div
         style={{
-          background: 'var(--color-background-secondary)',
+          background: 'var(--surface-1)',
+          border: '0.5px solid var(--border-soft)',
           borderRadius: 12,
           padding: '1rem 1.25rem',
           marginBottom: 16,
           fontSize: 12,
-          color: 'var(--color-text-secondary)',
+          color: 'var(--text-muted)',
         }}
       >
         Loading today's challenge...
@@ -121,8 +122,8 @@ export default function DailyChallenge({ onTopicComplete }) {
     return (
       <div
         style={{
-          background: 'var(--color-background-secondary)',
-          border: '0.5px solid var(--color-border-tertiary)',
+          background: 'var(--surface-1)',
+          border: '0.5px solid var(--border-soft)',
           borderRadius: 12,
           padding: '1rem 1.25rem',
           marginBottom: 16,
@@ -134,7 +135,7 @@ export default function DailyChallenge({ onTopicComplete }) {
           style={{
             fontSize: 13,
             fontWeight: 500,
-            color: 'var(--color-text-primary)',
+            color: 'var(--text-primary)',
           }}
         >
           All caught up!
@@ -142,7 +143,7 @@ export default function DailyChallenge({ onTopicComplete }) {
         <div
           style={{
             fontSize: 12,
-            color: 'var(--color-text-secondary)',
+            color: 'var(--text-muted)',
             marginTop: 4,
           }}
         >
@@ -155,12 +156,13 @@ export default function DailyChallenge({ onTopicComplete }) {
   return (
     <div
       style={{
-        background: completed ? 'var(--color-background-secondary)' : '#1e1b4b',
-        border: `0.5px solid ${completed ? 'var(--color-border-tertiary)' : '#534AB7'}`,
+        background: 'var(--surface-1)',
+        border: `0.5px solid ${completed ? 'var(--border-soft)' : 'color-mix(in srgb, var(--accent) 50%, var(--border-soft))'}`,
         borderRadius: 12,
         padding: '1rem 1.25rem',
         marginBottom: 16,
-        transition: 'all 0.3s',
+        transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+        boxShadow: completed ? 'none' : '0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent)',
       }}
     >
       <div
@@ -172,12 +174,25 @@ export default function DailyChallenge({ onTopicComplete }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 16 }}>⚡</span>
+          <span
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: 6,
+              background: completed ? 'var(--surface-2)' : 'color-mix(in srgb, var(--accent) 22%, var(--surface-2))',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 13,
+            }}
+          >
+            ⚡
+          </span>
           <div
             style={{
               fontSize: 11,
               fontWeight: 500,
-              color: completed ? 'var(--color-text-secondary)' : '#AFA9EC',
+              color: completed ? 'var(--text-muted)' : 'var(--accent)',
               textTransform: 'uppercase',
               letterSpacing: '0.06em',
             }}
@@ -190,8 +205,8 @@ export default function DailyChallenge({ onTopicComplete }) {
             fontSize: 11,
             padding: '3px 8px',
             borderRadius: 99,
-            background: '#EEEDFE',
-            color: '#534AB7',
+            background: 'color-mix(in srgb, var(--accent) 18%, var(--surface-2))',
+            color: 'var(--accent)',
             fontWeight: 500,
           }}
         >
@@ -203,7 +218,7 @@ export default function DailyChallenge({ onTopicComplete }) {
         style={{
           fontSize: 14,
           fontWeight: 500,
-          color: completed ? 'var(--color-text-secondary)' : 'white',
+          color: completed ? 'var(--text-muted)' : 'var(--text-primary)',
           marginBottom: 4,
           textDecoration: completed ? 'line-through' : 'none',
         }}
@@ -214,7 +229,7 @@ export default function DailyChallenge({ onTopicComplete }) {
       <div
         style={{
           fontSize: 11,
-          color: completed ? 'var(--color-text-secondary)' : '#AFA9EC',
+          color: completed ? 'var(--text-muted)' : 'var(--text-faint)',
           marginBottom: 10,
         }}
       >
@@ -225,9 +240,13 @@ export default function DailyChallenge({ onTopicComplete }) {
         <div
           style={{
             fontSize: 11,
-            color: '#7F77DD',
+            color: 'var(--text-dim)',
             marginBottom: 12,
             fontStyle: 'italic',
+            background: 'var(--surface-2)',
+            border: '0.5px solid var(--border-soft)',
+            borderRadius: 8,
+            padding: '8px 10px',
           }}
         >
           "{challenge.reason}"
@@ -240,9 +259,9 @@ export default function DailyChallenge({ onTopicComplete }) {
           onClick={handleComplete}
           style={{
             width: '100%',
-            padding: 8,
-            background: '#7F77DD',
-            color: 'white',
+            padding: '9px 10px',
+            background: 'var(--accent)',
+            color: 'var(--text-primary)',
             border: 'none',
             borderRadius: 8,
             fontSize: 13,
@@ -257,8 +276,11 @@ export default function DailyChallenge({ onTopicComplete }) {
           style={{
             textAlign: 'center',
             fontSize: 12,
-            color: 'var(--color-text-secondary)',
-            padding: '4px 0',
+            color: '#3B6D11',
+            background: 'color-mix(in srgb, #3B6D11 12%, var(--surface-1))',
+            border: '0.5px solid color-mix(in srgb, #3B6D11 30%, var(--border-soft))',
+            borderRadius: 8,
+            padding: '8px 10px',
           }}
         >
           ✓ Challenge completed · Come back tomorrow for a new one
