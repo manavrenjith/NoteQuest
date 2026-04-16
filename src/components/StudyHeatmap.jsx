@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
 import { getStudyActivity } from '../utils/storage'
 
+const HEATMAP_COLORS = ['var(--heatmap-level-0)', 'var(--heatmap-level-1)', 'var(--heatmap-level-2)', 'var(--heatmap-level-3)']
+
 function getColor(count) {
-  if (count === 0) return '#111111'  // subtle dark gray — visible on black
-  if (count <= 2) return '#2D2B5E'  // very dark purple
-  if (count <= 5) return '#534AB7'  // medium purple
-  return '#7F77DD'                   // bright purple for most active days
+  if (count === 0) return HEATMAP_COLORS[0]
+  if (count <= 2) return HEATMAP_COLORS[1]
+  if (count <= 5) return HEATMAP_COLORS[2]
+  return HEATMAP_COLORS[3]
 }
 
 function isTouchDevice() {
@@ -128,7 +130,7 @@ export default function StudyHeatmap() {
                     height: 12,
                     borderRadius: 2,
                     background: getColor(day.count),
-                    border: `0.5px solid ${day.count === 0 ? '#1a1a1a' : 'transparent'}`,
+                    border: `0.5px solid ${day.count === 0 ? 'var(--border-soft)' : 'transparent'}`,
                     cursor: day.count > 0 ? 'pointer' : 'default',
                     transition: 'transform 0.1s',
                     position: 'relative',
@@ -241,15 +243,15 @@ export default function StudyHeatmap() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10, justifyContent: 'flex-end' }}>
         <span style={{ fontSize: 10, color: 'var(--color-text-secondary)' }}>Less</span>
-        {['#111111', '#2D2B5E', '#534AB7', '#7F77DD'].map((c) => (
+        {HEATMAP_COLORS.map((c, index) => (
           <div
-            key={c}
+            key={`${c}-${index}`}
             style={{
               width: 12,
               height: 12,
               borderRadius: 2,
               background: c,
-              border: c === '#111111' ? '0.5px solid #2a2a2a' : 'none',
+              border: index === 0 ? '0.5px solid var(--border-soft)' : 'none',
             }}
           />
         ))}
