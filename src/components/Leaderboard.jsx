@@ -73,39 +73,39 @@ export default function Leaderboard() {
   }, [scores, username])
 
   const medalColor = (rank) => {
-    if (rank === 1) return '#EF9F27'
-    if (rank === 2) return '#888780'
-    if (rank === 3) return '#D85A30'
-    return 'var(--color-text-secondary)'
+    if (rank === 1) return 'goldenrod'
+    if (rank === 2) return 'silver'
+    if (rank === 3) return 'peru'
+    return 'var(--text-muted)'
   }
 
   return (
     <div
       style={{
-        background: 'var(--color-background-primary)',
-        border: '0.5px solid var(--color-border-tertiary)',
+        background: 'var(--surface-1)',
+        border: '0.5px solid var(--border-soft)',
         borderRadius: 12,
         padding: '1rem 1.25rem',
         marginBottom: 16,
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)' }}>🏆 Leaderboard</div>
+        <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>🏆 Leaderboard</div>
         {myRank > 0 ? (
-          <div style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Your rank: #{myRank}</div>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Your rank: #{myRank}</div>
         ) : null}
       </div>
 
       {!username ? (
         <div
           style={{
-            background: 'var(--color-background-secondary)',
+            background: 'var(--surface-2)',
             borderRadius: 8,
             padding: '10px 12px',
             marginBottom: 14,
           }}
         >
-          <div style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginBottom: 8 }}>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>
             Enter your name to join the leaderboard
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -120,9 +120,9 @@ export default function Leaderboard() {
                 fontSize: 13,
                 padding: '6px 10px',
                 borderRadius: 8,
-                border: '0.5px solid var(--color-border-secondary)',
-                background: 'var(--color-background-primary)',
-                color: 'var(--color-text-primary)',
+                border: '0.5px solid var(--border-strong)',
+                background: 'var(--surface-0)',
+                color: 'var(--text-primary)',
               }}
             />
             <button
@@ -131,8 +131,8 @@ export default function Leaderboard() {
               disabled={submitting}
               style={{
                 padding: '6px 14px',
-                background: '#7F77DD',
-                color: 'white',
+                background: 'var(--accent)',
+                color: 'var(--text-primary)',
                 border: 'none',
                 borderRadius: 8,
                 fontSize: 13,
@@ -143,12 +143,12 @@ export default function Leaderboard() {
               {submitting ? '...' : 'Join'}
             </button>
           </div>
-          {error ? <div style={{ fontSize: 11, color: '#D85A30', marginTop: 6 }}>{error}</div> : null}
+          {error ? <div style={{ fontSize: 11, color: 'tomato', marginTop: 6 }}>{error}</div> : null}
         </div>
       ) : (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <div style={{ fontSize: 12, color: 'var(--color-text-secondary)' }}>
-            Playing as <span style={{ color: 'var(--color-text-primary)', fontWeight: 500 }}>{username}</span>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+            Playing as <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{username}</span>
           </div>
           <button
             type="button"
@@ -158,8 +158,8 @@ export default function Leaderboard() {
               fontSize: 11,
               padding: '4px 10px',
               background: 'transparent',
-              color: '#7F77DD',
-              border: '0.5px solid #7F77DD',
+              color: 'var(--accent)',
+              border: '0.5px solid var(--accent)',
               borderRadius: 6,
               cursor: submitting ? 'not-allowed' : 'pointer',
               opacity: submitting ? 0.7 : 1,
@@ -171,7 +171,7 @@ export default function Leaderboard() {
       )}
 
       {loading ? (
-        <div style={{ fontSize: 12, color: 'var(--color-text-secondary)', padding: '1rem 0', textAlign: 'center' }}>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)', padding: '1rem 0', textAlign: 'center' }}>
           Loading...
         </div>
       ) : (
@@ -187,8 +187,8 @@ export default function Leaderboard() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  borderBottom: '0.5px solid var(--color-border-tertiary)',
-                  background: isMe ? '#EEEDFE' : 'transparent',
+                  borderBottom: '0.5px solid var(--border-soft)',
+                  background: isMe ? 'color-mix(in srgb, var(--accent) 12%, var(--surface-1))' : 'transparent',
                   borderRadius: isMe ? 6 : 0,
                   padding: isMe ? '8px 8px' : '8px 0',
                 }}
@@ -211,14 +211,14 @@ export default function Leaderboard() {
                     width: 28,
                     height: 28,
                     borderRadius: '50%',
-                    background: isMe ? '#7F77DD' : 'var(--color-background-secondary)',
+                    background: isMe ? 'var(--accent)' : 'var(--surface-2)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: 11,
                     fontWeight: 500,
                     flexShrink: 0,
-                    color: isMe ? 'white' : 'var(--color-text-secondary)',
+                    color: isMe ? 'var(--text-primary)' : 'var(--text-muted)',
                   }}
                 >
                   {String(entry.username || '').slice(0, 2).toUpperCase()}
@@ -229,16 +229,16 @@ export default function Leaderboard() {
                     style={{
                       fontSize: 13,
                       fontWeight: isMe ? 500 : 400,
-                      color: isMe ? '#3C3489' : 'var(--color-text-primary)',
+                      color: 'var(--text-primary)',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                     }}
                   >
                     {entry.username}
-                    {isMe ? <span style={{ fontSize: 10, color: '#7F77DD', marginLeft: 4 }}>you</span> : null}
+                    {isMe ? <span style={{ fontSize: 10, color: 'var(--accent)', marginLeft: 4 }}>you</span> : null}
                   </div>
-                  <div style={{ fontSize: 10, color: 'var(--color-text-secondary)' }}>
+                  <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>
                     {entry.level} · {entry.topics_completed} topics
                   </div>
                 </div>
@@ -247,7 +247,7 @@ export default function Leaderboard() {
                   style={{
                     fontSize: 13,
                     fontWeight: 500,
-                    color: isMe ? '#534AB7' : 'var(--color-text-primary)',
+                    color: isMe ? 'var(--accent)' : 'var(--text-primary)',
                     flexShrink: 0,
                   }}
                 >
@@ -259,7 +259,7 @@ export default function Leaderboard() {
         </div>
       )}
 
-      {error && username ? <div style={{ fontSize: 11, color: '#D85A30', marginTop: 8 }}>{error}</div> : null}
+      {error && username ? <div style={{ fontSize: 11, color: 'tomato', marginTop: 8 }}>{error}</div> : null}
 
       <button
         type="button"
@@ -270,8 +270,8 @@ export default function Leaderboard() {
           padding: '6px',
           background: 'transparent',
           fontSize: 11,
-          color: 'var(--color-text-secondary)',
-          border: '0.5px solid var(--color-border-tertiary)',
+          color: 'var(--text-muted)',
+          border: '0.5px solid var(--border-soft)',
           borderRadius: 6,
           cursor: 'pointer',
         }}

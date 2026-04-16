@@ -5,6 +5,7 @@ import ThemeToggle from './ThemeToggle'
 
 const navItems = [
   { label: 'Dashboard', to: '/dashboard' },
+  { label: 'Leaderboard', to: '/leaderboard' },
   { label: 'Upload Notes', to: '/upload' },
   { label: 'Settings', to: '/settings' },
 ]
