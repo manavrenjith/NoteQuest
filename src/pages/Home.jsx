@@ -48,37 +48,37 @@ function Home() {
 
   const featureCards = useMemo(() => [
     {
-      iconBg: '#0d0d1f',
+      iconBg: 'color-mix(in srgb, var(--accent) 16%, var(--surface-2))',
       emoji: '🤖',
       title: 'AI topic extraction',
       description: 'Paste any notes and AI automatically builds a structured syllabus with chapters and topics.',
     },
     {
-      iconBg: '#0d1a0d',
+      iconBg: 'color-mix(in srgb, #3B6D11 18%, var(--surface-2))',
       emoji: '🎮',
       title: 'Gamified progress',
       description: 'Earn XP, level up from Novice to Master, and maintain daily streaks as you complete topics.',
     },
     {
-      iconBg: '#1a1000',
+      iconBg: 'color-mix(in srgb, #b87c1a 18%, var(--surface-2))',
       emoji: '📊',
       title: 'Syllabus tracking',
       description: "See exactly how much of each subject you've covered with real-time progress bars.",
     },
     {
-      iconBg: '#0d0d1f',
+      iconBg: 'color-mix(in srgb, var(--accent) 16%, var(--surface-2))',
       emoji: '🗺️',
       title: 'Learning roadmap',
       description: 'Visual chapter-by-chapter roadmap showing your entire learning journey per subject.',
     },
     {
-      iconBg: '#0d1a0d',
+      iconBg: 'color-mix(in srgb, #3B6D11 18%, var(--surface-2))',
       emoji: '📈',
       title: 'Study analytics',
       description: 'GitHub-style heatmap, velocity chart, and completion estimates based on your pace.',
     },
     {
-      iconBg: '#1a0d0d',
+      iconBg: 'color-mix(in srgb, #8b3b3b 18%, var(--surface-2))',
       emoji: '🏆',
       title: 'Leaderboard',
       description: 'Compete with classmates. Submit your XP score and climb the global rankings.',
@@ -87,25 +87,25 @@ function Home() {
 
   const newFeatures = useMemo(() => [
     {
-      iconBg: '#0d0d1f',
+      iconBg: 'color-mix(in srgb, var(--accent) 16%, var(--surface-2))',
       emoji: '⚡',
       title: 'Daily challenge',
       description: 'AI picks one topic every day as your challenge. Complete it for +50 bonus XP.',
     },
     {
-      iconBg: '#0d1a0d',
+      iconBg: 'color-mix(in srgb, #3B6D11 18%, var(--surface-2))',
       emoji: '💡',
       title: 'AI study tips',
       description: 'Click any topic to get a personalized 1-line study tip from Groq AI instantly.',
     },
     {
-      iconBg: '#1a1000',
+      iconBg: 'color-mix(in srgb, #b87c1a 18%, var(--surface-2))',
       emoji: '🎓',
       title: 'Completion certificate',
       description: 'Finish a subject and download a shareable certificate with your level and XP.',
     },
     {
-      iconBg: '#1a0d0d',
+      iconBg: 'color-mix(in srgb, #8b3b3b 18%, var(--surface-2))',
       emoji: '⭐',
       title: 'Difficulty ratings',
       description: 'Rate topics 1–3 stars after completing. Hard topics reward bonus XP.',
