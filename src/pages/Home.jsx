@@ -153,7 +153,7 @@ function Home() {
           <nav style={{ display: 'flex', alignItems: 'center', gap: 16, marginLeft: 'auto' }} className="hidden md:flex">
             <button type="button" onClick={() => goToSection('how-it-works')} style={{ fontSize: 13, color: 'var(--text-subtle)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = 'var(--text-primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-subtle)'}>How it works</button>
             <button type="button" onClick={() => goToSection('features')} style={{ fontSize: 13, color: 'var(--text-subtle)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = 'var(--text-primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-subtle)'}>Features</button>
-            <button type="button" onClick={() => navigate('/dashboard')} style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = '0.9'} onMouseLeave={e => e.target.style.opacity = '1'}>Get started</button>
+            <button type="button" onClick={() => navigate('/upload')} style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = '0.9'} onMouseLeave={e => e.target.style.opacity = '1'}>Get started</button>
           </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 16 }}>
@@ -176,7 +176,7 @@ function Home() {
                   {label}
                 </button>
               ))}
-              <button type="button" onClick={() => { setMenuOpen(false); navigate('/dashboard') }}
+              <button type="button" onClick={() => { setMenuOpen(false); navigate('/upload') }}
                 style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '8px 14px', cursor: 'pointer', textAlign: 'left' }}>
                 Get started
               </button>
@@ -323,7 +323,7 @@ function Home() {
           <div style={{ background: 'var(--surface-1)', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '2.5rem', textAlign: 'center' }}>
             <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Ready to level up your studying?</h2>
             <p style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: '1.5rem' }}>Free forever. No account needed. Just paste your notes and go.</p>
-            <button type="button" onClick={() => navigate('/dashboard')}
+            <button type="button" onClick={() => navigate('/upload')}
               style={{ fontSize: 13, fontWeight: 500, padding: '9px 20px', borderRadius: 8, background: 'var(--accent)', color: 'var(--text-primary)', border: 'none', cursor: 'pointer' }}>
               Get started
             </button>
