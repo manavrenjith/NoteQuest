@@ -12,6 +12,7 @@ import {
   estimateSubjectTime,
   getCompletionEstimate,
   getLevel,
+  recordStudyActivity,
   getStreak,
   getSubjects,
   getWeakTopics,
@@ -314,6 +315,7 @@ function Dashboard() {
 
     if (nextChecked && !wasTopicCompleted) {
       saveXP(10)
+      recordStudyActivity(1)
       const nextStreak = checkAndUpdateStreak()
       setStreak(nextStreak)
     }

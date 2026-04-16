@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getStudyActivity } from '../utils/storage'
 
 const HEATMAP_COLORS = ['var(--heatmap-level-0)', 'var(--heatmap-level-1)', 'var(--heatmap-level-2)', 'var(--heatmap-level-3)']
@@ -16,6 +16,25 @@ function isTouchDevice() {
 
 export default function StudyHeatmap() {
   const [tooltip, setTooltip] = useState(null)
+  const [activityVersion, setActivityVersion] = useState(0)
+
+  useEffect(() => {
+    const refresh = () => setActivityVersion((prev) => prev + 1)
+
+    const handleStorage = (event) => {
+      if (event.key === 'nq_study_activity') {
+        refresh()
+      }
+    }
+
+    window.addEventListener('nq-study-activity-updated', refresh)
+    window.addEventListener('storage', handleStorage)
+
+    return () => {
+      window.removeEventListener('nq-study-activity-updated', refresh)
+      window.removeEventListener('storage', handleStorage)
+    }
+  }, [])
 
   const { weeks, totalDaysStudied, totalTopics, currentStreak } = useMemo(() => {
     const activity = getStudyActivity()
@@ -52,7 +71,7 @@ export default function StudyHeatmap() {
       totalTopics: topics,
       currentStreak: streak,
     }
-  }, [])
+  }, [activityVersion])
 
   const TOOLTIP_WIDTH = 146
   const tooltipLeft = tooltip

@@ -207,6 +207,10 @@ export function recordStudyActivity(topicsCompletedCount) {
 
   activity[today] = (activity[today] || 0) + increment
   localStorage.setItem(STUDY_ACTIVITY_KEY, JSON.stringify(activity))
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('nq-study-activity-updated'))
+  }
 }
 
 export function getStudyActivity() {
