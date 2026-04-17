@@ -170,9 +170,29 @@ function Settings() {
                 </svg>
               </button>
             </div>
-            <p className="mt-3 rounded-xl border border-dashed border-white/20 p-3 text-sm text-slate-300">
-              Placeholder drawer for upcoming settings options.
-            </p>
+            <div className="mt-3 rounded-xl border border-white/15 bg-[#0d0d0d] p-3">
+              <p className="text-sm font-semibold text-white">Theme</p>
+              <div className="mt-3 inline-flex rounded-xl border border-[#888] bg-[#0d0d0d] p-1">
+                <button
+                  type="button"
+                  onClick={() => setTheme('dark')}
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                    theme === 'dark' ? 'bg-indigo-500 text-white' : 'text-slate-200 hover:text-white'
+                  }`}
+                >
+                  Dark
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('light')}
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                    theme === 'light' ? 'bg-indigo-500 text-white' : 'text-slate-200 hover:text-white'
+                  }`}
+                >
+                  Light
+                </button>
+              </div>
+            </div>
           </aside>
         </>
       )}
