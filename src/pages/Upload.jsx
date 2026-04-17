@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../components/Navbar'
+import ThemeToggle from '../components/ThemeToggle'
 import UploadNotes from '../components/UploadNotes'
 
 function Upload() {
@@ -7,7 +7,49 @@ function Upload() {
 
   return (
     <main style={{ background: 'var(--surface-0)', color: 'var(--text-primary)', minHeight: '100vh', fontFamily: 'inherit' }}>
-      <Navbar />
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 30,
+          background: 'color-mix(in srgb, var(--surface-0) 96%, transparent)',
+          backdropFilter: 'blur(8px)',
+          borderBottom: '0.5px solid #1a1a1a',
+          transition: 'border-color 0.2s',
+        }}
+      >
+        <div
+          className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6"
+        >
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer' }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+            <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>NoteQuest</span>
+          </button>
+
+          <div className="flex items-center gap-3">
+            <nav className="flex items-center gap-4 text-sm sm:gap-6">
+              <button type="button" className="text-[#888] transition hover:text-white" onClick={() => navigate('/dashboard')}>
+                Dashboard
+              </button>
+              <button type="button" className="font-semibold text-white" onClick={() => navigate('/upload')}>
+                Upload notes
+              </button>
+              <button
+                type="button"
+                className="text-[#888] transition hover:text-white"
+                onClick={() => navigate('/settings')}
+              >
+                Settings
+              </button>
+            </nav>
+            <ThemeToggle />
+          </div>
+        </div>
+      </header>
 
       <section style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem', borderBottom: '0.5px solid #111' }}>
         <div style={{ marginBottom: '2rem' }}>

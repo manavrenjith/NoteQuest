@@ -11,6 +11,7 @@ function Settings() {
   const [theme, setTheme] = useState(() => getTheme())
   const [subjects, setSubjects] = useState(() => getSubjects())
   const [xp, setXP] = useState(() => getXP())
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
     applyTheme(theme)
@@ -60,7 +61,7 @@ function Settings() {
 
   return (
     <main className="min-h-screen bg-black text-slate-100">
-      <Navbar />
+      <Navbar showSettingsHamburger onSettingsHamburgerClick={() => setDrawerOpen(true)} />
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="text-3xl font-black text-white">Settings</h1>
         <p className="mt-2 text-slate-300">Manage your NoteQuest data and visual preferences.</p>
@@ -134,6 +135,47 @@ function Settings() {
           </div>
         </section>
       </div>
+
+      {drawerOpen && (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-40 bg-black/50"
+            onClick={() => setDrawerOpen(false)}
+            aria-label="Close settings drawer overlay"
+          />
+          <aside
+            id="settings-drawer"
+            className="fixed right-0 top-0 z-50 h-full w-full max-w-sm border-l border-white/15 bg-[#0a0a0a] p-5 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Additional settings"
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">Additional Settings</h2>
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-300 transition hover:bg-white/10 hover:text-white"
+                aria-label="Close settings drawer"
+              >
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+            <p className="mt-3 rounded-xl border border-dashed border-white/20 p-3 text-sm text-slate-300">
+              Placeholder drawer for upcoming settings options.
+            </p>
+          </aside>
+        </>
+      )}
     </main>
   )
 }
