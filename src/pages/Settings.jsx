@@ -66,27 +66,27 @@ function Settings() {
         <h1 className="text-3xl font-black text-white">Settings</h1>
         <p className="mt-2 text-slate-300">Manage your NoteQuest data and visual preferences.</p>
 
-        <section className="mt-6 rounded-2xl border border-[#888] bg-[#0a0a0a] p-5">
+        <section className="mt-6 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-5">
           <h2 className="text-xl font-semibold text-white">Current Stats</h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-xl border border-[#888] bg-[#0a0a0a] p-4">
+            <div className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] p-4 transition hover:-translate-y-0.5 hover:border-[#888] hover:bg-[#0d0d0d]">
               <p className="text-sm text-slate-300">Total Subjects</p>
               <p className="mt-1 text-2xl font-bold text-indigo-300">{stats.totalSubjects}</p>
             </div>
-            <div className="rounded-xl border border-[#888] bg-[#0a0a0a] p-4">
+            <div className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] p-4 transition hover:-translate-y-0.5 hover:border-[#888] hover:bg-[#0d0d0d]">
               <p className="text-sm text-slate-300">Total Topics</p>
               <p className="mt-1 text-2xl font-bold text-indigo-300">{stats.totalTopics}</p>
             </div>
-            <div className="rounded-xl border border-[#888] bg-[#0a0a0a] p-4">
+            <div className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] p-4 transition hover:-translate-y-0.5 hover:border-[#888] hover:bg-[#0d0d0d]">
               <p className="text-sm text-slate-300">Total XP</p>
               <p className="mt-1 text-2xl font-bold text-indigo-300">{xp}</p>
             </div>
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-[#888] bg-[#0a0a0a] p-5">
+        <section className="mt-6 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-5 transition hover:border-[#888] hover:bg-[#0d0d0d]">
           <h2 className="text-xl font-semibold text-white">Theme</h2>
-          <div className="mt-3 inline-flex rounded-xl border border-[#888] bg-[#0d0d0d] p-1">
+          <div className="mt-3 inline-flex rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-1">
             <button
               type="button"
               onClick={() => setTheme('dark')}
@@ -108,13 +108,13 @@ function Settings() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-[#888] bg-[#0a0a0a] p-5">
+        <section className="mt-6 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-5 transition hover:border-[#888] hover:bg-[#0d0d0d]">
           <h2 className="text-xl font-semibold text-white">Data Controls</h2>
           <div className="mt-4 flex flex-col gap-3">
             <button
               type="button"
               onClick={handleExportData}
-              className="rounded-xl border border-[#888] bg-[#0a0a0a] px-4 py-2.5 text-left font-semibold text-slate-100 transition hover:border-indigo-400"
+              className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] px-4 py-2.5 text-left font-semibold text-slate-100 transition hover:border-indigo-400 hover:bg-[#0d0d0d]"
             >
               Export My Data
             </button>
