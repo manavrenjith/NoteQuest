@@ -51,7 +51,7 @@ function SubjectCard({ subject, onOpen, onDelete }) {
   const badgeStyle = {
     completed: { background: 'rgba(99,153,34,0.15)', color: '#97C459' },
     'in-progress': { background: 'rgba(127,119,221,0.15)', color: '#AFA9EC' },
-    'not-started': { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.3)' },
+    'not-started': { background: 'var(--surface-3)', color: 'var(--text-muted)' },
   }[status]
 
   const badgeLabel = {
@@ -65,9 +65,20 @@ function SubjectCard({ subject, onOpen, onDelete }) {
   return (
     <article
       onClick={() => onOpen(subject)}
-      style={{ background: '#0a0a0a', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '1.25rem', cursor: 'pointer', transition: 'all 0.2s', minHeight: 160, display: 'flex', flexDirection: 'column', position: 'relative' }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.background = '#0d0d0d' }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.background = '#0a0a0a' }}
+      style={{
+        background: 'var(--surface-1)',
+        border: '0.5px solid var(--border-soft)',
+        borderRadius: 12,
+        padding: '1.25rem',
+        cursor: 'pointer',
+        transition: 'all 0.2s',
+        minHeight: 160,
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.background = 'var(--surface-2)' }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-soft)'; e.currentTarget.style.background = 'var(--surface-1)' }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 'auto' }}>
         <div style={{ width: 44, height: 44, borderRadius: 10, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
@@ -76,18 +87,18 @@ function SubjectCard({ subject, onOpen, onDelete }) {
         <div style={{ position: 'relative' }}>
           <button
             onClick={e => { e.stopPropagation(); setMenuOpen(p => !p) }}
-            style={{ width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'rgba(255,255,255,0.3)' }}>
+            style={{ width: 26, height: 26, borderRadius: 6, border: 'none', background: 'none', color: 'var(--text-faint)', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; e.currentTarget.style.color = 'var(--text-muted)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-faint)' }}>
             ⋯
           </button>
           {menuOpen && (
             <div
               onClick={e => e.stopPropagation()}
-              style={{ position: 'absolute', right: 0, top: 30, background: '#111', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '4px', zIndex: 10, minWidth: 130 }}>
+              style={{ position: 'absolute', right: 0, top: 30, background: 'var(--surface-2)', border: '0.5px solid var(--border-soft)', borderRadius: 8, padding: '4px', zIndex: 10, minWidth: 130 }}>
               <button onClick={() => { onOpen(subject); setMenuOpen(false) }}
-                style={{ display: 'block', width: '100%', textAlign: 'left', fontSize: 12, padding: '6px 10px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', borderRadius: 6 }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
+                style={{ display: 'block', width: '100%', textAlign: 'left', fontSize: 12, padding: '6px 10px', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 6 }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-3)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'none'}>
                 Open subject
               </button>
@@ -106,14 +117,14 @@ function SubjectCard({ subject, onOpen, onDelete }) {
         {badgeLabel}
       </span>
 
-      <div style={{ fontSize: 14, fontWeight: 500, color: '#fff', marginTop: '1rem', marginBottom: 4, lineHeight: 1.3 }}>
+      <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', marginTop: '1rem', marginBottom: 4, lineHeight: 1.3 }}>
         {subject.subject}
       </div>
-      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
         {done} / {total} topics{subject.addedAt ? ` · Added ${formatDate(subject.addedAt)}` : ''}
       </div>
 
-      <div style={{ height: 2, background: 'rgba(255,255,255,0.07)', borderRadius: 99, overflow: 'hidden', marginTop: 12 }}>
+      <div style={{ height: 2, background: 'var(--border-soft)', borderRadius: 99, overflow: 'hidden', marginTop: 12 }}>
         <div style={{ height: '100%', width: `${pct}%`, background: progressColor, borderRadius: 99, transition: 'width 0.4s ease' }} />
       </div>
     </article>
@@ -188,7 +199,7 @@ export default function Notes() {
   ]
 
   return (
-    <div style={{ background: '#000', minHeight: '100vh', color: '#fff' }}>
+    <div style={{ background: 'var(--surface-0)', minHeight: '100vh', color: 'var(--text-primary)' }}>
       <Navbar showSettingsHamburger onSettingsHamburgerClick={() => setDrawerOpen(true)} />
 
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -200,9 +211,9 @@ export default function Notes() {
               <button key={f.key} onClick={() => setFilter(f.key)}
                 style={{
                   fontSize: 12, padding: '5px 12px', borderRadius: 99, cursor: 'pointer', transition: 'all 0.15s',
-                  border: '0.5px solid rgba(255,255,255,0.1)',
-                  background: filter === f.key ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  color: filter === f.key ? '#fff' : 'rgba(255,255,255,0.4)',
+                  border: '0.5px solid var(--border-soft)',
+                  background: filter === f.key ? 'var(--surface-3)' : 'transparent',
+                  color: filter === f.key ? 'var(--text-primary)' : 'var(--text-muted)',
                 }}>
                 {f.label}
               </button>
@@ -210,22 +221,22 @@ export default function Notes() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '5px 10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--surface-2)', border: '0.5px solid var(--border-soft)', borderRadius: 8, padding: '5px 10px' }}>
               <span style={{ fontSize: 12 }}>🔍</span>
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search subjects..."
-                style={{ fontSize: 12, background: 'none', border: 'none', outline: 'none', color: '#fff', width: 140 }}
+                style={{ fontSize: 12, background: 'none', border: 'none', outline: 'none', color: 'var(--text-primary)', width: 140 }}
               />
             </div>
 
             <select value={sort} onChange={e => setSort(e.target.value)}
-              style={{ fontSize: 12, padding: '5px 10px', borderRadius: 8, border: '0.5px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', outline: 'none' }}>
-              <option value="recent" style={{ background: '#111' }}>Most recent</option>
-              <option value="progress-high" style={{ background: '#111' }}>Most progress</option>
-              <option value="progress-low" style={{ background: '#111' }}>Least progress</option>
-              <option value="az" style={{ background: '#111' }}>A → Z</option>
+              style={{ fontSize: 12, padding: '5px 10px', borderRadius: 8, border: '0.5px solid var(--border-soft)', background: 'var(--surface-2)', color: 'var(--text-muted)', cursor: 'pointer', outline: 'none' }}>
+              <option value="recent" style={{ background: 'var(--surface-2)' }}>Most recent</option>
+              <option value="progress-high" style={{ background: 'var(--surface-2)' }}>Most progress</option>
+              <option value="progress-low" style={{ background: 'var(--surface-2)' }}>Least progress</option>
+              <option value="az" style={{ background: 'var(--surface-2)' }}>A → Z</option>
             </select>
 
             <button onClick={() => navigate('/upload')}
@@ -238,7 +249,7 @@ export default function Notes() {
         </div>
 
         {/* Section title */}
-        <div style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.6)', marginBottom: '1rem' }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginBottom: '1rem' }}>
           {filter === 'all' ? 'My subjects' : FILTERS.find(f => f.key === filter)?.label} · {filtered.length}
         </div>
 
@@ -246,22 +257,22 @@ export default function Notes() {
         {filtered.length === 0 && filter === 'all' && !search ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
             <button onClick={() => navigate('/upload')}
-              style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px dashed rgba(255,255,255,0.12)', borderRadius: 12, padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer', minHeight: 160, transition: 'all 0.2s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)' }}>
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: 'rgba(255,255,255,0.5)' }}>+</div>
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>Add your first subject</span>
+              style={{ background: 'var(--surface-1)', border: '0.5px dashed var(--border-soft)', borderRadius: 12, padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer', minHeight: 160, transition: 'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-1)'; e.currentTarget.style.borderColor = 'var(--border-soft)' }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--surface-3)', border: '0.5px solid var(--border-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: 'var(--text-muted)' }}>+</div>
+              <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Add your first subject</span>
             </button>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
             {filter === 'all' && !search && (
               <button onClick={() => navigate('/upload')}
-                style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px dashed rgba(255,255,255,0.12)', borderRadius: 12, padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer', minHeight: 160, transition: 'all 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)' }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: 'rgba(255,255,255,0.5)' }}>+</div>
-                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>Add new subject</span>
+                style={{ background: 'var(--surface-1)', border: '0.5px dashed var(--border-soft)', borderRadius: 12, padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer', minHeight: 160, transition: 'all 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-1)'; e.currentTarget.style.borderColor = 'var(--border-soft)' }}>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--surface-3)', border: '0.5px solid var(--border-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: 'var(--text-muted)' }}>+</div>
+                <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Add new subject</span>
               </button>
             )}
 
@@ -275,7 +286,7 @@ export default function Notes() {
             ))}
 
             {filtered.length === 0 && (
-              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>
+              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-faint)', fontSize: 13 }}>
                 {search ? `No subjects matching "${search}"` : 'No subjects in this category yet.'}
               </div>
             )}
