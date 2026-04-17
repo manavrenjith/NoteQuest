@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import CertificateModal from '../components/CertificateModal'
 import DailyChallenge from '../components/DailyChallenge'
 import LevelUpModal from '../components/LevelUpModal'
+import Navbar from '../components/Navbar'
 import Roadmap from '../components/Roadmap'
 import StudyHeatmap from '../components/StudyHeatmap'
-import ThemeToggle from '../components/ThemeToggle'
 import VelocityChart from '../components/VelocityChart'
 import {
   checkAndUpdateStreak,
@@ -124,7 +124,6 @@ function getEstimateEmoji(days) {
 
 function Dashboard() {
   const navigate = useNavigate()
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [subjects, setSubjects] = useState([])
   const [expandedMap, setExpandedMap] = useState({})
   const [searchQuery, setSearchQuery] = useState('')
@@ -349,10 +348,6 @@ function Dashboard() {
     navigate('/upload')
   }
 
-  const closeDrawer = () => {
-    setIsDrawerOpen(false)
-  }
-
   const renderListView = (subject) => (
     <div>
       {(subject.chapters || []).map((chapter) => (
@@ -462,147 +457,7 @@ function Dashboard() {
         />
       ) : null}
 
-      <header className="sticky top-0 z-30 border-b border-[#1a1a1a] bg-[rgba(0,0,0,0.96)] backdrop-blur-[8px]">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <button
-            type="button"
-            onClick={() => setIsDrawerOpen((prev) => !prev)}
-            aria-label="Toggle menu"
-            aria-expanded={isDrawerOpen}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg transition"
-            style={{ border: '0.5px solid var(--border-strong)', color: 'var(--text-muted)' }}
-          >
-            {isDrawerOpen ? '×' : '☰'}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-          >
-            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: '#7F77DD' }} aria-hidden="true" />
-            <span style={{ fontSize: '15px', fontWeight: 500 }}>NoteQuest</span>
-          </button>
-          <div className="flex items-center gap-2">
-            <nav className="hidden items-center gap-4 text-sm sm:gap-6 md:flex">
-              <button type="button" className="font-semibold text-white" onClick={() => navigate('/dashboard')}>
-                Dashboard
-              </button>
-              <button type="button" className="text-[#888] transition hover:text-white" onClick={goToUpload}>
-                Upload notes
-              </button>
-              <button
-                type="button"
-                className="text-[#888] transition hover:text-white"
-                onClick={() => navigate('/settings')}
-              >
-                Settings
-              </button>
-            </nav>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      {isDrawerOpen ? (
-        <>
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={closeDrawer}
-            className="fixed inset-0 z-40"
-            style={{ background: 'color-mix(in srgb, var(--surface-0) 45%, transparent)' }}
-          />
-
-          <aside
-            className="fixed left-0 top-0 z-50 h-full w-72 p-4"
-            style={{ borderRight: '0.5px solid var(--border-soft)', background: 'var(--surface-1)' }}
-          >
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Menu</span>
-              <button
-                type="button"
-                onClick={closeDrawer}
-                aria-label="Close drawer"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg"
-                style={{ border: '0.5px solid var(--border-strong)', color: 'var(--text-muted)' }}
-              >
-                ×
-              </button>
-            </div>
-
-            <nav className="flex flex-col gap-2 text-sm">
-              <button
-                type="button"
-                onClick={() => {
-                  closeDrawer()
-                  navigate('/dashboard')
-                }}
-                className="rounded-lg px-3 py-2 text-left"
-                style={{
-                  border: '0.5px solid var(--border-strong)',
-                  background: 'var(--surface-2)',
-                  color: 'var(--text-primary)',
-                }}
-              >
-                Dashboard
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  closeDrawer()
-                  navigate('/upload')
-                }}
-                className="rounded-lg px-3 py-2 text-left transition"
-                style={{ border: '0.5px solid var(--border-strong)', color: 'var(--text-muted)' }}
-                onMouseEnter={(event) => {
-                  event.currentTarget.style.color = 'var(--text-primary)'
-                }}
-                onMouseLeave={(event) => {
-                  event.currentTarget.style.color = 'var(--text-muted)'
-                }}
-              >
-                Upload notes
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  closeDrawer()
-                  navigate('/leaderboard')
-                }}
-                className="rounded-lg px-3 py-2 text-left transition"
-                style={{ border: '0.5px solid var(--border-strong)', color: 'var(--text-muted)' }}
-                onMouseEnter={(event) => {
-                  event.currentTarget.style.color = 'var(--text-primary)'
-                }}
-                onMouseLeave={(event) => {
-                  event.currentTarget.style.color = 'var(--text-muted)'
-                }}
-              >
-                Leaderboard
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  closeDrawer()
-                  navigate('/settings')
-                }}
-                className="rounded-lg px-3 py-2 text-left transition"
-                style={{ border: '0.5px solid var(--border-strong)', color: 'var(--text-muted)' }}
-                onMouseEnter={(event) => {
-                  event.currentTarget.style.color = 'var(--text-primary)'
-                }}
-                onMouseLeave={(event) => {
-                  event.currentTarget.style.color = 'var(--text-muted)'
-                }}
-              >
-                Settings
-              </button>
-            </nav>
-          </aside>
-        </>
-      ) : null}
+      <Navbar />
 
       <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
 
