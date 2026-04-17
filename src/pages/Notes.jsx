@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar'
 import { getSubjects, deleteSubject } from '../utils/storage'
 
 const EMOJI_MAP = (name = '') => {
@@ -38,81 +39,6 @@ const formatDate = (dateStr) => {
   } catch {
     return ''
   }
-}
-
-const NAV_LINKS = [
-  { label: 'Dashboard', path: '/dashboard' },
-  { label: 'My notes', path: '/notes' },
-  { label: 'Leaderboard', path: '/leaderboard' },
-  { label: 'Settings', path: '/settings' },
-]
-
-function Navbar({ xp, level }) {
-  const navigate = useNavigate()
-  const current = '/notes'
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 4)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  return (
-    <header style={{
-      position: 'sticky', top: 0, zIndex: 40,
-      background: 'rgba(0,0,0,0.97)',
-      backdropFilter: 'blur(10px)',
-      borderBottom: scrolled ? '0.5px solid rgba(255,255,255,0.07)' : '0.5px solid transparent',
-      transition: 'border-color 0.2s',
-    }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 1.5rem', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <button onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer' }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#7F77DD', display: 'inline-block' }} />
-          <span style={{ fontSize: 15, fontWeight: 500, color: '#fff' }}>NoteQuest</span>
-        </button>
-
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 4 }} className="hidden md:flex">
-          {NAV_LINKS.map(link => (
-            <button key={link.path} onClick={() => navigate(link.path)}
-              style={{
-                fontSize: 13, padding: '6px 10px', borderRadius: 6, border: 'none', cursor: 'pointer',
-                background: current === link.path ? 'rgba(255,255,255,0.08)' : 'transparent',
-                color: current === link.path ? '#fff' : 'rgba(255,255,255,0.4)',
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => { if (current !== link.path) e.currentTarget.style.color = 'rgba(255,255,255,0.75)' }}
-              onMouseLeave={e => { if (current !== link.path) e.currentTarget.style.color = 'rgba(255,255,255,0.4)' }}>
-              {link.label}
-            </button>
-          ))}
-          <div style={{ width: '0.5px', height: 16, background: 'rgba(255,255,255,0.1)', margin: '0 6px' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 99, padding: '4px 10px' }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7F77DD', display: 'inline-block' }} />
-            <span style={{ fontSize: 11, fontWeight: 500, color: '#fff' }}>{xp} XP</span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>· {level}</span>
-          </div>
-        </nav>
-
-        <button className="flex md:hidden" onClick={() => setMenuOpen(p => !p)}
-          style={{ width: 34, height: 34, borderRadius: 7, border: '0.5px solid rgba(255,255,255,0.12)', background: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: 14 }}>
-          ☰
-        </button>
-      </div>
-
-      {menuOpen && (
-        <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)', padding: '0.75rem 1.5rem 1rem' }}>
-          {NAV_LINKS.map(link => (
-            <button key={link.path} onClick={() => { navigate(link.path); setMenuOpen(false) }}
-              style={{ display: 'block', width: '100%', textAlign: 'left', fontSize: 13, padding: '8px 0', background: 'none', border: 'none', cursor: 'pointer', color: current === link.path ? '#fff' : 'rgba(255,255,255,0.4)' }}>
-              {link.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </header>
-  )
 }
 
 function SubjectCard({ subject, onOpen, onDelete }) {
@@ -200,14 +126,6 @@ export default function Notes() {
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
-  const xp = parseInt(localStorage.getItem('studyquest_xp') || '0')
-  const level = (() => {
-    if (xp >= 1000) return 'Master'
-    if (xp >= 600) return 'Expert'
-    if (xp >= 300) return 'Scholar'
-    if (xp >= 100) return 'Learner'
-    return 'Novice'
-  })()
 
   useEffect(() => {
     setSubjects(getSubjects())
@@ -262,7 +180,7 @@ export default function Notes() {
 
   return (
     <div style={{ background: '#000', minHeight: '100vh', color: '#fff' }}>
-      <Navbar xp={xp} level={level} />
+      <Navbar />
 
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem' }}>
 
