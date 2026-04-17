@@ -162,7 +162,7 @@ function UploadNotes() {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-slate-800/80 p-6 shadow-xl shadow-black/20">
+    <div className="rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-6">
       <div className="mb-4">
         <label htmlFor="subjectName" className="mb-2 block text-sm font-medium text-slate-300">
           Subject Name
@@ -173,7 +173,7 @@ function UploadNotes() {
           placeholder="e.g. Physics"
           value={subjectName}
           onChange={(event) => setSubjectName(event.target.value)}
-          className="w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-indigo-500"
+          className="w-full rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-indigo-500"
         />
       </div>
 
@@ -183,8 +183,7 @@ function UploadNotes() {
         </label>
         {pdfName && notes ? (
           <div
-            className="mb-2 flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs"
-            style={{ color: '#3B6D11', backgroundColor: '#EAF3DE' }}
+            className="mb-2 flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-200"
           >
             ✓ PDF loaded - {notes.split(/\s+/).filter(Boolean).length} words extracted from {pdfName}
           </div>
@@ -195,7 +194,7 @@ function UploadNotes() {
           placeholder="Paste your class notes here..."
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
-          className="w-full resize-y rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-indigo-500"
+          className="w-full resize-y rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-indigo-500"
         />
       </div>
 
@@ -204,7 +203,7 @@ function UploadNotes() {
           <div className="flex items-center gap-2.5">
             <label className="cursor-pointer">
               <input type="file" accept=".txt,.pdf" onChange={handleFileUpload} className="hidden" />
-              <div className="inline-flex items-center gap-1.5 rounded-lg border border-slate-600 bg-slate-900 px-3.5 py-1.5 text-sm text-slate-300 transition hover:border-indigo-500 hover:text-white">
+              <div className="inline-flex items-center gap-1.5 rounded-lg border border-[#1a1a1a] bg-[#0d0d0d] px-3.5 py-1.5 text-sm text-slate-300 transition hover:border-indigo-500 hover:text-white">
                 <span>{pdfName ? '📄' : '📁'}</span>
                 <span>{pdfName || 'Upload .txt or .pdf'}</span>
               </div>
@@ -219,7 +218,7 @@ function UploadNotes() {
                   setPdfWarning('')
                   setError('')
                 }}
-                className="bg-transparent text-xs text-slate-400 transition hover:text-white"
+                className="rounded-md bg-transparent px-1.5 py-1 text-xs text-slate-400 transition hover:bg-white/5 hover:text-white"
               >
                 ✕ clear
               </button>
