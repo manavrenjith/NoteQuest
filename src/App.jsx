@@ -5,6 +5,7 @@ import LeaderboardPage from './pages/LeaderboardPage'
 import Notes from './pages/Notes'
 import Quiz from './pages/Quiz'
 import Settings from './pages/Settings'
+import SubjectDetail from './pages/SubjectDetail'
 import Upload from './pages/Upload'
 
 function App() {
@@ -13,8 +14,10 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/notes" element={<Notes />} />
+      <Route path="/subject/:id" element={<SubjectDetail />} />
       <Route path="/leaderboard" element={<LeaderboardPage />} />
       <Route path="/quiz" element={<Quiz />} />
+      <Route path="/quiz/:subjectId/:chapterId" element={<Quiz />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/upload" element={<Upload />} />
       <Route path="*" element={<Navigate to="/" replace />} />

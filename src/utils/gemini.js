@@ -228,3 +228,35 @@ index must be the 0-based index from the list above.`,
     throw new Error('Failed to pick daily challenge. Please try again.')
   }
 }
+
+export async function getSubjectStudyTip(subjectName, chapters) {
+  const chapterList = (Array.isArray(chapters) ? chapters : [])
+    .map((chapter) => chapter?.title)
+    .filter(Boolean)
+    .join(', ')
+
+  try {
+    const response = await getClient().chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'user',
+          content: `Give ONE practical study tip (max 20 words) for a student studying "${subjectName}". Chapters: ${chapterList}. Return only the tip text, nothing else.`,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 60,
+    })
+
+    return response.choices[0]?.message?.content?.trim() || ''
+  } catch (error) {
+    if (error.message?.includes('429')) {
+      throw new Error('Too many requests. Please wait a moment and try again.')
+    }
+    if (error.message?.includes('401')) {
+      throw new Error('Invalid API key. Please check your .env file.')
+    }
+    console.error('Groq API error:', error)
+    throw new Error('Failed to fetch subject study tip. Please try again.')
+  }
+}

@@ -188,7 +188,7 @@ export default function Notes() {
   }
 
   const handleOpen = (subject) => {
-    navigate('/dashboard', { state: { openSubjectId: subject.id } })
+    navigate(`/subject/${subject.id}`)
   }
 
   const FILTERS = [

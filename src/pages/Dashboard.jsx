@@ -593,7 +593,7 @@ function Dashboard() {
                 >
                   <button
                     type="button"
-                    onClick={() => handleToggleSubject(subject.id)}
+                    onClick={() => navigate(`/subject/${subject.id}`)}
                     className="w-full px-4 py-4 text-left"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -707,7 +707,7 @@ function Dashboard() {
                 >
                   <button
                     type="button"
-                    onClick={() => handleToggleSubject(subject.id)}
+                    onClick={() => navigate(`/subject/${subject.id}`)}
                     className="w-full px-4 py-4 text-left"
                   >
                     <div className="flex items-start justify-between gap-3">

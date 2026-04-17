@@ -1,17 +1,30 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { useToast } from '../hooks/useToast'
 import { generateQuiz } from '../utils/gemini'
-import { getXP, saveXP } from '../utils/storage'
+import { getSubjects, getXP, saveXP } from '../utils/storage'
 
 function Quiz() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { subjectId, chapterId } = useParams()
   const { success, warning, info } = useToast()
 
-  const chapter = location.state?.chapter
-  const subject = location.state?.subject
+  const stateChapter = location.state?.chapter
+  const stateSubject = location.state?.subject
+
+  const subject = useMemo(() => {
+    if (stateSubject) return stateSubject
+    if (!subjectId) return null
+    return getSubjects().find((item) => item.id === subjectId) || null
+  }, [stateSubject, subjectId])
+
+  const chapter = useMemo(() => {
+    if (stateChapter) return stateChapter
+    if (!subject || !chapterId) return null
+    return (subject.chapters || []).find((item) => item.id === chapterId) || null
+  }, [chapterId, stateChapter, subject])
 
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')

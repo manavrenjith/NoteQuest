@@ -12,6 +12,7 @@ export default function Navbar({
   xp: xpProp,
   rank: rankProp,
   showSettingsHamburger = true,
+  showXpPill = false,
   onSettingsHamburgerClick,
 }) {
   const { pathname } = useLocation()
@@ -93,12 +94,16 @@ export default function Navbar({
                   </button>
                 )
               })}
-              {/* <div className="mx-1 h-4 w-px bg-white/15" />
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[11px] text-slate-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-                <span className="font-semibold text-white">{xp} XP</span>
-                <span>· {rank}</span>
-              </div> */}
+              {showXpPill && (
+                <>
+                  <div className="mx-1 h-4 w-px bg-white/15" />
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[11px] text-slate-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                    <span className="font-semibold text-white">{xp} XP</span>
+                    <span>· {rank}</span>
+                  </div>
+                </>
+              )}
             </>
           )}
 
