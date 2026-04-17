@@ -3,6 +3,7 @@ import { getLevel, getXP } from '../utils/storage'
 
 const appLinks = [
   { label: 'Dashboard', path: '/dashboard' },
+  { label: 'My notes', path: '/notes' },
   { label: 'Upload notes', path: '/upload' },
   { label: 'Leaderboard', path: '/leaderboard' },
   { label: 'Settings', path: '/settings' },
