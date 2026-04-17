@@ -193,6 +193,17 @@ function Settings() {
                 </button>
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setDrawerOpen(false)
+                navigate('/leaderboard')
+              }}
+              className="mt-3 w-full rounded-xl border border-[#888] bg-[#0d0d0d] px-4 py-2.5 text-left font-semibold text-slate-100 transition hover:border-indigo-400"
+            >
+              Go to Leaderboard
+            </button>
           </aside>
         </>
       )}
