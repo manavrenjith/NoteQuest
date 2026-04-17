@@ -11,7 +11,7 @@ const appLinks = [
 export default function Navbar({
   xp: xpProp,
   rank: rankProp,
-  showSettingsHamburger = false,
+  showSettingsHamburger = true,
   onSettingsHamburgerClick,
 }) {
   const { pathname } = useLocation()
@@ -21,6 +21,14 @@ export default function Navbar({
 
   // Home route uses marketing links; app routes use navigation links.
   const isLanding = pathname === '/'
+  const handleSettingsHamburgerClick = () => {
+    if (onSettingsHamburgerClick) {
+      onSettingsHamburgerClick()
+      return
+    }
+
+    navigate('/settings')
+  }
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur">
@@ -85,39 +93,40 @@ export default function Navbar({
                   </button>
                 )
               })}
-              {showSettingsHamburger && (
-                <>
-                  <div className="mx-1 h-4 w-px bg-white/15" />
-                  <button
-                    type="button"
-                    onClick={onSettingsHamburgerClick}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/15 text-slate-200 transition hover:bg-white/10 hover:text-white"
-                    aria-label="Open settings drawer"
-                    aria-controls="settings-drawer"
-                  >
-                    <svg
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M4 7h16M4 12h16M4 17h16"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </button>
-                </>
-              )}
               {/* <div className="mx-1 h-4 w-px bg-white/15" />
               <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[11px] text-slate-300">
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
                 <span className="font-semibold text-white">{xp} XP</span>
                 <span>· {rank}</span>
               </div> */}
+            </>
+          )}
+
+          {showSettingsHamburger && (
+            <>
+              <div className="mx-1 h-4 w-px bg-white/15" />
+              <button
+                type="button"
+                onClick={handleSettingsHamburgerClick}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/15 text-slate-200 transition hover:bg-white/10 hover:text-white"
+                aria-label="Open settings drawer"
+                aria-controls={onSettingsHamburgerClick ? 'settings-drawer' : undefined}
+              >
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 7h16M4 12h16M4 17h16"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
             </>
           )}
         </div>
