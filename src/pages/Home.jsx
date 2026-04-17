@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ThemeToggle from '../components/ThemeToggle'
+import Navbar from '../components/Navbar'
 
 function useReveal(delay) {
   const [visible, setVisible] = useState(false)
@@ -17,8 +17,6 @@ function useReveal(delay) {
 
 function Home() {
   const navigate = useNavigate()
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
 
   const tagReveal = useReveal(0)
   const headingReveal = useReveal(100)
@@ -29,11 +27,7 @@ function Home() {
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth'
-    const onScroll = () => setIsScrolled(window.scrollY > 6)
-    onScroll()
-    window.addEventListener('scroll', onScroll)
     return () => {
-      window.removeEventListener('scroll', onScroll)
       document.documentElement.style.scrollBehavior = ''
     }
   }, [])
@@ -42,7 +36,6 @@ function Home() {
     const node = document.getElementById(id)
     if (node) {
       node.scrollIntoView({ block: 'start' })
-      setMenuOpen(false)
     }
   }
 
@@ -132,53 +125,7 @@ function Home() {
 
   return (
     <main style={{ background: 'var(--surface-0)', color: 'var(--text-primary)', minHeight: '100vh', fontFamily: 'inherit' }}>
-
-      <header
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 30,
-          background: 'color-mix(in srgb, var(--surface-0) 96%, transparent)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: isScrolled ? '0.5px solid var(--border-soft)' : '0.5px solid transparent',
-          transition: 'border-color 0.2s',
-        }}
-      >
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 56 }}>
-          <button type="button" onClick={() => goToSection('top')} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer' }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>NoteQuest</span>
-          </button>
-
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 16 }}>
-            <ThemeToggle />
-
-            <button type="button" onClick={() => setMenuOpen(p => !p)} aria-label="Toggle menu" aria-expanded={menuOpen}
-              style={{ display: 'none', width: 36, height: 36, alignItems: 'center', justifyContent: 'center', border: '0.5px solid #2a2a2a', borderRadius: 8, background: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16 }}
-              className="flex md:hidden">
-              ☰
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <div style={{ borderTop: '0.5px solid #1a1a1a', padding: '0.75rem 1.5rem 1rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {[['How it works', 'how-it-works'], ['Features', 'features']].map(([label, id]) => (
-                <button key={id} type="button" onClick={() => goToSection(id)}
-                  style={{ fontSize: 13, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: '8px 0' }}>
-                  {label}
-                </button>
-              ))}
-              <button type="button" onClick={() => { setMenuOpen(false); navigate('/upload') }}
-                style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '8px 14px', cursor: 'pointer', textAlign: 'left' }}>
-                Get started
-              </button>
-            </div>
-          </div>
-        )}
-      </header>
+      <Navbar />
 
       <section id="top" style={{ maxWidth: 900, margin: '0 auto', padding: '4rem 1.5rem 3rem', textAlign: 'center', borderBottom: '0.5px solid #111' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
