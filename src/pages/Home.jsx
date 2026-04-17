@@ -150,11 +150,6 @@ function Home() {
             <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>NoteQuest</span>
           </button>
 
-          <nav style={{ display: 'flex', alignItems: 'center', gap: 16, marginLeft: 'auto' }} className="hidden md:flex">
-            <button type="button" onClick={() => goToSection('how-it-works')} style={{ fontSize: 13, color: 'var(--text-subtle)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = 'var(--text-primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-subtle)'}>How it works</button>
-            <button type="button" onClick={() => goToSection('features')} style={{ fontSize: 13, color: 'var(--text-subtle)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = 'var(--text-primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-subtle)'}>Features</button>
-            <button type="button" onClick={() => navigate('/upload')} style={{ fontSize: 13, color: 'var(--text-primary)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = '0.9'} onMouseLeave={e => e.target.style.opacity = '1'}>Get started</button>
-          </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 16 }}>
             <ThemeToggle />

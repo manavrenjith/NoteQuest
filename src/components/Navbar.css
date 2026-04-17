@@ -1,0 +1,129 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 52px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.96);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.logo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7f77dd;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.nav-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.divider {
+  width: 0.5px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 4px;
+}
+
+.nav-btn {
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 7px;
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.nav-btn:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-btn-primary {
+  background: #7f77dd;
+  border-color: #7f77dd;
+  color: #fff;
+  font-weight: 500;
+}
+
+.nav-btn-primary:hover {
+  opacity: 0.85;
+}
+
+.xp-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.xp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #7f77dd;
+  flex-shrink: 0;
+}
+
+.xp-val {
+  color: #fff;
+  font-weight: 500;
+}
