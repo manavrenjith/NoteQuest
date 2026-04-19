@@ -82,6 +82,60 @@ export default function AdditionalSettingsDrawer({ open, onClose, theme, setThem
           </button>
         </div>
 
+        <button
+          type="button"
+          onClick={() => {
+            onClose()
+            navigate('/profile')
+          }}
+          style={{
+            ...settingsActionButtonStyle,
+            padding: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--accent)'
+            e.currentTarget.style.background = 'var(--surface-2)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--border-strong)'
+            e.currentTarget.style.background = 'var(--surface-1)'
+          }}
+        >
+          <span
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: '50%',
+              background: 'rgba(127,119,221,0.2)',
+              border: '0.5px solid rgba(127,119,221,0.35)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 18,
+              fontWeight: 500,
+              color: 'rgba(175,169,236,1)',
+              flexShrink: 0,
+              letterSpacing: 0.6,
+            }}
+          >
+            {initials}
+          </span>
+
+          <span style={{ minWidth: 0, textAlign: 'left' }}>
+            <span style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ fontSize: 20, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.15 }}>
+                {username || 'Anonymous'}
+              </span>
+            </span>
+            <span style={{ marginTop: 2, display: 'block', fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.25 }}>
+              {rank} · {completedTopics} topics · {streak}d streak
+            </span>
+          </span>
+        </button>
+
         <div
           style={{
             marginTop: 14,
@@ -158,62 +212,6 @@ export default function AdditionalSettingsDrawer({ open, onClose, theme, setThem
           }}
         >
           Go to Leaderboard
-        </button>
-
-        <div style={{ height: '0.5px', background: 'var(--border-soft)', margin: '8px 0' }} />
-
-        <button
-          type="button"
-          onClick={() => {
-            onClose()
-            navigate('/profile')
-          }}
-          style={{
-            ...settingsActionButtonStyle,
-            padding: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.borderColor = 'var(--accent)'
-            e.currentTarget.style.background = 'var(--surface-2)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'var(--border-strong)'
-            e.currentTarget.style.background = 'var(--surface-1)'
-          }}
-        >
-          <span
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: '50%',
-              background: 'rgba(127,119,221,0.2)',
-              border: '0.5px solid rgba(127,119,221,0.35)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 18,
-              fontWeight: 500,
-              color: 'rgba(175,169,236,1)',
-              flexShrink: 0,
-              letterSpacing: 0.6,
-            }}
-          >
-            {initials}
-          </span>
-
-          <span style={{ minWidth: 0, textAlign: 'left' }}>
-            <span style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ fontSize: 20, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.15 }}>
-                {username || 'Anonymous'}
-              </span>
-            </span>
-            <span style={{ marginTop: 2, display: 'block', fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.25 }}>
-              {rank} · {completedTopics} topics · {streak}d streak
-            </span>
-          </span>
         </button>
       </aside>
     </>
