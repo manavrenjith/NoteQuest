@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getLevel, getXP } from '../utils/storage'
+import { getLevel, getXP, getStreak, getSubjects } from '../utils/storage'
 import { applyTheme, getTheme, onThemeChange } from '../utils/theme'
 
 const appLinks = [
@@ -22,9 +22,13 @@ export default function Navbar({
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [theme, setTheme] = useState(() => getTheme())
   const xp = Number.isFinite(xpProp) ? xpProp : getXP()
+  const streak = getStreak()
+  const subjects = getSubjects()
   const rank = rankProp || getLevel(xp).title
   const username = localStorage.getItem('nq_username') || ''
   const initials = username.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('') || '?'
+  const allTopics = subjects.flatMap(subject => subject.chapters?.flatMap(chapter => chapter.topics) ?? [])
+  const completedTopics = allTopics.filter(topic => topic.completed).length
 
   useEffect(() => {
     applyTheme(theme)
@@ -39,10 +43,11 @@ export default function Navbar({
     width: '100%',
     borderRadius: 12,
     border: '0.5px solid var(--border-strong)',
-    background: 'var(--surface-2)',
+    background: 'var(--surface-1)',
     padding: '10px 16px',
     textAlign: 'left',
     fontWeight: 600,
+    fontSize: 14,
     color: 'var(--text-primary)',
     transition: 'all 0.15s',
     cursor: 'pointer',
@@ -211,15 +216,16 @@ export default function Navbar({
             className="fixed right-0 top-0 z-50 h-full w-full max-w-sm p-5 shadow-2xl"
             style={{
               borderLeft: '0.5px solid var(--border-strong)',
-              background: 'var(--surface-1)',
+              background: 'var(--surface-0)',
               color: 'var(--text-primary)',
+              boxShadow: '-10px 0 30px rgba(0,0,0,0.16)',
             }}
             role="dialog"
             aria-modal="true"
             aria-label="Additional settings"
           >
             <div className="flex items-center justify-between">
-              <h2 style={{ fontSize: 28, fontWeight: 600, color: 'var(--text-primary)' }}>Additional Settings</h2>
+              <h2 style={{ fontSize: 38, fontWeight: 600, lineHeight: 1.1, color: 'var(--text-primary)' }}>Additional Settings</h2>
               <button
                 type="button"
                 onClick={closeSettings}
@@ -249,11 +255,11 @@ export default function Navbar({
 
             <div
               style={{
-                marginTop: 12,
+                marginTop: 14,
                 borderRadius: 12,
                 border: '0.5px solid var(--border-strong)',
-                background: 'var(--surface-2)',
-                padding: 12,
+                background: 'var(--surface-1)',
+                padding: 14,
               }}
             >
               <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Theme</p>
@@ -263,7 +269,7 @@ export default function Navbar({
                   display: 'inline-flex',
                   borderRadius: 12,
                   border: '0.5px solid var(--border-strong)',
-                  background: 'var(--surface-3)',
+                  background: 'var(--surface-2)',
                   padding: 4,
                 }}
               >
@@ -280,6 +286,7 @@ export default function Navbar({
                     color: theme === 'dark' ? 'rgba(255,255,255,1)' : 'var(--text-muted)',
                     border: 'none',
                     cursor: 'pointer',
+                    minWidth: 52,
                   }}
                 >
                   Dark
@@ -297,6 +304,7 @@ export default function Navbar({
                     color: theme === 'light' ? 'rgba(255,255,255,1)' : 'var(--text-muted)',
                     border: 'none',
                     cursor: 'pointer',
+                    minWidth: 52,
                   }}
                 >
                   Light
@@ -313,11 +321,11 @@ export default function Navbar({
               style={{ ...settingsActionButtonStyle, marginTop: 12 }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--accent)'
-                e.currentTarget.style.background = 'var(--surface-3)'
+                e.currentTarget.style.background = 'var(--surface-2)'
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border-strong)'
-                e.currentTarget.style.background = 'var(--surface-2)'
+                e.currentTarget.style.background = 'var(--surface-1)'
               }}
             >
               Go to Leaderboard
@@ -331,36 +339,51 @@ export default function Navbar({
                 closeSettings()
                 navigate('/profile')
               }}
-              style={settingsActionButtonStyle}
+              style={{
+                ...settingsActionButtonStyle,
+                padding: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+              }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--accent)'
-                e.currentTarget.style.background = 'var(--surface-3)'
+                e.currentTarget.style.background = 'var(--surface-2)'
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border-strong)'
-                e.currentTarget.style.background = 'var(--surface-2)'
+                e.currentTarget.style.background = 'var(--surface-1)'
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-                <span
-                  style={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: '50%',
-                    background: 'rgba(127,119,221,0.2)',
-                    border: '0.5px solid rgba(127,119,221,0.35)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 10,
-                    fontWeight: 500,
-                    color: 'rgba(175,169,236,1)',
-                    flexShrink: 0,
-                  }}
-                >
-                  {initials}
+              <span
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: '50%',
+                  background: 'rgba(127,119,221,0.2)',
+                  border: '0.5px solid rgba(127,119,221,0.35)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 18,
+                  fontWeight: 500,
+                  color: 'rgba(175,169,236,1)',
+                  flexShrink: 0,
+                  letterSpacing: 0.6,
+                }}
+              >
+                {initials}
+              </span>
+
+              <span style={{ minWidth: 0, textAlign: 'left' }}>
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ fontSize: 20, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.15 }}>
+                    {username || 'Anonymous'}
+                  </span>
                 </span>
-                <span>{username || 'View profile'}</span>
+                <span style={{ marginTop: 2, display: 'block', fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.25 }}>
+                  {rank} · {completedTopics} topics · {streak}d streak
+                </span>
               </span>
             </button>
           </aside>
