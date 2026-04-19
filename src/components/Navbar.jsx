@@ -38,12 +38,12 @@ export default function Navbar({
   const settingsActionButtonStyle = {
     width: '100%',
     borderRadius: 12,
-    border: '0.5px solid rgba(255,255,255,0.2)',
-    background: 'rgba(255,255,255,0.02)',
+    border: '0.5px solid var(--border-strong)',
+    background: 'var(--surface-2)',
     padding: '10px 16px',
     textAlign: 'left',
     fontWeight: 600,
-    color: 'rgba(241,245,249,1)',
+    color: 'var(--text-primary)',
     transition: 'all 0.15s',
     cursor: 'pointer',
   }
@@ -201,23 +201,38 @@ export default function Navbar({
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 bg-black/50"
+            className="fixed inset-0 z-40"
+            style={{ background: 'rgba(0,0,0,0.45)' }}
             onClick={closeSettings}
             aria-label="Close settings drawer overlay"
           />
           <aside
             id="settings-drawer"
-            className="fixed right-0 top-0 z-50 h-full w-full max-w-sm border-l border-white/15 bg-black p-5 shadow-2xl"
+            className="fixed right-0 top-0 z-50 h-full w-full max-w-sm p-5 shadow-2xl"
+            style={{
+              borderLeft: '0.5px solid var(--border-strong)',
+              background: 'var(--surface-1)',
+              color: 'var(--text-primary)',
+            }}
             role="dialog"
             aria-modal="true"
             aria-label="Additional settings"
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">Additional Settings</h2>
+              <h2 style={{ fontSize: 28, fontWeight: 600, color: 'var(--text-primary)' }}>Additional Settings</h2>
               <button
                 type="button"
                 onClick={closeSettings}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-300 transition hover:bg-white/10 hover:text-white"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md transition"
+                style={{ color: 'var(--text-muted)' }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'var(--surface-3)'
+                  e.currentTarget.style.color = 'var(--text-primary)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'transparent'
+                  e.currentTarget.style.color = 'var(--text-muted)'
+                }}
                 aria-label="Close settings drawer"
               >
                 <svg
@@ -236,19 +251,19 @@ export default function Navbar({
               style={{
                 marginTop: 12,
                 borderRadius: 12,
-                border: '0.5px solid rgba(255,255,255,0.15)',
-                background: 'rgba(255,255,255,0.02)',
+                border: '0.5px solid var(--border-strong)',
+                background: 'var(--surface-2)',
                 padding: 12,
               }}
             >
-              <p style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,1)' }}>Theme</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Theme</p>
               <div
                 style={{
                   marginTop: 12,
                   display: 'inline-flex',
                   borderRadius: 12,
-                  border: '0.5px solid rgba(255,255,255,0.2)',
-                  background: 'rgba(255,255,255,0.02)',
+                  border: '0.5px solid var(--border-strong)',
+                  background: 'var(--surface-3)',
                   padding: 4,
                 }}
               >
@@ -261,8 +276,8 @@ export default function Navbar({
                     fontSize: 14,
                     fontWeight: 600,
                     transition: 'all 0.15s',
-                    background: theme === 'dark' ? 'rgba(127,119,221,1)' : 'transparent',
-                    color: theme === 'dark' ? 'rgba(255,255,255,1)' : 'rgba(226,232,240,1)',
+                    background: theme === 'dark' ? 'var(--accent)' : 'transparent',
+                    color: theme === 'dark' ? 'rgba(255,255,255,1)' : 'var(--text-muted)',
                     border: 'none',
                     cursor: 'pointer',
                   }}
@@ -278,8 +293,8 @@ export default function Navbar({
                     fontSize: 14,
                     fontWeight: 600,
                     transition: 'all 0.15s',
-                    background: theme === 'light' ? 'rgba(127,119,221,1)' : 'transparent',
-                    color: theme === 'light' ? 'rgba(255,255,255,1)' : 'rgba(226,232,240,1)',
+                    background: theme === 'light' ? 'var(--accent)' : 'transparent',
+                    color: theme === 'light' ? 'rgba(255,255,255,1)' : 'var(--text-muted)',
                     border: 'none',
                     cursor: 'pointer',
                   }}
@@ -297,16 +312,18 @@ export default function Navbar({
               }}
               style={{ ...settingsActionButtonStyle, marginTop: 12 }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(127,119,221,0.8)'
+                e.currentTarget.style.borderColor = 'var(--accent)'
+                e.currentTarget.style.background = 'var(--surface-3)'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                e.currentTarget.style.borderColor = 'var(--border-strong)'
+                e.currentTarget.style.background = 'var(--surface-2)'
               }}
             >
               Go to Leaderboard
             </button>
 
-            <div style={{ height: '0.5px', background: 'rgba(255,255,255,0.07)', margin: '4px 0' }} />
+            <div style={{ height: '0.5px', background: 'var(--border-soft)', margin: '8px 0' }} />
 
             <button
               type="button"
@@ -316,10 +333,12 @@ export default function Navbar({
               }}
               style={settingsActionButtonStyle}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(127,119,221,0.8)'
+                e.currentTarget.style.borderColor = 'var(--accent)'
+                e.currentTarget.style.background = 'var(--surface-3)'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                e.currentTarget.style.borderColor = 'var(--border-strong)'
+                e.currentTarget.style.background = 'var(--surface-2)'
               }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>

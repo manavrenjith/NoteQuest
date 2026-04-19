@@ -93,7 +93,7 @@ function StreakCalendar({ activity }) {
   }, [days])
 
   const cellColor = (count) => {
-    if (count === 0) return 'rgba(255,255,255,0.05)'
+    if (count === 0) return 'var(--heatmap-level-0)'
     if (count <= 2)  return 'rgba(127,119,221,0.3)'
     if (count <= 5)  return 'rgba(127,119,221,0.6)'
     return 'rgba(127,119,221,1)'
@@ -111,7 +111,7 @@ function StreakCalendar({ activity }) {
                 style={{
                   width: 12, height: 12, borderRadius: 2,
                   background: cellColor(day.count),
-                  border: day.count === 0 ? '0.5px solid rgba(255,255,255,0.08)' : 'none',
+                  border: day.count === 0 ? '0.5px solid var(--border-soft)' : 'none',
                   transition: 'transform 0.1s',
                   cursor: day.count > 0 ? 'pointer' : 'default',
                 }}
@@ -123,11 +123,11 @@ function StreakCalendar({ activity }) {
         ))}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10, justifyContent: 'flex-end' }}>
-        <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Less</span>
-        {['rgba(255,255,255,0.05)', 'rgba(127,119,221,0.3)', 'rgba(127,119,221,0.6)', 'rgba(127,119,221,1)'].map((c, i) => (
-          <div key={i} style={{ width: 12, height: 12, borderRadius: 2, background: c, border: i === 0 ? '0.5px solid rgba(255,255,255,0.08)' : 'none' }} />
+        <span style={{ fontSize: 10, color: 'var(--text-dim)' }}>Less</span>
+        {['var(--heatmap-level-0)', 'rgba(127,119,221,0.3)', 'rgba(127,119,221,0.6)', 'rgba(127,119,221,1)'].map((c, i) => (
+          <div key={i} style={{ width: 12, height: 12, borderRadius: 2, background: c, border: i === 0 ? '0.5px solid var(--border-soft)' : 'none' }} />
         ))}
-        <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>More</span>
+        <span style={{ fontSize: 10, color: 'var(--text-dim)' }}>More</span>
       </div>
     </div>
   )
@@ -196,9 +196,9 @@ export default function Profile() {
 
   return (
     <div style={{
-      background: '#000',
+      background: 'var(--surface-0)',
       minHeight: '100vh',
-      color: '#fff',
+      color: 'var(--text-primary)',
       fontFamily: 'inherit',
       opacity: fadeIn ? 1 : 0,
       transform: fadeIn ? 'translateY(0)' : 'translateY(8px)',
@@ -210,16 +210,16 @@ export default function Profile() {
         {/* ── Back ── */}
         <button
           onClick={() => navigate(-1)}
-          style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 1.5rem', display: 'flex', alignItems: 'center', gap: 6, transition: 'color 0.15s' }}
-          onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}>
+          style={{ fontSize: 13, color: 'var(--text-dim)', background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 1.5rem', display: 'flex', alignItems: 'center', gap: 6, transition: 'color 0.15s' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-dim)'}>
           ← Back
         </button>
 
         {/* ── Hero card ── */}
         <div style={{
-          background: 'rgba(255,255,255,0.02)',
-          border: '0.5px solid rgba(255,255,255,0.07)',
+          background: 'var(--surface-1)',
+          border: '0.5px solid var(--border-soft)',
           borderRadius: 16,
           padding: '2rem',
           marginBottom: 16,
@@ -254,36 +254,36 @@ export default function Profile() {
                     onKeyDown={e => { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') setEditing(false) }}
                     maxLength={24}
                     style={{
-                      fontSize: 20, fontWeight: 500, color: '#fff',
-                      background: 'rgba(255,255,255,0.05)',
+                      fontSize: 20, fontWeight: 500, color: 'var(--text-primary)',
+                      background: 'var(--surface-2)',
                       border: '0.5px solid rgba(127,119,221,0.5)',
                       borderRadius: 8, padding: '4px 10px',
                       outline: 'none', width: 180,
                     }}
                   />
                   <button onClick={saveName}
-                    style={{ fontSize: 12, padding: '5px 12px', borderRadius: 6, background: 'rgba(127,119,221,0.8)', border: 'none', color: '#fff', cursor: 'pointer' }}>
+                    style={{ fontSize: 12, padding: '5px 12px', borderRadius: 6, background: 'rgba(127,119,221,0.8)', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}>
                     Save
                   </button>
                   <button onClick={() => setEditing(false)}
-                    style={{ fontSize: 12, padding: '5px 10px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}>
+                    style={{ fontSize: 12, padding: '5px 10px', borderRadius: 6, background: 'var(--surface-2)', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
                     ✕
                   </button>
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <h1 style={{ fontSize: 20, fontWeight: 500, color: '#fff', margin: 0 }}>
+                  <h1 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
                     {username || 'Anonymous'}
                   </h1>
                   <button onClick={() => setEditing(true)}
-                    style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, transition: 'color 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.25)'}>
+                    style={{ fontSize: 11, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, transition: 'color 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>
                     ✎ edit
                   </button>
                 </div>
               )}
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', marginTop: 4 }}>
+              <div style={{ fontSize: 13, color: 'var(--text-dim)', marginTop: 4 }}>
                 {levelInfo.title} · {completedTopics} topics · {streak}d streak
               </div>
             </div>
@@ -294,26 +294,26 @@ export default function Profile() {
             style={{
               fontSize: 13, fontWeight: 500, padding: '8px 16px',
               borderRadius: 8, cursor: 'pointer', transition: 'all 0.15s',
-              background: copied ? 'rgba(99,153,34,0.15)' : 'rgba(255,255,255,0.05)',
-              border: `0.5px solid ${copied ? 'rgba(99,153,34,0.3)' : 'rgba(255,255,255,0.1)'}`,
-              color: copied ? 'rgba(151,196,89,1)' : 'rgba(255,255,255,0.6)',
+              background: copied ? 'rgba(99,153,34,0.15)' : 'var(--surface-2)',
+              border: `0.5px solid ${copied ? 'rgba(99,153,34,0.3)' : 'var(--border-soft)'}`,
+              color: copied ? 'rgba(151,196,89,1)' : 'var(--text-muted)',
             }}
-            onMouseEnter={e => { if (!copied) { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff' } }}
-            onMouseLeave={e => { if (!copied) { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)' } }}>
+            onMouseEnter={e => { if (!copied) { e.currentTarget.style.background = 'var(--surface-3)'; e.currentTarget.style.color = 'var(--text-primary)' } }}
+            onMouseLeave={e => { if (!copied) { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-muted)' } }}>
             {copied ? '✓ Copied!' : '↗ Share profile'}
           </button>
         </div>
 
         {/* ── XP + Level ── */}
-        <div style={{ background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '1.5rem', marginBottom: 16 }}>
+        <div style={{ background: 'var(--surface-1)', border: '0.5px solid var(--border-soft)', borderRadius: 16, padding: '1.5rem', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: '#fff' }}>Level progress</div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>Level progress</div>
             <div style={{ fontSize: 13, color: 'rgba(127,119,221,1)', fontWeight: 500 }}>{xp} XP</div>
           </div>
 
           {/* Level steps */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: '1.25rem', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: 1, background: 'rgba(255,255,255,0.07)', transform: 'translateY(-50%)', zIndex: 0 }} />
+            <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: 1, background: 'var(--border-soft)', transform: 'translateY(-50%)', zIndex: 0 }} />
             {LEVEL_STEPS.map((lv, i) => {
               const reached = i <= levelIdx
               const current = i === levelIdx
@@ -323,16 +323,16 @@ export default function Profile() {
                     width: current ? 28 : 20,
                     height: current ? 28 : 20,
                     borderRadius: '50%',
-                    background: reached ? 'rgba(127,119,221,1)' : 'rgba(255,255,255,0.07)',
-                    border: current ? '2px solid rgba(175,169,236,0.6)' : '0.5px solid rgba(255,255,255,0.1)',
+                    background: reached ? 'rgba(127,119,221,1)' : 'var(--surface-2)',
+                    border: current ? '2px solid rgba(175,169,236,0.6)' : '0.5px solid var(--border-soft)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: current ? 12 : 10,
-                    color: reached ? '#fff' : 'rgba(255,255,255,0.25)',
+                    color: reached ? 'var(--text-primary)' : 'var(--text-dim)',
                     transition: 'all 0.3s',
                   }}>
                     {reached ? (current ? '★' : '✓') : '·'}
                   </div>
-                  <div style={{ fontSize: 10, color: reached ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)', fontWeight: current ? 500 : 400 }}>
+                  <div style={{ fontSize: 10, color: reached ? 'var(--text-primary)' : 'var(--text-dim)', fontWeight: current ? 500 : 400 }}>
                     {lv}
                   </div>
                 </div>
@@ -343,10 +343,10 @@ export default function Profile() {
           {/* XP bar */}
           {levelInfo.next && (
             <>
-              <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 99, overflow: 'hidden', marginBottom: 6 }}>
+              <div style={{ height: 5, background: 'var(--surface-3)', borderRadius: 99, overflow: 'hidden', marginBottom: 6 }}>
                 <div style={{ height: '100%', width: `${xpPct}%`, background: 'rgba(127,119,221,1)', borderRadius: 99, transition: 'width 0.6s ease' }} />
               </div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-dim)', display: 'flex', justifyContent: 'space-between' }}>
                 <span>{xp - levelInfo.min} XP earned this level</span>
                 <span>{levelInfo.next - xp} XP to {LEVEL_STEPS[levelIdx + 1]}</span>
               </div>
@@ -367,18 +367,18 @@ export default function Profile() {
             { label: 'Subjects', value: subjects.length },
             { label: 'Day streak', value: `${streak}d` },
           ].map((s, i) => (
-            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '1rem', textAlign: 'center' }}>
+            <div key={i} style={{ background: 'var(--surface-1)', border: '0.5px solid var(--border-soft)', borderRadius: 10, padding: '1rem', textAlign: 'center' }}>
               <div style={{ fontSize: 22, fontWeight: 500, color: 'rgba(127,119,221,1)' }}>{s.value}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>{s.label}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>{s.label}</div>
             </div>
           ))}
         </div>
 
         {/* ── Badges ── */}
-        <div style={{ background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '1.5rem', marginBottom: 16 }}>
+        <div style={{ background: 'var(--surface-1)', border: '0.5px solid var(--border-soft)', borderRadius: 16, padding: '1.5rem', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: '#fff' }}>Badges</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{unlockedCount} / {BADGE_DEFS.length} unlocked</div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>Badges</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{unlockedCount} / {BADGE_DEFS.length} unlocked</div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10 }}>
             {BADGE_DEFS.map(b => {
@@ -387,8 +387,8 @@ export default function Profile() {
                 <div key={b.id}
                   title={b.desc}
                   style={{
-                    background: unlocked ? 'rgba(127,119,221,0.08)' : 'rgba(255,255,255,0.02)',
-                    border: `0.5px solid ${unlocked ? 'rgba(127,119,221,0.25)' : 'rgba(255,255,255,0.05)'}`,
+                    background: unlocked ? 'rgba(127,119,221,0.08)' : 'var(--surface-2)',
+                    border: `0.5px solid ${unlocked ? 'rgba(127,119,221,0.25)' : 'var(--border-soft)'}`,
                     borderRadius: 10, padding: '0.875rem 1rem',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                     opacity: unlocked ? 1 : 0.35,
@@ -397,10 +397,10 @@ export default function Profile() {
                     filter: unlocked ? 'none' : 'grayscale(1)',
                   }}>
                   <span style={{ fontSize: 24 }}>{b.icon}</span>
-                  <span style={{ fontSize: 11, fontWeight: 500, color: unlocked ? 'rgba(175,169,236,1)' : 'rgba(255,255,255,0.4)', textAlign: 'center', lineHeight: 1.3 }}>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: unlocked ? 'rgba(175,169,236,1)' : 'var(--text-muted)', textAlign: 'center', lineHeight: 1.3 }}>
                     {b.label}
                   </span>
-                  <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.3 }}>
+                  <span style={{ fontSize: 10, color: 'var(--text-dim)', textAlign: 'center', lineHeight: 1.3 }}>
                     {b.desc}
                   </span>
                 </div>
@@ -410,17 +410,17 @@ export default function Profile() {
         </div>
 
         {/* ── Streak calendar ── */}
-        <div style={{ background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '1.5rem', marginBottom: 16 }}>
+        <div style={{ background: 'var(--surface-1)', border: '0.5px solid var(--border-soft)', borderRadius: 16, padding: '1.5rem', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: '#fff' }}>Study activity</div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>Study activity</div>
             <div style={{ display: 'flex', gap: 20 }}>
               {[
                 { label: 'Days studied', value: Object.values(activity).filter(v => v > 0).length },
                 { label: 'Current streak', value: `${streak}d` },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>{s.value}</div>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>{s.label}</div>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{s.value}</div>
+                  <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -429,14 +429,14 @@ export default function Profile() {
         </div>
 
         {/* ── Completed subjects ── */}
-        <div style={{ background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '1.5rem' }}>
+        <div style={{ background: 'var(--surface-1)', border: '0.5px solid var(--border-soft)', borderRadius: 16, padding: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: '#fff' }}>Completed subjects</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{completedSubjects.length} of {subjects.length}</div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>Completed subjects</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{completedSubjects.length} of {subjects.length}</div>
           </div>
 
           {completedSubjects.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(255,255,255,0.2)', fontSize: 13 }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-dim)', fontSize: 13 }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>🎯</div>
               Complete a subject to see it here
             </div>
@@ -460,13 +460,13 @@ export default function Profile() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <span style={{ fontSize: 11, padding: '2px 7px', borderRadius: 99, background: 'rgba(99,153,34,0.15)', color: 'rgba(151,196,89,1)', fontWeight: 500 }}>✓</span>
                       <div>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: '#fff' }}>{s.subject}</div>
-                        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>
+                        <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>{s.subject}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>
                           {all.length} topics{addedDate ? ` · Completed ${addedDate}` : ''}
                         </div>
                       </div>
                     </div>
-                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>→</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>→</span>
                   </div>
                 )
               })}
@@ -474,8 +474,8 @@ export default function Profile() {
           )}
 
           {subjects.length > completedSubjects.length && (
-            <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)' }}>
+            <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 10, background: 'var(--surface-2)', border: '0.5px solid var(--border-soft)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>
                 {subjects.length - completedSubjects.length} subject{subjects.length - completedSubjects.length > 1 ? 's' : ''} still in progress
               </span>
               <button onClick={() => navigate('/notes')}
