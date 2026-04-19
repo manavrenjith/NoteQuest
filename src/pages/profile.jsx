@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar'
 import {
   getXP, getLevel, getStreak, getSubjects,
   getStudyActivity, getWeakTopics, getTopicRatings
@@ -203,6 +204,7 @@ export default function Profile() {
       transform: fadeIn ? 'translateY(0)' : 'translateY(8px)',
       transition: 'opacity 0.4s ease, transform 0.4s ease',
     }}>
+      <Navbar />
       <main style={{ maxWidth: 860, margin: '0 auto', padding: '2rem 1.5rem 4rem' }}>
 
         {/* ── Back ── */}
