@@ -7,6 +7,7 @@ import Quiz from './pages/Quiz'
 import Settings from './pages/Settings'
 import SubjectDetail from './pages/SubjectDetail'
 import Upload from './pages/Upload'
+import Profile from './pages/profile'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/quiz/:subjectId/:chapterId" element={<Quiz />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/upload" element={<Upload />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
