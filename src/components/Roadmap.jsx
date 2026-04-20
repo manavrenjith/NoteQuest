@@ -9,6 +9,7 @@ import {
   isWeakTopic,
   markWeakTopic,
   recordStudyActivity,
+  saveRevisionSchedule,
   saveTopicRating,
   saveXP,
   unmarkWeakTopic,
@@ -114,6 +115,10 @@ function Roadmap({ subject, onUpdate }) {
       saveXP(10)
       recordStudyActivity(1)
       checkAndUpdateStreak()
+      const existingRating = getTopicRating(localSubject.id, chapterId, topicId)
+      if (existingRating > 0) {
+        saveRevisionSchedule(localSubject.id, chapterId, topicId, existingRating)
+      }
       pushXpPopup(event)
       setPendingRating({ topicId, chapterId })
     }
@@ -402,6 +407,9 @@ function Roadmap({ subject, onUpdate }) {
                         <RatingPrompt
                           onRate={(value) => {
                             saveTopicRating(localSubject.id, selectedChapter.id, topic.id, value)
+                            if (topic.completed) {
+                              saveRevisionSchedule(localSubject.id, selectedChapter.id, topic.id, value)
+                            }
                             const bonusXP = [0, 0, 5, 15][value]
 
                             if (bonusXP > 0) {
