@@ -6,6 +6,7 @@ import DailyChallenge from '../components/DailyChallenge'
 import LevelUpModal from '../components/LevelUpModal'
 import Navbar from '../components/Navbar'
 import Roadmap from '../components/Roadmap'
+import SmartRevision from '../components/SmartRevision'
 import StudyHeatmap from '../components/StudyHeatmap'
 import VelocityChart from '../components/VelocityChart'
 import { applyTheme, getTheme, onThemeChange } from '../utils/theme'
@@ -473,6 +474,14 @@ function Dashboard() {
 
         <DailyChallenge
           onTopicComplete={() => {
+            setSubjects(getSubjects())
+            setXP(getXP())
+            setStreak(getStreak())
+          }}
+        />
+
+        <SmartRevision
+          onRevisionComplete={() => {
             setSubjects(getSubjects())
             setXP(getXP())
             setStreak(getStreak())
