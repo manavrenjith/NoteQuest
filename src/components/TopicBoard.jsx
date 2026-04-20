@@ -11,6 +11,7 @@ import {
   isWeakTopic,
   markWeakTopic,
   recordStudyActivity,
+  saveRevisionSchedule,
   saveTopicRating,
   saveXP,
   unmarkWeakTopic,
@@ -98,6 +99,10 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
       recordStudyActivity(1)
       awardedXP += 10
       streak = checkAndUpdateStreak()
+      const existingRating = getTopicRating(subject.id, chapterId, topicId)
+      if (existingRating > 0) {
+        saveRevisionSchedule(subject.id, chapterId, topicId, existingRating)
+      }
       success('+10 XP earned! ⚡')
       setPendingRating({ topicId, chapterId })
 
@@ -345,6 +350,9 @@ function TopicBoard({ subject, onSubjectUpdate, onGamificationEvent, onQuizReque
                           <RatingPrompt
                             onRate={(rating) => {
                               saveTopicRating(subject.id, chapter.id, topic.id, rating)
+                              if (topic.completed) {
+                                saveRevisionSchedule(subject.id, chapter.id, topic.id, rating)
+                              }
                               const bonusXP = [0, 0, 5, 15][rating]
                               const refreshedSubject = getSubjects().find((item) => item.id === subject.id) || subject
 
