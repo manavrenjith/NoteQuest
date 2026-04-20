@@ -1,10 +1,37 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getLevel, getStreak, getSubjects, getXP } from '../utils/storage'
 
 export default function AdditionalSettingsDrawer({ open, onClose, theme, setTheme }) {
   const navigate = useNavigate()
+  const ANIMATION_MS = 280
+  const [isMounted, setIsMounted] = useState(open)
+  const [isVisible, setIsVisible] = useState(false)
 
-  if (!open) {
+  useEffect(() => {
+    let timeoutId
+
+    if (open) {
+      setIsMounted(true)
+    } else if (isMounted) {
+      setIsVisible(false)
+      timeoutId = setTimeout(() => setIsMounted(false), ANIMATION_MS)
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+    }
+  }, [open, isMounted])
+
+  useEffect(() => {
+    if (!isMounted || !open) return undefined
+
+    // Wait one frame so the hidden state is painted before transitioning in.
+    const frameId = requestAnimationFrame(() => setIsVisible(true))
+    return () => cancelAnimationFrame(frameId)
+  }, [isMounted, open])
+
+  if (!isMounted) {
     return null
   }
 
@@ -35,19 +62,26 @@ export default function AdditionalSettingsDrawer({ open, onClose, theme, setThem
     <>
       <button
         type="button"
-        className="fixed inset-0 z-40"
-        style={{ background: 'rgba(0,0,0,0.45)' }}
+        className="fixed inset-0 z-40 transition-opacity duration-300"
+        style={{
+          background: 'rgba(0,0,0,0.45)',
+          opacity: isVisible ? 1 : 0,
+          pointerEvents: open ? 'auto' : 'none',
+        }}
         onClick={onClose}
         aria-label="Close settings drawer overlay"
       />
       <aside
         id="settings-drawer"
-        className="fixed right-0 top-0 z-50 h-full w-full max-w-sm p-5 shadow-2xl"
+        className={
+          'fixed left-0 top-0 z-50 h-full w-full max-w-sm p-5 shadow-2xl transform-gpu transition-all duration-300 ease-out ' +
+          (isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0')
+        }
         style={{
-          borderLeft: '0.5px solid var(--border-strong)',
+          borderRight: '0.5px solid var(--border-strong)',
           background: 'var(--surface-0)',
           color: 'var(--text-primary)',
-          boxShadow: '-10px 0 30px rgba(0,0,0,0.16)',
+          boxShadow: '10px 0 30px rgba(0,0,0,0.16)',
         }}
         role="dialog"
         aria-modal="true"
