@@ -9,6 +9,9 @@ const DAILY_CHALLENGE_KEY = 'nq_daily_challenge'
 const CHALLENGE_COMPLETED_KEY = 'nq_challenge_completed'
 const TOPIC_RATINGS_KEY = 'nq_topic_ratings'
 const DEMO_SEEDED_KEY = 'nq_demo_seeded'
+const REVISION_SCHEDULES_KEY = 'nq_revision_schedules'
+const REVISION_STREAK_KEY = 'nq_revision_streak'
+const REVISION_LAST_DATE_KEY = 'nq_revision_last_date'
 
 const LEVELS = [
   { level: 1, title: 'Novice', minXP: 0, next: 100 },
@@ -150,6 +153,15 @@ export function clearAll() {
   localStorage.removeItem(DAILY_CHALLENGE_KEY)
   localStorage.removeItem(CHALLENGE_COMPLETED_KEY)
   localStorage.removeItem(TOPIC_RATINGS_KEY)
+  localStorage.removeItem(REVISION_SCHEDULES_KEY)
+  localStorage.removeItem(REVISION_STREAK_KEY)
+  localStorage.removeItem(REVISION_LAST_DATE_KEY)
+
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith('nq_revised_')) {
+      localStorage.removeItem(key)
+    }
+  })
 }
 
 export function saveTopicRating(subjectId, chapterId, topicId, rating) {
@@ -169,6 +181,164 @@ export function getTopicRatings() {
 export function getTopicRating(subjectId, chapterId, topicId) {
   const ratings = getTopicRatings()
   return ratings[`${subjectId}_${chapterId}_${topicId}`] || 0
+}
+
+export function saveRevisionSchedule(subjectId, chapterId, topicId, difficultyRating) {
+  const schedules = getRevisionSchedules()
+  const key = `${subjectId}_${chapterId}_${topicId}`
+  const now = new Date()
+
+  const intervals = {
+    1: [3, 7, 14, 30],
+    2: [2, 5, 10, 21],
+    3: [1, 3, 7, 14],
+  }
+
+  const existing = schedules[key]
+  const reviewCount = existing ? existing.reviewCount + 1 : 0
+  const rating = difficultyRating || existing?.difficulty || 2
+  const levelIntervals = intervals[rating] || intervals[2]
+  const daysUntilNext = levelIntervals[Math.min(reviewCount, levelIntervals.length - 1)]
+
+  const nextReview = new Date(now)
+  nextReview.setDate(nextReview.getDate() + daysUntilNext)
+
+  schedules[key] = {
+    subjectId,
+    chapterId,
+    topicId,
+    difficulty: rating,
+    lastReviewed: now.toISOString(),
+    nextReview: nextReview.toISOString(),
+    reviewCount,
+    interval: daysUntilNext,
+  }
+
+  localStorage.setItem(REVISION_SCHEDULES_KEY, JSON.stringify(schedules))
+}
+
+export function getRevisionSchedules() {
+  try {
+    return JSON.parse(localStorage.getItem(REVISION_SCHEDULES_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+export function getRevisionStreak() {
+  try {
+    return parseInt(localStorage.getItem(REVISION_STREAK_KEY) || '0', 10)
+  } catch {
+    return 0
+  }
+}
+
+export function updateRevisionStreak() {
+  const today = new Date().toISOString().split('T')[0]
+  const lastRevision = localStorage.getItem(REVISION_LAST_DATE_KEY)
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+  let streak = getRevisionStreak()
+  if (lastRevision === yesterdayStr) {
+    streak += 1
+  } else if (lastRevision !== today) {
+    streak = 1
+  }
+
+  localStorage.setItem(REVISION_STREAK_KEY, streak.toString())
+  localStorage.setItem(REVISION_LAST_DATE_KEY, today)
+  return streak
+}
+
+export function getDueRevisions(subjects = []) {
+  const schedules = getRevisionSchedules()
+  const today = new Date()
+  const ratings = getTopicRatings()
+  const due = []
+
+  subjects.forEach((subject) => {
+    ;(subject.chapters || []).forEach((chapter) => {
+      ;(chapter.topics || []).forEach((topic) => {
+        if (!topic.completed) return
+
+        const key = `${subject.id}_${chapter.id}_${topic.id}`
+        const schedule = schedules[key]
+        const difficulty = ratings[key] || 2
+
+        if (!schedule) {
+          due.push({
+            topicId: topic.id,
+            topicTitle: topic.title,
+            subjectId: subject.id,
+            subjectName: subject.subject,
+            chapterId: chapter.id,
+            chapterTitle: chapter.title,
+            difficulty,
+            daysOverdue: 0,
+            nextReview: null,
+            isNew: true,
+            score: 100 + difficulty * 10,
+          })
+          return
+        }
+
+        const nextReview = new Date(schedule.nextReview)
+        const diffDays = Math.round((today - nextReview) / (1000 * 60 * 60 * 24))
+
+        if (diffDays >= -1) {
+          const overdueWeight = Math.max(0, diffDays) * 15
+          const difficultyWeight = difficulty * 10
+          const recencyDecay = Math.max(0, 10 - schedule.reviewCount * 2)
+          const score = overdueWeight + difficultyWeight + recencyDecay
+
+          due.push({
+            topicId: topic.id,
+            topicTitle: topic.title,
+            subjectId: subject.id,
+            subjectName: subject.subject,
+            chapterId: chapter.id,
+            chapterTitle: chapter.title,
+            difficulty,
+            daysOverdue: diffDays,
+            nextReview: schedule.nextReview,
+            reviewCount: schedule.reviewCount,
+            score,
+          })
+        }
+      })
+    })
+  })
+
+  return due.sort((a, b) => b.score - a.score).slice(0, 5)
+}
+
+export function markTopicRevised(subjectId, chapterId, topicId) {
+  const ratings = getTopicRatings()
+  const key = `${subjectId}_${chapterId}_${topicId}`
+  const difficulty = ratings[key] || 2
+  saveRevisionSchedule(subjectId, chapterId, topicId, difficulty)
+  updateRevisionStreak()
+  saveXP(5)
+}
+
+export function getTodayRevisionProgress() {
+  const today = new Date().toISOString().split('T')[0]
+  try {
+    return JSON.parse(localStorage.getItem(`nq_revised_${today}`) || '[]')
+  } catch {
+    return []
+  }
+}
+
+export function markRevisedToday(key) {
+  const today = new Date().toISOString().split('T')[0]
+  const done = getTodayRevisionProgress()
+  if (!done.includes(key)) {
+    done.push(key)
+    localStorage.setItem(`nq_revised_${today}`, JSON.stringify(done))
+  }
 }
 
 export function getDailyChallenge() {
