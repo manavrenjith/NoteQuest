@@ -105,6 +105,8 @@ function Home() {
     },
   ], [])
 
+  const allFeatures = useMemo(() => [...featureCards, ...newFeatures], [featureCards, newFeatures])
+
   const howItWorks = useMemo(() => [
     {
       step: '1',
@@ -193,10 +195,10 @@ function Home() {
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <p style={{ fontSize: 10, fontWeight: 500, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Features</p>
             <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Everything you need to study smarter</h2>
-            <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>Not just another notes app — it's a full learning system.</p>
+            <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>All core and newly added features in one place.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--surface-3)', border: '0.5px solid #111', borderRadius: 12, overflow: 'hidden' }}>
-            {featureCards.map((item) => (
+            {allFeatures.map((item) => (
               <article key={item.title} style={{ background: 'var(--surface-0)', padding: '1.5rem', transition: 'background 0.2s', cursor: 'default' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-1)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'var(--surface-0)'}>
@@ -206,31 +208,6 @@ function Home() {
                 <h3 style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 6 }}>{item.title}</h3>
                 <p style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5 }}>{item.description}</p>
               </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section style={{ borderTop: '0.5px solid #111' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <p style={{ fontSize: 10, fontWeight: 500, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>New</p>
-            <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Built for serious students</h2>
-            <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>Features that go beyond basic tracking.</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-            {newFeatures.map((item) => (
-              <div key={item.title} style={{ background: 'var(--surface-1)', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '1.25rem', display: 'flex', gap: 12, alignItems: 'flex-start', transition: 'border-color 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = '#333'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-soft)'}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: item.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
-                  {item.emoji}
-                </div>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 4 }}>{item.title}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-dim)', lineHeight: 1.5 }}>{item.description}</div>
-                </div>
-              </div>
             ))}
           </div>
         </div>
