@@ -1,5 +1,12 @@
 # NoteQuest
 
+[![React](https://img.shields.io/badge/React-19-20232A?logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Groq](https://img.shields.io/badge/AI-Groq-111111)](https://groq.com/)
+[![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Status](https://img.shields.io/badge/Status-Active-22C55E)](#)
+
 NoteQuest is an AI-powered study tracker that turns raw notes into structured subjects, chapters, and topics, then gamifies progress with XP, streaks, quizzes, revision reminders, and a leaderboard.
 
 Built for the Nira Hackathon 2026 using React + Vite.
