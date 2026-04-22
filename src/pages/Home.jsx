@@ -127,7 +127,7 @@ function Home() {
 
   return (
     <main style={{ background: 'var(--surface-0)', color: 'var(--text-primary)', minHeight: '100vh', fontFamily: 'inherit' }}>
-      <Navbar />
+      <Navbar showSettingsHamburger={false} />
 
       <section id="top" style={{ maxWidth: 900, margin: '0 auto', padding: '4rem 1.5rem 3rem', textAlign: 'center', borderBottom: '0.5px solid #111' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
