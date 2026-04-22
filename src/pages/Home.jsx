@@ -158,7 +158,7 @@ function Home() {
           </p>
 
           <div style={{ ...ctaReveal, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: '2.5rem', flexWrap: 'wrap' }}>
-            <button type="button" onClick={() => goToSection('upload')}
+            <button type="button" onClick={() => navigate('/upload')}
               style={{ fontSize: 13, fontWeight: 500, padding: '9px 20px', borderRadius: 8, background: 'var(--accent)', color: 'var(--text-primary)', border: 'none', cursor: 'pointer' }}>
               Upload your notes →
             </button>
