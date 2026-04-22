@@ -105,6 +105,7 @@ export default function Navbar({
               </button>
               <button
                 type="button"
+                onClick={() => scrollToSection('how-it-works')}
                 className="rounded-md px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
               >
                 How it works
