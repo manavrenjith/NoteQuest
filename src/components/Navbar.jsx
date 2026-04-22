@@ -93,13 +93,13 @@ export default function Navbar({
                 type="button"
                 className="rounded-md px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
               >
-                How it works
+                Features
               </button>
               <button
                 type="button"
                 className="rounded-md px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
               >
-                Features
+                How it works
               </button>
               <div className="mx-1 h-4 w-px bg-white/15" />
               <button
