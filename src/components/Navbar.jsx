@@ -46,6 +46,13 @@ export default function Navbar({
     setDrawerOpen(true)
   }
 
+  const scrollToSection = (id) => {
+    const section = document.getElementById(id)
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -91,6 +98,7 @@ export default function Navbar({
             <>
               <button
                 type="button"
+                onClick={() => scrollToSection('features')}
                 className="rounded-md px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
               >
                 Features
