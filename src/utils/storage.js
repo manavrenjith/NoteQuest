@@ -12,6 +12,7 @@ const DEMO_SEEDED_KEY = 'nq_demo_seeded'
 const REVISION_SCHEDULES_KEY = 'nq_revision_schedules'
 const REVISION_STREAK_KEY = 'nq_revision_streak'
 const REVISION_LAST_DATE_KEY = 'nq_revision_last_date'
+const EXAMS_KEY = 'nq_exams'
 
 const LEVELS = [
   { level: 1, title: 'Novice', minXP: 0, next: 100 },
@@ -19,6 +20,14 @@ const LEVELS = [
   { level: 3, title: 'Scholar', minXP: 300, next: 600 },
   { level: 4, title: 'Expert', minXP: 600, next: 1000 },
   { level: 5, title: 'Master', minXP: 1000, next: null },
+]
+
+const EXAM_COLORS = [
+  { bg: 'rgba(127,119,221,0.2)', text: 'rgba(175,169,236,1)', border: 'rgba(127,119,221,0.4)' },
+  { bg: 'rgba(239,159,39,0.15)', text: 'rgba(239,159,39,1)', border: 'rgba(239,159,39,0.35)' },
+  { bg: 'rgba(99,153,34,0.15)', text: 'rgba(151,196,89,1)', border: 'rgba(99,153,34,0.35)' },
+  { bg: 'rgba(224,75,74,0.15)', text: 'rgba(240,149,149,1)', border: 'rgba(224,75,74,0.35)' },
+  { bg: 'rgba(29,158,117,0.15)', text: 'rgba(93,202,165,1)', border: 'rgba(29,158,117,0.35)' },
 ]
 
 function readNumber(key, fallback = 0) {
@@ -389,6 +398,148 @@ export function getStudyActivity() {
   } catch {
     return {}
   }
+}
+
+// Exam storage
+export const getExams = () => {
+  try {
+    return JSON.parse(localStorage.getItem(EXAMS_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+
+export const saveExam = (exam) => {
+  // exam = { id, name, date, subjectIds[], color, createdAt }
+  const exams = getExams()
+  const existing = exams.findIndex((e) => e.id === exam.id)
+  if (existing >= 0) {
+    exams[existing] = { ...exams[existing], ...exam, updatedAt: new Date().toISOString() }
+  } else {
+    exams.push({
+      ...exam,
+      id: exam.id || `exam_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    })
+  }
+  localStorage.setItem(EXAMS_KEY, JSON.stringify(exams))
+  return exams
+}
+
+export const deleteExam = (examId) => {
+  const exams = getExams().filter((e) => e.id !== examId)
+  localStorage.setItem(EXAMS_KEY, JSON.stringify(exams))
+  return exams
+}
+
+export const getExamById = (examId) => {
+  return getExams().find((e) => e.id === examId) || null
+}
+
+export const getExamsForDate = (dateStr) => {
+  // dateStr = 'YYYY-MM-DD'
+  return getExams().filter((e) => e.date === dateStr)
+}
+
+export const getExamsForMonth = (year, month) => {
+  // month = 0-indexed (0 = January)
+  return getExams().filter((e) => {
+    const d = new Date(e.date)
+    return d.getFullYear() === year && d.getMonth() === month
+  })
+}
+
+// Exam status computation
+export const computeExamStats = (exam, subjects) => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const examDate = new Date(exam.date)
+  examDate.setHours(0, 0, 0, 0)
+  const daysLeft = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24))
+
+  // Aggregate topics across all linked subjects
+  const linkedSubjects = subjects.filter((s) => exam.subjectIds?.includes(s.id))
+  const allTopics = linkedSubjects.flatMap((s) => s.chapters?.flatMap((c) => c.topics) ?? [])
+  const total = allTopics.length
+  const completed = allTopics.filter((t) => t.completed).length
+  const remaining = total - completed
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+
+  // Pace calculation
+  const activity = getStudyActivity()
+  const last7 = []
+  for (let i = 1; i <= 7; i += 1) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().split('T')[0]
+    if (activity[key] > 0) last7.push(activity[key])
+  }
+  const yourPace =
+    last7.length > 0
+      ? parseFloat((last7.reduce((s, v) => s + v, 0) / last7.length).toFixed(1))
+      : 0
+
+  const requiredPace = daysLeft > 0 ? parseFloat((remaining / daysLeft).toFixed(1)) : remaining
+
+  const todayTarget = daysLeft > 0 ? Math.ceil(requiredPace) : 0
+  const forecastDays = yourPace > 0 ? Math.ceil(remaining / yourPace) : null
+
+  // Status
+  let status = 'on-track'
+  if (daysLeft <= 0) status = 'exam-day'
+  else if (remaining === 0) status = 'complete'
+  else if (yourPace === 0 && remaining > 0) status = 'at-risk'
+  else if (yourPace < requiredPace * 0.7) status = 'at-risk'
+  else if (yourPace < requiredPace) status = 'behind'
+  else status = 'on-track'
+
+  return {
+    daysLeft,
+    remaining,
+    completed,
+    total,
+    pct,
+    requiredPace,
+    yourPace,
+    todayTarget,
+    forecastDays,
+    status,
+    linkedSubjects,
+    examDate: examDate.toLocaleDateString('en', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+  }
+}
+
+// Exam color assignment
+export const getExamColor = (index) => {
+  return EXAM_COLORS[index % EXAM_COLORS.length]
+}
+
+export const getExamColorById = (examId) => {
+  const exams = getExams()
+  const index = exams.findIndex((e) => e.id === examId)
+  return getExamColor(index >= 0 ? index : 0)
+}
+
+// Mark exam day done
+export const markExamDayDone = (examId) => {
+  const today = new Date().toISOString().split('T')[0]
+  const key = `nq_exam_day_${today}`
+  const done = JSON.parse(localStorage.getItem(key) || '[]')
+  if (!done.includes(examId)) {
+    done.push(examId)
+    localStorage.setItem(key, JSON.stringify(done))
+  }
+}
+
+export const isExamDayDone = (examId) => {
+  const today = new Date().toISOString().split('T')[0]
+  const key = `nq_exam_day_${today}`
+  const done = JSON.parse(localStorage.getItem(key) || '[]')
+  return done.includes(examId)
 }
 
 export function getCompletionEstimate(subject) {
