@@ -10,6 +10,7 @@ import {
   markExamDayDone,
   saveExam,
 } from '../utils/storage'
+import Navbar from '../components/Navbar'
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -330,6 +331,8 @@ function Calendar() {
         transition: 'opacity 0.4s ease, transform 0.4s ease',
       }}
     >
+      <Navbar />
+
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem 4rem' }}>
         <button
           onClick={() => navigate(-1)}
