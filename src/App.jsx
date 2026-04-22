@@ -8,6 +8,7 @@ import Settings from './pages/Settings'
 import SubjectDetail from './pages/SubjectDetail'
 import Upload from './pages/Upload'
 import Profile from './pages/profile'
+import Calendar from './pages/Calendar'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/settings" element={<Settings />} />
       <Route path="/upload" element={<Upload />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/calendar" element={<Calendar />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

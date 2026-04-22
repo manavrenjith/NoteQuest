@@ -7,6 +7,7 @@ import { applyTheme, getTheme, onThemeChange } from '../utils/theme'
 const appLinks = [
   { label: 'Dashboard', path: '/dashboard' },
   { label: 'My notes', path: '/notes' },
+  { label: 'Calendar', path: '/calendar' },
   { label: 'Leaderboard', path: '/leaderboard' },
   { label: 'Settings', path: '/settings' },
 ]
