@@ -22,8 +22,8 @@ function LeaderboardPage() {
 
       <section style={{ maxWidth: 960, margin: '0 auto', padding: '2rem 1.5rem 3rem' }}>
         <div style={{ marginBottom: '1.25rem' }}>
-          <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 6 }}>Leaderboard</h1>
-          <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>Track your rank and compare study momentum with others.</p>
+          <h1 className="text-3xl font-black text-white">Leaderboard</h1>
+          <p className="mt-2 text-slate-300">Track your rank and compare study momentum with others.</p>
         </div>
 
         <Leaderboard />
