@@ -152,7 +152,7 @@ function UploadNotes() {
 
       saveSubject(subjectPayload)
       success('Topics extracted successfully! ✅')
-      navigate('/dashboard')
+      navigate(`/subject/${subjectId}`)
     } catch (extractError) {
       console.error(extractError)
       setError('Failed to extract topics. Please check your API key and try again.')
