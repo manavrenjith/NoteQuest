@@ -86,30 +86,6 @@ function Settings() {
         </section>
 
         <section className="mt-6 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-5 transition hover:border-[#888] hover:bg-[#0d0d0d]">
-          <h2 className="text-xl font-semibold text-white">Theme</h2>
-          <div className="mt-3 inline-flex rounded-xl border border-[#1a1a1a] bg-[#0d0d0d] p-1">
-            <button
-              type="button"
-              onClick={() => setTheme('dark')}
-              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                theme === 'dark' ? 'bg-indigo-500 text-white' : 'text-slate-200 hover:text-white'
-              }`}
-            >
-              Dark
-            </button>
-            <button
-              type="button"
-              onClick={() => setTheme('light')}
-              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                theme === 'light' ? 'bg-indigo-500 text-white' : 'text-slate-200 hover:text-white'
-              }`}
-            >
-              Lighter
-            </button>
-          </div>
-        </section>
-
-        <section className="mt-6 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-5 transition hover:border-[#888] hover:bg-[#0d0d0d]">
           <h2 className="text-xl font-semibold text-white">Data Controls</h2>
           <div className="mt-4 flex flex-col gap-3">
             <button

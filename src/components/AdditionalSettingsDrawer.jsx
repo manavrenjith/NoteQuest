@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getLevel, getStreak, getSubjects, getXP } from '../utils/storage'
 
-export default function AdditionalSettingsDrawer({ open, onClose, theme, setTheme }) {
+export default function AdditionalSettingsDrawer({ open, onClose }) {
   const navigate = useNavigate()
   const ANIMATION_MS = 280
   const [isMounted, setIsMounted] = useState(open)
@@ -169,65 +169,6 @@ export default function AdditionalSettingsDrawer({ open, onClose, theme, setThem
             </span>
           </span>
         </button>
-
-        <div
-          style={{
-            marginTop: 14,
-            borderRadius: 12,
-            border: '0.5px solid var(--border-strong)',
-            background: 'var(--surface-1)',
-            padding: 14,
-          }}
-        >
-          <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Theme</p>
-          <div
-            style={{
-              marginTop: 12,
-              display: 'inline-flex',
-              borderRadius: 12,
-              border: '0.5px solid var(--border-strong)',
-              background: 'var(--surface-2)',
-              padding: 4,
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => setTheme('dark')}
-              style={{
-                borderRadius: 8,
-                padding: '8px 12px',
-                fontSize: 14,
-                fontWeight: 600,
-                transition: 'all 0.15s',
-                background: theme === 'dark' ? 'var(--accent)' : 'transparent',
-                color: theme === 'dark' ? 'rgba(255,255,255,1)' : 'var(--text-muted)',
-                border: 'none',
-                cursor: 'pointer',
-                minWidth: 52,
-              }}
-            >
-              Dark
-            </button>
-            <button
-              type="button"
-              onClick={() => setTheme('light')}
-              style={{
-                borderRadius: 8,
-                padding: '8px 12px',
-                fontSize: 14,
-                fontWeight: 600,
-                transition: 'all 0.15s',
-                background: theme === 'light' ? 'var(--accent)' : 'transparent',
-                color: theme === 'light' ? 'rgba(255,255,255,1)' : 'var(--text-muted)',
-                border: 'none',
-                cursor: 'pointer',
-                minWidth: 52,
-              }}
-            >
-              Light
-            </button>
-          </div>
-        </div>
 
         <button
           type="button"
