@@ -254,7 +254,7 @@ function Home() {
           <div style={{ background: 'var(--surface-1)', border: '0.5px solid #1a1a1a', borderRadius: 12, padding: '2.5rem', textAlign: 'center' }}>
             <h2 style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 8 }}>Ready to level up your studying?</h2>
             <p style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: '1.5rem' }}>Free forever. No account needed. Just paste your notes and go.</p>
-            <button type="button" onClick={() => navigate('/upload')}
+            <button type="button" onClick={() => navigate('/notes')}
               style={{ fontSize: 13, fontWeight: 500, padding: '9px 20px', borderRadius: 8, background: 'var(--accent)', color: 'var(--text-primary)', border: 'none', cursor: 'pointer' }}>
               Get started
             </button>
