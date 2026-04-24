@@ -411,6 +411,9 @@ export const getExams = () => {
 
 export const saveExam = (exam) => {
   // exam = { id, name, date, subjectIds[], color, createdAt }
+  if (!Array.isArray(exam?.subjectIds) || exam.subjectIds.length === 0) {
+    return getExams()
+  }
   const exams = getExams()
   const existing = exams.findIndex((e) => e.id === exam.id)
   if (existing >= 0) {

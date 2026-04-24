@@ -17,6 +17,7 @@ export default function ExamModal({ onSave, onClose, editExam = null, subjects =
   const [selectedIds, setSelectedIds] = useState(editExam?.subjectIds || [])
   const [error, setError] = useState('')
   const nameRef = useRef()
+  const hasLinkedSubject = selectedIds.length > 0
 
   const today = new Date().toISOString().split('T')[0]
 
@@ -188,14 +189,21 @@ export default function ExamModal({ onSave, onClose, editExam = null, subjects =
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             onClick={handleSave}
+            disabled={!hasLinkedSubject}
             style={{
               flex: 1, padding: '9px', borderRadius: 8, border: 'none',
-              background: 'rgba(127,119,221,0.9)', color: '#fff',
-              fontSize: 13, fontWeight: 500, cursor: 'pointer',
+              background: hasLinkedSubject ? 'rgba(127,119,221,0.9)' : 'rgba(127,119,221,0.35)',
+              color: '#fff',
+              fontSize: 13, fontWeight: 500, cursor: hasLinkedSubject ? 'pointer' : 'not-allowed',
+              opacity: hasLinkedSubject ? 1 : 0.8,
               transition: 'opacity 0.15s',
             }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
-            onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
+            onMouseEnter={e => {
+              if (hasLinkedSubject) e.currentTarget.style.opacity = '0.85'
+            }}
+            onMouseLeave={e => {
+              if (hasLinkedSubject) e.currentTarget.style.opacity = '1'
+            }}>
             {editExam ? 'Save changes' : 'Schedule exam'}
           </button>
           <button

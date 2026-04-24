@@ -37,23 +37,31 @@ function ExamModal({ open, onClose, onSave, subjects }) {
   const [name, setName] = useState('')
   const [date, setDate] = useState('')
   const [subjectIds, setSubjectIds] = useState([])
+  const [error, setError] = useState('')
+  const hasLinkedSubjects = subjectIds.length > 0
 
   useEffect(() => {
     if (!open) return
     setName('')
     setDate('')
     setSubjectIds([])
+    setError('')
   }, [open])
 
   if (!open) return null
 
   const toggleSubject = (id) => {
+    setError('')
     setSubjectIds((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]))
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
     if (!name.trim() || !date) return
+    if (!hasLinkedSubjects) {
+      setError('Please link at least one subject before saving.')
+      return
+    }
 
     onSave({
       name: name.trim(),
@@ -115,7 +123,10 @@ function ExamModal({ open, onClose, onSave, subjects }) {
             <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>Exam name</span>
             <input
               value={name}
-              onChange={(event) => setName(event.target.value)}
+              onChange={(event) => {
+                setName(event.target.value)
+                setError('')
+              }}
               placeholder="Physics midterm"
               style={{
                 borderRadius: 8,
@@ -134,7 +145,10 @@ function ExamModal({ open, onClose, onSave, subjects }) {
             <input
               type="date"
               value={date}
-              onChange={(event) => setDate(event.target.value)}
+              onChange={(event) => {
+                setDate(event.target.value)
+                setError('')
+              }}
               style={{
                 borderRadius: 8,
                 border: '0.5px solid rgba(255,255,255,0.14)',
@@ -194,6 +208,22 @@ function ExamModal({ open, onClose, onSave, subjects }) {
           </div>
         </div>
 
+        {error && (
+          <div
+            style={{
+              marginTop: 10,
+              fontSize: 11,
+              borderRadius: 8,
+              padding: '6px 8px',
+              color: 'rgba(240,149,149,0.95)',
+              border: '0.5px solid rgba(224,75,74,0.35)',
+              background: 'rgba(224,75,74,0.08)',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
         <div
           style={{
             marginTop: 14,
@@ -219,15 +249,17 @@ function ExamModal({ open, onClose, onSave, subjects }) {
           </button>
           <button
             type="submit"
+            disabled={!hasLinkedSubjects}
             style={{
               border: 'none',
-              background: 'rgba(127,119,221,0.9)',
+              background: hasLinkedSubjects ? 'rgba(127,119,221,0.9)' : 'rgba(127,119,221,0.35)',
               color: 'rgba(255,255,255,1)',
               borderRadius: 8,
               padding: '7px 12px',
               fontSize: 12,
               fontWeight: 500,
-              cursor: 'pointer',
+              cursor: hasLinkedSubjects ? 'pointer' : 'not-allowed',
+              opacity: hasLinkedSubjects ? 1 : 0.8,
             }}
           >
             Save exam
@@ -308,6 +340,7 @@ function Calendar() {
   }
 
   const handleSaveExam = (examData) => {
+    if (!Array.isArray(examData?.subjectIds) || examData.subjectIds.length === 0) return
     saveExam(examData)
     setExams(getExams())
     setShowModal(false)
