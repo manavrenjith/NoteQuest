@@ -262,13 +262,73 @@ function Home() {
         </div>
       </section>
 
-      <footer style={{ borderTop: '0.5px solid #111' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <p style={{ fontSize: 11, color: '#333', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} aria-hidden="true" />
-            NoteQuest — Built for Nira Hackathon 2026
-          </p>
-          <p style={{ fontSize: 11, color: '#333' }}>Made with React + Groq AI</p>
+      <footer style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)', background: '#000' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: '2.5rem 1.5rem 1.5rem' }}>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', paddingBottom: '2rem', borderBottom: '0.5px solid rgba(255,255,255,0.05)' }}>
+
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>NoteQuest</div>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', lineHeight: 1.6, marginBottom: 10 }}>
+                Turn your notes into a gamified learning roadmap. Built for students who want to study smarter.
+              </p>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.18)' }}>Free forever · No account needed</div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>App</div>
+              {[['Dashboard', '/dashboard'], ['My notes', '/notes'], ['Exam calendar', '/calendar'], ['Leaderboard', '/leaderboard'], ['Profile', '/profile']].map(([label, path]) => (
+                <button key={path} onClick={() => navigate(path)}
+                  style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.35)', background: 'none', border: 'none', cursor: 'pointer', padding: '3px 0', transition: 'color 0.15s', textAlign: 'left' }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.75)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Built with</div>
+              {['React + Vite', 'Groq AI (LLaMA 3.3)', 'Supabase', 'Tailwind CSS', 'Nira Hackathon 2026'].map(item => (
+                <div key={item} style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', padding: '3px 0' }}>{item}</div>
+              ))}
+            </div>
+
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: '1.5rem', paddingBottom: '1rem', borderBottom: '0.5px solid rgba(255,255,255,0.04)', flexWrap: 'wrap' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(127,119,221,0.15)', border: '0.5px solid rgba(127,119,221,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 500, color: 'rgba(175,169,236,1)', flexShrink: 0 }}>
+              MR
+            </div>
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <div style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 2 }}>Manav Renjith</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', lineHeight: 1.5 }}>
+                Student developer from India · Built NoteQuest for Nira Hackathon 2026
+              </div>
+            </div>
+
+            <a
+              href="https://github.com/manavrenjith"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 7, border: '0.5px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.6)', fontSize: 12, textDecoration: 'none', transition: 'all 0.15s', flexShrink: 0 }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.7 }}>
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+              </svg>
+              View on GitHub
+            </a>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '1rem', flexWrap: 'wrap', gap: 8 }}>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(127,119,221,0.7)', display: 'inline-block' }} />
+              NoteQuest — Built for Nira Hackathon 2026
+            </p>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)' }}>Made with React + Groq AI</p>
+          </div>
+
         </div>
       </footer>
 

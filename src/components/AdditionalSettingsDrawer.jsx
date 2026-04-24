@@ -174,9 +174,28 @@ export default function AdditionalSettingsDrawer({ open, onClose }) {
           type="button"
           onClick={() => {
             onClose()
-            navigate('/leaderboard')
+            navigate('/profile')
           }}
           style={{ ...settingsActionButtonStyle, marginTop: 12 }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--accent)'
+            e.currentTarget.style.background = 'var(--surface-2)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--border-strong)'
+            e.currentTarget.style.background = 'var(--surface-1)'
+          }}
+        >
+          About Me
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            onClose()
+            navigate('/leaderboard')
+          }}
+          style={{ ...settingsActionButtonStyle, marginTop: 10 }}
           onMouseEnter={e => {
             e.currentTarget.style.borderColor = 'var(--accent)'
             e.currentTarget.style.background = 'var(--surface-2)'
