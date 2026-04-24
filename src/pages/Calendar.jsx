@@ -1001,7 +1001,7 @@ function Calendar() {
             position: 'fixed',
             inset: 0,
             background: 'rgba(0,0,0,0.6)',
-            zIndex: 120,
+            zIndex: 100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1012,32 +1012,36 @@ function Calendar() {
             onClick={(event) => event.stopPropagation()}
             style={{
               width: '100%',
-              maxWidth: 460,
-              background: 'rgba(0,0,0,1)',
-              border: '0.5px solid rgba(255,255,255,0.12)',
-              borderRadius: 14,
-              padding: '1.25rem',
+              maxWidth: 360,
+              background: 'var(--surface-1)',
+              border: '0.5px solid var(--border-soft)',
+              borderRadius: 12,
+              padding: '1rem',
             }}
           >
-            <div style={{ fontSize: 28, fontWeight: 600, color: 'rgba(255,255,255,0.96)', lineHeight: 1.2 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: 'var(--text-primary)',
+                marginBottom: 6,
+              }}
+            >
               Delete exam?
             </div>
-            <div style={{ marginTop: 10, fontSize: 28, fontWeight: 600, color: 'rgba(255,255,255,0.96)', lineHeight: 1.2 }}>
-              "{examToDelete.name}"
-            </div>
-            <div style={{ marginTop: 14, fontSize: 13, color: 'rgba(255,255,255,0.42)', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>
               This will remove the exam and its linked preparation tracking.
             </div>
 
-            <div style={{ marginTop: 18, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
               <button
                 onClick={() => setExamToDelete(null)}
                 style={{
-                  border: '0.5px solid rgba(255,255,255,0.14)',
+                  border: '0.5px solid var(--border-soft)',
                   background: 'transparent',
-                  color: 'rgba(255,255,255,0.72)',
-                  borderRadius: 10,
-                  padding: '8px 12px',
+                  color: 'var(--text-muted)',
+                  borderRadius: 8,
+                  padding: '7px 10px',
                   fontSize: 12,
                   cursor: 'pointer',
                 }}
@@ -1048,12 +1052,12 @@ function Calendar() {
                 onClick={confirmDeleteExam}
                 style={{
                   border: 'none',
-                  background: 'rgba(224,75,74,0.92)',
+                  background: 'rgba(224,75,74,0.9)',
                   color: '#fff',
-                  borderRadius: 10,
-                  padding: '8px 14px',
+                  borderRadius: 8,
+                  padding: '7px 12px',
                   fontSize: 12,
-                  fontWeight: 600,
+                  fontWeight: 500,
                   cursor: 'pointer',
                 }}
               >
