@@ -114,7 +114,7 @@ export default function Navbar({
               <div className="mx-1 h-4 w-px bg-white/15" />
               <button
                 type="button"
-                onClick={() => navigate('/upload')}
+                onClick={() => navigate('/notes')}
                 className="rounded-md bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-400"
               >
                 Get started
