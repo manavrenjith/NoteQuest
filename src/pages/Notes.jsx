@@ -138,7 +138,7 @@ export default function Notes() {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
-  const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [subjectToDelete, setSubjectToDelete] = useState(null)
   const [theme, setTheme] = useState(() => getTheme())
   const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -178,14 +178,14 @@ export default function Notes() {
   }, [subjects, filter, search, sort])
 
   const handleDelete = (id) => {
-    if (deleteConfirm === id) {
-      deleteSubject(id)
-      setSubjects(getSubjects())
-      setDeleteConfirm(null)
-    } else {
-      setDeleteConfirm(id)
-      setTimeout(() => setDeleteConfirm(null), 3000)
-    }
+    setSubjectToDelete(id)
+  }
+
+  const confirmDelete = () => {
+    if (!subjectToDelete) return
+    deleteSubject(subjectToDelete)
+    setSubjects((prev) => prev.filter((subject) => subject.id !== subjectToDelete))
+    setSubjectToDelete(null)
   }
 
   const handleOpen = (subject) => {
@@ -294,12 +294,70 @@ export default function Notes() {
           </div>
         )}
 
-        {/* Delete confirmation toast */}
-        {deleteConfirm && (
-          <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#1a0000', border: '0.5px solid rgba(240,149,149,0.3)', borderRadius: 8, padding: '10px 16px', fontSize: 13, color: '#F09595', zIndex: 100, display: 'flex', alignItems: 'center', gap: 12 }}>
-            Click delete again to confirm
-            <button onClick={() => setDeleteConfirm(null)}
-              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: 14 }}>✕</button>
+        {/* Delete confirmation modal */}
+        {subjectToDelete && (
+          <div
+            onClick={() => setSubjectToDelete(null)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.6)',
+              zIndex: 100,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 16,
+            }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: '100%',
+                maxWidth: 360,
+                background: 'var(--surface-1)',
+                border: '0.5px solid var(--border-soft)',
+                borderRadius: 12,
+                padding: '1rem',
+              }}
+            >
+              <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 6 }}>
+                Delete subject?
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>
+                This will remove the subject and its tracked progress.
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                <button
+                  onClick={() => setSubjectToDelete(null)}
+                  style={{
+                    border: '0.5px solid var(--border-soft)',
+                    background: 'transparent',
+                    color: 'var(--text-muted)',
+                    borderRadius: 8,
+                    padding: '7px 10px',
+                    fontSize: 12,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  style={{
+                    border: 'none',
+                    background: 'rgba(224,75,74,0.9)',
+                    color: '#fff',
+                    borderRadius: 8,
+                    padding: '7px 12px',
+                    fontSize: 12,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </main>
