@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 
 function useReveal(delay) {
@@ -17,6 +17,7 @@ function useReveal(delay) {
 
 function Home() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const tagReveal = useReveal(0)
   const headingReveal = useReveal(100)
@@ -31,6 +32,17 @@ function Home() {
       document.documentElement.style.scrollBehavior = ''
     }
   }, [])
+
+  useEffect(() => {
+    if (!location.hash) return
+    const targetId = location.hash.replace('#', '')
+    const node = document.getElementById(targetId)
+    if (node) {
+      window.requestAnimationFrame(() => {
+        node.scrollIntoView({ block: 'start' })
+      })
+    }
+  }, [location.hash])
 
   const goToSection = (id) => {
     const node = document.getElementById(id)
@@ -296,7 +308,7 @@ function Home() {
 
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: '1.5rem', paddingBottom: '1rem', borderBottom: '0.5px solid rgba(255,255,255,0.04)', flexWrap: 'wrap' }}>
+          <div id="about-me" style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: '1.5rem', paddingBottom: '1rem', borderBottom: '0.5px solid rgba(255,255,255,0.04)', flexWrap: 'wrap' }}>
             <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(127,119,221,0.15)', border: '0.5px solid rgba(127,119,221,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 500, color: 'rgba(175,169,236,1)', flexShrink: 0 }}>
               MR
             </div>

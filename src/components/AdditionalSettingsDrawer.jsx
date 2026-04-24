@@ -174,7 +174,7 @@ export default function AdditionalSettingsDrawer({ open, onClose }) {
           type="button"
           onClick={() => {
             onClose()
-            navigate('/profile')
+            navigate('/#about-me')
           }}
           style={{ ...settingsActionButtonStyle, marginTop: 12 }}
           onMouseEnter={e => {

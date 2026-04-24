@@ -280,6 +280,7 @@ function Calendar() {
   const [subjects, setSubjects] = useState([])
   const [fadeIn, setFadeIn] = useState(false)
   const [doneTick, setDoneTick] = useState(0)
+  const [examToDelete, setExamToDelete] = useState(null)
 
   useEffect(() => {
     setExams(getExams())
@@ -337,6 +338,17 @@ function Calendar() {
     const next = getExams()
     setExams(next)
     setSelectedExam(null)
+  }
+
+  const requestDeleteExam = (exam) => {
+    if (!exam) return
+    setExamToDelete(exam)
+  }
+
+  const confirmDeleteExam = () => {
+    if (!examToDelete?.id) return
+    handleDeleteExam(examToDelete.id)
+    setExamToDelete(null)
   }
 
   const handleSaveExam = (examData) => {
@@ -734,19 +746,47 @@ function Calendar() {
                       >
                         {exam.name}
                       </div>
-                      <span
-                        style={{
-                          fontSize: 9,
-                          fontWeight: 500,
-                          borderRadius: 999,
-                          padding: '2px 6px',
-                          background: isOverdue ? 'rgba(224,75,74,0.15)' : statusMeta.bg,
-                          color: isOverdue ? 'rgba(240,149,149,1)' : statusMeta.color,
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {isOverdue ? 'Overdue' : statusMeta.label}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 500,
+                            borderRadius: 999,
+                            padding: '2px 6px',
+                            background: isOverdue ? 'rgba(224,75,74,0.15)' : statusMeta.bg,
+                            color: isOverdue ? 'rgba(240,149,149,1)' : statusMeta.color,
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {isOverdue ? 'Overdue' : statusMeta.label}
+                        </span>
+                        <button
+                          type="button"
+                          aria-label={`Delete ${exam.name}`}
+                          title="Delete exam"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            requestDeleteExam(exam)
+                          }}
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 5,
+                            border: '0.5px solid rgba(224,75,74,0.35)',
+                            background: 'rgba(224,75,74,0.08)',
+                            color: 'rgba(240,149,149,0.9)',
+                            fontSize: 11,
+                            lineHeight: 1,
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
                     </div>
 
                     <div
@@ -933,7 +973,7 @@ function Calendar() {
                   </button>
 
                   <button
-                    onClick={() => handleDeleteExam(selectedExam.id)}
+                    onClick={() => requestDeleteExam(selectedExam)}
                     style={{
                       border: '0.5px solid rgba(224,75,74,0.35)',
                       background: 'rgba(224,75,74,0.08)',
@@ -953,6 +993,76 @@ function Calendar() {
           </section>
         </div>
       </main>
+
+      {examToDelete && (
+        <div
+          onClick={() => setExamToDelete(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.6)',
+            zIndex: 120,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}
+        >
+          <div
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: 460,
+              background: 'rgba(0,0,0,1)',
+              border: '0.5px solid rgba(255,255,255,0.12)',
+              borderRadius: 14,
+              padding: '1.25rem',
+            }}
+          >
+            <div style={{ fontSize: 28, fontWeight: 600, color: 'rgba(255,255,255,0.96)', lineHeight: 1.2 }}>
+              Delete exam?
+            </div>
+            <div style={{ marginTop: 10, fontSize: 28, fontWeight: 600, color: 'rgba(255,255,255,0.96)', lineHeight: 1.2 }}>
+              "{examToDelete.name}"
+            </div>
+            <div style={{ marginTop: 14, fontSize: 13, color: 'rgba(255,255,255,0.42)', lineHeight: 1.5 }}>
+              This will remove the exam and its linked preparation tracking.
+            </div>
+
+            <div style={{ marginTop: 18, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <button
+                onClick={() => setExamToDelete(null)}
+                style={{
+                  border: '0.5px solid rgba(255,255,255,0.14)',
+                  background: 'transparent',
+                  color: 'rgba(255,255,255,0.72)',
+                  borderRadius: 10,
+                  padding: '8px 12px',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteExam}
+                style={{
+                  border: 'none',
+                  background: 'rgba(224,75,74,0.92)',
+                  color: '#fff',
+                  borderRadius: 10,
+                  padding: '8px 14px',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ExamModal
         open={showModal}
