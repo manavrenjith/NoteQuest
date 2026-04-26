@@ -9,6 +9,8 @@
 
 NoteQuest is an AI-powered study tracker that turns raw notes into structured subjects, chapters, and topics, then gamifies progress with XP, streaks, quizzes, revision reminders, and a leaderboard.
 
+This project is currently a demo.
+
 Any AI API is compatible, but Groq is used in this demo.
 
 Built for the Nira Hackathon 2026 using React + Vite.
