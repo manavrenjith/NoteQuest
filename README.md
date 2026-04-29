@@ -13,7 +13,7 @@ This project is currently a demo.
 
 Any AI API is compatible, but Groq is used in this demo.
 
-Built for the Nira Hackathon 2026 using React + Vite.
+Originally started as an entry for a  Hackathon 2026; the hackathon listing was later removed on Devpost, and development has continued here as a demo using React + Vite.
 
 ## Features
 
