@@ -113,7 +113,7 @@ function Upload() {
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 px-4 py-4 sm:px-6">
           <p className="flex items-center gap-2 text-[11px] text-slate-500">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" aria-hidden="true" />
-            NoteQuest — Built for Nira Hackathon 2026
+            NoteQuest — Demo project
           </p>
           <p className="text-[11px] text-slate-500">Made with React + Groq AI</p>
         </div>

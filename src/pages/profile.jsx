@@ -185,7 +185,7 @@ export default function Profile() {
   }
 
   const handleShare = () => {
-    const text = `🎮 My NoteQuest stats:\n👤 ${username || 'Anonymous'}\n⚡ ${xp} XP · ${levelInfo.title}\n🔥 ${streak} day streak\n📚 ${completedTopics} topics completed\n\nBuilt for Nira Hackathon 2026`
+    const text = `🎮 My NoteQuest stats:\n👤 ${username || 'Anonymous'}\n⚡ ${xp} XP · ${levelInfo.title}\n🔥 ${streak} day streak\n📚 ${completedTopics} topics completed\n\nBuilt with NoteQuest`
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)

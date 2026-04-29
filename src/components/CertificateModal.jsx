@@ -20,7 +20,7 @@ export default function CertificateModal({ subject, xp, level, onClose }) {
     link.click()
   }
 
-  const shareText = `I just completed "${subject?.subject || 'a subject'}" on NoteQuest! 🎓\nLevel: ${level?.title || 'Unknown'} | XP: ${xp}\nBuilt for Nira Hackathon 2026`
+  const shareText = `I just completed "${subject?.subject || 'a subject'}" on NoteQuest! 🎓\nLevel: ${level?.title || 'Unknown'} | XP: ${xp}\nBuilt with NoteQuest`
 
   const date = new Date().toLocaleDateString('en-IN', {
     day: 'numeric',
