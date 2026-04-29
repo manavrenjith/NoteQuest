@@ -302,7 +302,7 @@ function Home() {
 
             <div>
               <div style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Built with</div>
-              {['React + Vite', 'Groq AI (LLaMA 3.3)', 'Supabase', 'Tailwind CSS', 'Nira Hackathon 2026'].map(item => (
+              {['React + Vite', 'Groq AI (LLaMA 3.3)', 'Supabase', 'Tailwind CSS', 'Demo project'].map(item => (
                 <div key={item} style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', padding: '3px 0' }}>{item}</div>
               ))}
             </div>
@@ -316,7 +316,7 @@ function Home() {
             <div style={{ flex: 1, minWidth: 200 }}>
               <div style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 2 }}>Manav Renjith</div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', lineHeight: 1.5 }}>
-                Student developer from India · Built NoteQuest for Nira Hackathon 2026
+                Student developer from India · Built NoteQuest as a demo project
               </div>
             </div>
 
@@ -335,9 +335,9 @@ function Home() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '1rem', flexWrap: 'wrap', gap: 8 }}>
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(127,119,221,0.7)', display: 'inline-block' }} />
-              NoteQuest — Built for Nira Hackathon 2026
+              NoteQuest — Demo project
             </p>
             <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)' }}>Made with React + Groq AI</p>
           </div>
