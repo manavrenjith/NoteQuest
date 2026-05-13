@@ -5,7 +5,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Groq](https://img.shields.io/badge/AI-Groq-111111)](https://groq.com/)
 [![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
-[![Status](https://img.shields.io/badge/Status-Active-22C55E)](#)
+
 
 NoteQuest is an AI-powered study tracker that turns raw notes into structured subjects, chapters, and topics, then gamifies progress with XP, streaks, quizzes, revision reminders, and a leaderboard.
 
