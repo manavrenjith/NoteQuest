@@ -25,7 +25,6 @@ Using AI-powered topic extraction, NoteQuest helps learners organize material, t
 
 Whether you're preparing for exams, learning a new subject, or managing large volumes of notes, NoteQuest converts unstructured information into an actionable study roadmap.
 
----
 ## AI Provider Agnostic
 
 NoteQuest is designed to be AI-provider agnostic.
@@ -61,9 +60,20 @@ Current development focuses on:
 
 ## Screenshots
 
-> Screenshots coming soon.
+<p align="center">
+  <img src="docs/screenshots/landing.png" width="48%" />
+  <img src="docs/screenshots/user_dashboard.png" width="48%" />
+</p>
 
----
+<p align="center">
+  <img src="docs/screenshots/subject.png" width="48%" />
+  <img src="docs/screenshots/exam_calendar.png" width="48%" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/user_profile.png" width="48%" />
+</p>
+
 
 ## Features
 
@@ -79,13 +89,43 @@ Current development focuses on:
 
 ## Tech Stack
 
-- React 19 + React Router 7
-- Vite 8
-- Tailwind CSS
-- Groq API (`groq-sdk`) for AI extraction, tips, and quiz generation
-- Supabase (`@supabase/supabase-js`) for leaderboard storage
-- `pdfjs-dist` for PDF text extraction
-- `localStorage` for local app data persistence
+| Layer             | Technology                       |
+| ----------------- | -------------------------------- |
+| Frontend          | React 19                         |
+| Routing           | React Router 7                   |
+| Build Tool        | Vite 8                           |
+| Styling           | Tailwind CSS                     |
+| AI Integration    | Groq API *(demo implementation)* |
+| Database          | Supabase                         |
+| PDF Processing    | pdfjs-dist                       |
+| Local Persistence | Browser localStorage             |
+| Deployment        | Vercel                           |
+
+## Architecture
+
+```text
+User Notes / PDF
+        │
+        ▼
+AI Processing Layer
+        │
+        ▼
+Topic Extraction
+        │
+        ▼
+Structured JSON
+        │
+        ▼
+Subject / Chapter / Topic Store
+        │
+        ├── Progress Tracking
+        ├── Quiz Generation
+        ├── Revision Planning
+        ├── XP & Streak System
+        ├── Analytics Engine
+        └── Leaderboard Integration
+```
+
 
 ## Project Structure
 
