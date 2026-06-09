@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo.png" width="160" alt="NoteQuest Logo" />
+<img src="docs/logo.png" width="160" alt="NoteQuest Logo" />
 
 # NoteQuest
  
