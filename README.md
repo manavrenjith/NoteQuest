@@ -1,19 +1,68 @@
+<div align="center">
+
+<img src="logo.png" width="160" alt="NoteQuest Logo" />
+
 # NoteQuest
+ 
+### Turn study notes into quests, quizzes, streaks, and measurable progress.
+AI-powered study tracker • Quiz generation • XP & streaks • Analytics • Leaderboards
 
 [![React](https://img.shields.io/badge/React-19-20232A?logo=react&logoColor=61DAFB)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Groq](https://img.shields.io/badge/AI-Groq-111111)](https://groq.com/)
+[![AI Powered](https://img.shields.io/badge/AI-Powered-blueviolet)](#)
 [![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
 [![Status](https://img.shields.io/badge/Status-Active-22C55E)](#)
+---
+</div>
 
-NoteQuest is an AI-powered study tracker that turns raw notes into structured subjects, chapters, and topics, then gamifies progress with XP, streaks, quizzes, revision reminders, and a leaderboard.
+## Overview
 
-This project is currently a demo.
+NoteQuest is an AI-powered learning platform that transforms raw study notes into structured subjects, chapters, and topics.
 
-Any AI API is compatible, but Groq is used in this demo.
+Using AI-powered topic extraction, NoteQuest helps learners organize material, track progress, complete quizzes, maintain study streaks, earn XP, and build consistent learning habits through gamification.
 
-Originally started as an entry for a  Hackathon 2026; the hackathon listing was later removed on Devpost, and development has continued here as a demo using React + Vite.
+Whether you're preparing for exams, learning a new subject, or managing large volumes of notes, NoteQuest converts unstructured information into an actionable study roadmap.
+
+---
+## AI Provider Agnostic
+
+NoteQuest is designed to be AI-provider agnostic.
+
+While this demo currently uses the Groq API for topic extraction, quiz generation, study tips, and daily challenges, the application architecture is not tied to any specific AI provider.
+
+Any LLM API capable of processing prompts and returning structured responses can be integrated with minimal changes, including:
+
+- Groq
+- OpenAI
+- Google Gemini
+- Anthropic Claude
+- OpenRouter
+- Self-hosted models via Ollama
+- Other OpenAI-compatible APIs
+
+Groq is used in this repository because it provides a cost-effective way to power AI features during development and demonstration. The underlying architecture allows providers to be swapped without significant changes to the application.
+
+---
+## Current Status
+
+🚧 Demo Release
+
+NoteQuest is currently an active demonstration project showcasing AI-assisted study planning, quiz generation, progress tracking, and gamified learning.
+
+Current development focuses on:
+
+* Improving AI extraction accuracy
+* Expanding quiz generation capabilities
+* Enhancing analytics and insights
+* Improving mobile responsiveness
+* Refining the overall user experience
+
+## Screenshots
+
+> Screenshots coming soon.
+
+---
 
 ## Features
 
@@ -174,7 +223,12 @@ This repository includes `vercel.json` and is ready for Vercel deployment.
 - Leaderboard errors:
 	- Verify Supabase URL/key and table schema.
 	- Ensure your table permissions/policies allow expected operations.
+---
 
 ## License
+```
+This project is licensed under the MIT License.
 
-No license is currently specified in this repository.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the conditions of the MIT License.
+```
+See the [LICENSE](LICENSE) file for the full license text.
