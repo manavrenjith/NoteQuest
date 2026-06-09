@@ -14,6 +14,11 @@ AI-powered study tracker • Quiz generation • XP & streaks • Analytics • 
 [![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
 [![Status](https://img.shields.io/badge/Status-Active-22C55E)](#)
 
+</div>
+
+---
+
+## Overview
 NoteQuest is an AI-powered learning platform that transforms raw study notes into structured subjects, chapters, and topics.
 
 Using AI-powered topic extraction, NoteQuest helps learners organize material, track progress, complete quizzes, maintain study streaks, earn XP, and build consistent learning habits through gamification.
